@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		8860D33830867788004AE0BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8860D31D30867788004AE0BC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8860D32430867788004AE0BC;
+			remoteInfo = "Homework progress";
+		};
+		8860D34230867788004AE0BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8860D31D30867788004AE0BC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8860D32430867788004AE0BC;
+			remoteInfo = "Homework progress";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		8860D32530867788004AE0BC /* Homework progress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Homework progress.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8860D33730867788004AE0BC /* Homework progressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Homework progressTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8860D34130867788004AE0BC /* Homework progressUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Homework progressUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8860D32730867788004AE0BC /* Homework progress */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Homework progress";
+			sourceTree = "<group>";
+		};
+		8860D33A30867788004AE0BC /* Homework progressTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Homework progressTests";
+			sourceTree = "<group>";
+		};
+		8860D34430867788004AE0BC /* Homework progressUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Homework progressUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8860D32230867788004AE0BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		8860D33430867788004AE0BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		8860D33E30867788004AE0BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8860D31C30867788004AE0BC = {
+			isa = PBXGroup;
+			children = (
+				8860D32730867788004AE0BC /* Homework progress */,
+				8860D33A30867788004AE0BC /* Homework progressTests */,
+				8860D34430867788004AE0BC /* Homework progressUITests */,
+				8860D32630867788004AE0BC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8860D32630867788004AE0BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8860D32530867788004AE0BC /* Homework progress.app */,
+				8860D33730867788004AE0BC /* Homework progressTests.xctest */,
+				8860D34130867788004AE0BC /* Homework progressUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8860D32430867788004AE0BC /* Homework progress */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8860D34930867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progress" */;
+			buildPhases = (
+				8860D32130867788004AE0BC /* Sources */,
+				8860D32230867788004AE0BC /* Frameworks */,
+				8860D32330867788004AE0BC /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				8860D32730867788004AE0BC /* Homework progress */,
+			);
+			name = "Homework progress";
+			productName = "Homework progress";
+			productReference = 8860D32530867788004AE0BC /* Homework progress.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8860D33630867788004AE0BC /* Homework progressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8860D34C30867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progressTests" */;
+			buildPhases = (
+				8860D33330867788004AE0BC /* Sources */,
+				8860D33430867788004AE0BC /* Frameworks */,
+				8860D33530867788004AE0BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8860D33930867788004AE0BC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8860D33A30867788004AE0BC /* Homework progressTests */,
+			);
+			name = "Homework progressTests";
+			productName = "Homework progressTests";
+			productReference = 8860D33730867788004AE0BC /* Homework progressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8860D34030867788004AE0BC /* Homework progressUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8860D34F30867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progressUITests" */;
+			buildPhases = (
+				8860D33D30867788004AE0BC /* Sources */,
+				8860D33E30867788004AE0BC /* Frameworks */,
+				8860D33F30867788004AE0BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8860D34330867788004AE0BC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8860D34430867788004AE0BC /* Homework progressUITests */,
+			);
+			name = "Homework progressUITests";
+			productName = "Homework progressUITests";
+			productReference = 8860D34130867788004AE0BC /* Homework progressUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8860D31D30867788004AE0BC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					8860D32430867788004AE0BC = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					8860D33630867788004AE0BC = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 8860D32430867788004AE0BC;
+					};
+					8860D34030867788004AE0BC = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 8860D32430867788004AE0BC;
+					};
+				};
+			};
+			buildConfigurationList = 8860D32030867788004AE0BC /* Build configuration list for PBXProject "Homework progress" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8860D31C30867788004AE0BC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8860D32630867788004AE0BC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8860D32430867788004AE0BC /* Homework progress */,
+				8860D33630867788004AE0BC /* Homework progressTests */,
+				8860D34030867788004AE0BC /* Homework progressUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8860D32330867788004AE0BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		8860D33530867788004AE0BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		8860D33F30867788004AE0BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8860D32130867788004AE0BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		8860D33330867788004AE0BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		8860D33D30867788004AE0BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8860D33930867788004AE0BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8860D32430867788004AE0BC /* Homework progress */;
+			targetProxy = 8860D33830867788004AE0BC /* PBXContainerItemProxy */;
+		};
+		8860D34330867788004AE0BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8860D32430867788004AE0BC /* Homework progress */;
+			targetProxy = 8860D34230867788004AE0BC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8860D34730867788004AE0BC /* Debug configuration for PBXProject "Homework progress" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8860D34830867788004AE0BC /* Release configuration for PBXProject "Homework progress" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8860D34A30867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progress" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progress";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8860D34B30867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progress" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progress";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8860D34D30867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progressTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progressTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Homework progress.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Homework progress";
+			};
+			name = Debug;
+		};
+		8860D34E30867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progressTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progressTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Homework progress.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Homework progress";
+			};
+			name = Release;
+		};
+		8860D35030867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progressUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progressUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Homework progress";
+			};
+			name = Debug;
+		};
+		8860D35130867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progressUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K36SNFAJDS;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AnnaLoseva.Homework-progressUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Homework progress";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8860D32030867788004AE0BC /* Build configuration list for PBXProject "Homework progress" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8860D34730867788004AE0BC /* Debug configuration for PBXProject "Homework progress" */,
+				8860D34830867788004AE0BC /* Release configuration for PBXProject "Homework progress" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		8860D34930867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progress" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8860D34A30867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progress" */,
+				8860D34B30867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progress" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		8860D34C30867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8860D34D30867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progressTests" */,
+				8860D34E30867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progressTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		8860D34F30867788004AE0BC /* Build configuration list for PBXNativeTarget "Homework progressUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8860D35030867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progressUITests" */,
+				8860D35130867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progressUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8860D31D30867788004AE0BC /* Project object */;
+	validationLevel = 1;
+}
