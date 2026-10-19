@@ -86,7 +86,7 @@ struct RemainingWorkSection: View {
                 } else {
                     ForEach(Array(open.enumerated()), id: \.element.id) { index, assignment in
                         AssignmentRow(assignment: assignment, showsCourse: true)
-                        if index < open.count - 1 { Divider().overlay(AppTheme.borderSoft).padding(.leading, 74) }
+                        if index < open.count - 1 { Divider().overlay(AppTheme.borderSoft).padding(.leading, 78) }
                     }
                 }
             }
@@ -111,12 +111,12 @@ struct AssignmentRow: View {
         } label: {
             HStack(alignment: .center, spacing: 12) {
                 if showsCourse, let course = assignment.course {
-                    CourseIconView(iconName: course.iconName, palette: course.palette, size: 48)
+                    CourseIconView(iconName: course.iconName, palette: course.palette, size: 52)
                 } else {
                     Image(systemName: assignment.status.symbolName)
                         .font(.lora(20))
                         .foregroundStyle(assignment.isCompleted ? AppTheme.forest : palette.color)
-                        .frame(width: 48)
+                        .frame(width: 52)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(assignment.title.isEmpty ? String(localized: "Untitled") : assignment.title)

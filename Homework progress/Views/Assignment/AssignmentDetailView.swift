@@ -127,7 +127,7 @@ private struct AssignmentHeader: View {
         VStack(alignment: .leading, spacing: 10) {
             if let course = assignment.course {
                 HStack(spacing: 10) {
-                    CourseIconView(iconName: course.iconName, palette: course.palette, size: 30)
+                    CourseIconView(iconName: course.iconName, palette: course.palette, size: 44)
                     CourseTitleView(course: course, titleFont: .lora(15, weight: .semibold))
                     Spacer(minLength: 8)
                     OpenMoodleButton(course: course, style: .chip)

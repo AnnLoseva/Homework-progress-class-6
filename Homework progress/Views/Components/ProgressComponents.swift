@@ -42,20 +42,21 @@ struct CourseIconView: View {
     var body: some View {
         Group {
             if CourseIcons.isIllustration(iconName) {
+                // The art carries its own rounded tile and transparent corners.
                 Image(iconName)
                     .resizable()
-                    .scaledToFill()
+                    .interpolation(.high)
+                    .scaledToFit()
                     .frame(width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: size * 0.26, style: .continuous))
             } else {
                 Image(systemName: iconName)
                     .font(.system(size: size * 0.45, weight: .semibold))
                     .foregroundStyle(palette.color)
                     .frame(width: size, height: size)
                     .background(palette.color.opacity(0.15), in: RoundedRectangle(cornerRadius: size * 0.26, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: size * 0.26, style: .continuous).stroke(AppTheme.border, lineWidth: 1))
             }
         }
-        .overlay(RoundedRectangle(cornerRadius: size * 0.26, style: .continuous).stroke(AppTheme.border, lineWidth: 1))
         .accessibilityHidden(true)
     }
 }

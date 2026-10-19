@@ -61,7 +61,7 @@ struct CourseDetailView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 14) {
-            CourseIconView(iconName: course.iconName, palette: course.palette, size: 72)
+            CourseIconView(iconName: course.iconName, palette: course.palette, size: 96)
             VStack(alignment: .leading, spacing: 4) {
                 Text(course.name)
                     .font(.lora(24, weight: .bold))

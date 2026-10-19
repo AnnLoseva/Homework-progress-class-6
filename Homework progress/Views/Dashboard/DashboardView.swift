@@ -277,7 +277,7 @@ struct CourseOverviewSection: View {
             ForEach(Array(courses.enumerated()), id: \.element.id) { index, course in
                 CourseSummaryRow(course: course, week: week)
                 if index < courses.count - 1 {
-                    Divider().overlay(AppTheme.borderSoft).padding(.leading, 74)
+                    Divider().overlay(AppTheme.borderSoft).padding(.leading, 84)
                 }
             }
         }
@@ -302,7 +302,7 @@ struct CourseSummaryRow: View {
             }
         } label: {
             HStack(alignment: .center, spacing: 12) {
-                CourseIconView(iconName: course.iconName, palette: course.palette, size: 48)
+                CourseIconView(iconName: course.iconName, palette: course.palette, size: 58)
                 VStack(alignment: .leading, spacing: 6) {
                     CourseTitleView(course: course, titleFont: .lora(16, weight: .semibold))
                     if summary.isEmpty {
