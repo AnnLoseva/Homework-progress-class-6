@@ -1,0 +1,274 @@
+//
+//  RootView.swift
+//  Homework progress
+//
+
+import SwiftUI
+import SwiftData
+
+struct RootView: View {
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
+    @Environment(AppRouter.self) private var router
+    @Environment(AppServices.self) private var services
+    @Query(sort: \AcademicWeek.startDate) private var weeks: [AcademicWeek]
+    @AppStorage("weekStartsOn") private var weekStartsOn = 1
+
+    var body: some View {
+        @Bindable var router = router
+        GeometryReader { proxy in
+            Group {
+                if sizeClass == .regular {
+                    SplitRootView(selectedWeek: selectedWeek)
+                } else {
+                    CompactRootView(selectedWeek: selectedWeek)
+                }
+            }
+            .onAppear { updateLayout(width: proxy.size.width) }
+            .onChange(of: proxy.size.width) { _, width in updateLayout(width: width) }
+            .onChange(of: sizeClass) { _, _ in updateLayout(width: proxy.size.width) }
+        }
+        .tint(.indigo)
+        .onAppear(perform: selectCurrentWeekOnLaunch)
+        .sheet(item: $router.activeSheet) { sheet in
+            sheetContent(sheet)
+        }
+        .onOpenURL { url in
+            // PDFs shared to this app ("Open in Homework Progress") arrive here.
+            if url.isFileURL { router.activeSheet = .importSharedPDF(url) }
+        }
+        .overlay(alignment: .bottom) { ToastView() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { rescheduleReminders() }
+        }
+    }
+
+    private var planner: WeekPlanner { WeekPlanner(firstWeekday: weekStartsOn) }
+
+    private var selectedWeek: AcademicWeek? {
+        if let id = router.selectedWeekID, let match = weeks.first(where: { $0.id == id }) { return match }
+        return planner.preferredWeek(in: weeks, start: \.startDate, end: \.endDate)
+    }
+
+    private func updateLayout(width: CGFloat) {
+        let wide = sizeClass == .regular && width >= 900
+        router.usesInspector = wide
+        if !wide { router.inspectedAssignment = nil }
+    }
+
+    /// The dashboard is about *this* week: on launch, jump to the week containing today.
+    private func selectCurrentWeekOnLaunch() {
+        if let current = weeks.first(where: { planner.contains(.now, start: $0.startDate, end: $0.endDate) }) {
+            router.selectedWeekID = current.id
+        } else if let preferred = selectedWeek {
+            router.selectedWeekID = preferred.id
+        }
+    }
+
+    @ViewBuilder
+    private func sheetContent(_ sheet: AppRouter.Sheet) -> some View {
+        switch sheet {
+        case .newWeek:
+            WeekEditorView(mode: .create)
+        case .editWeek(let week):
+            WeekEditorView(mode: .edit(week))
+        case .newAssignment(let course, let week):
+            AssignmentEditorView(mode: .create(course: course, week: week))
+        case .editAssignment(let assignment):
+            AssignmentEditorView(mode: .edit(assignment))
+        case .importSharedPDF(let url):
+            if let week = selectedWeek {
+                AssignmentEditorView(mode: .create(course: nil, week: week), incomingPDF: url)
+            } else {
+                ContentUnavailableView("Create a week first",
+                                       systemImage: "calendar.badge.plus",
+                                       description: Text("Shared PDFs are added to an assignment in the selected week."))
+                    .presentationDetents([.medium])
+            }
+        }
+    }
+
+    private func rescheduleReminders() {
+        let assignments = (try? context.fetch(FetchDescriptor<HomeworkAssignment>())) ?? []
+        let items = assignments.compactMap { a -> ReminderScheduler.DeadlineItem? in
+            guard !a.isCompleted, let due = a.dueDate else { return nil }
+            return .init(id: a.id, title: a.title, courseName: a.course?.name ?? "", dueDate: due)
+        }
+        Task { await ReminderScheduler.reschedule(deadlines: items) }
+    }
+}
+
+// MARK: - iPhone / narrow
+
+struct CompactRootView: View {
+    @Environment(AppRouter.self) private var router
+    var selectedWeek: AcademicWeek?
+
+    var body: some View {
+        @Bindable var router = router
+        NavigationStack(path: $router.path) {
+            DashboardView(week: selectedWeek)
+                .navigationDestination(for: AppRouter.Route.self) { route in
+                    RouteDestination(route: route, selectedWeek: selectedWeek)
+                }
+        }
+    }
+}
+
+struct RouteDestination: View {
+    let route: AppRouter.Route
+    let selectedWeek: AcademicWeek?
+
+    var body: some View {
+        switch route {
+        case .course(let course):
+            CourseDetailView(course: course, week: selectedWeek)
+        case .assignment(let assignment):
+            AssignmentDetailView(assignment: assignment)
+        case .courseSettings(let course):
+            CourseSettingsView(course: course)
+        case .archive:
+            WeekArchiveView()
+        case .settings:
+            SettingsView()
+        }
+    }
+}
+
+// MARK: - iPad
+
+struct SplitRootView: View {
+    @Environment(AppRouter.self) private var router
+    @Query(sort: \AcademicWeek.startDate, order: .reverse) private var weeks: [AcademicWeek]
+    @Query(sort: \Course.sortOrder) private var courses: [Course]
+    @State private var columnVisibility = NavigationSplitViewVisibility.automatic
+    var selectedWeek: AcademicWeek?
+
+    var body: some View {
+        @Bindable var router = router
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            List(selection: $router.sidebar) {
+                Section("Weeks") {
+                    ForEach(weeks) { week in
+                        NavigationLink(value: AppRouter.SidebarItem.week(week)) {
+                            SidebarWeekRow(week: week, isSelected: week.id == selectedWeek?.id)
+                        }
+                    }
+                    Button {
+                        router.activeSheet = .newWeek
+                    } label: {
+                        Label("New Week", systemImage: "plus")
+                    }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                }
+                Section("Courses") {
+                    ForEach(courses) { course in
+                        NavigationLink(value: AppRouter.SidebarItem.course(course)) {
+                            HStack(spacing: 10) {
+                                CourseIconView(iconName: course.iconName, palette: course.palette, size: 28)
+                                Text(course.name).lineLimit(2)
+                            }
+                        }
+                    }
+                }
+                Section {
+                    NavigationLink(value: AppRouter.SidebarItem.archive) {
+                        Label("Archive", systemImage: "archivebox")
+                    }
+                    NavigationLink(value: AppRouter.SidebarItem.settings) {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                }
+            }
+            .navigationTitle("Homework")
+        } detail: {
+            HStack(spacing: 0) {
+                NavigationStack(path: $router.path) {
+                    splitContent
+                        .navigationDestination(for: AppRouter.Route.self) { route in
+                            RouteDestination(route: route, selectedWeek: selectedWeek)
+                        }
+                }
+                // Side panel for the selected assignment, so browsing and inspecting don't
+                // require navigating back and forth.
+                if let assignment = router.inspectedAssignment, assignment.modelContext != nil {
+                    Divider().ignoresSafeArea()
+                    NavigationStack {
+                        AssignmentDetailView(assignment: assignment, isInspector: true)
+                    }
+                    .id(assignment.id)
+                    .frame(width: 400)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+            }
+            .animation(.snappy, value: router.inspectedAssignment?.id)
+        }
+        .onAppear {
+            if router.sidebar == nil, let selectedWeek { router.sidebar = .week(selectedWeek) }
+        }
+        .onChange(of: router.sidebar) { _, item in
+            router.resetPath()
+            if case .week(let week) = item { router.selectedWeekID = week.id }
+        }
+    }
+
+    @ViewBuilder
+    private var splitContent: some View {
+        switch router.sidebar {
+        case .course(let course):
+            CourseDetailView(course: course, week: selectedWeek)
+        case .archive:
+            WeekArchiveView()
+        case .settings:
+            SettingsView()
+        case .week, .none:
+            DashboardView(week: selectedWeek)
+        }
+    }
+}
+
+struct SidebarWeekRow: View {
+    let week: AcademicWeek
+    let isSelected: Bool
+
+    var body: some View {
+        let summary = week.summary
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(week.title).font(.body.weight(isSelected ? .semibold : .regular))
+                Spacer()
+                if let percent = summary.percent {
+                    Text("\(percent)%").font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                }
+            }
+            Text(week.dateRangeText).font(.caption).foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - Toast
+
+struct ToastView: View {
+    @Environment(AppServices.self) private var services
+
+    var body: some View {
+        if let message = services.toast {
+            Text(message)
+                .font(.callout)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 24)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .onTapGesture { services.toast = nil }
+                .task(id: message) {
+                    try? await Task.sleep(for: .seconds(6))
+                    withAnimation { services.toast = nil }
+                }
+                .accessibilityAddTraits(.isStaticText)
+        }
+    }
+}
