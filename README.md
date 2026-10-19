@@ -36,6 +36,19 @@ analytics or subscription.
 - **Receiving PDFs:** the app appears as a share target for PDFs (for example from Safari or
   Moodle). A shared PDF starts a new assignment in the selected week.
 
+## Look & feel
+
+The app shares Mood Pomodoro's cozy style:
+
+- warm parchment cards with an inked border over a hand-drawn forest backdrop (iPhone and iPad
+  versions);
+- Lora serif type and forest-green and rust accents;
+- an illustration for each course;
+- mushroom friends who react to the week's progress, with no guilt for unfinished work.
+
+The palette, fonts, card and button styles live in `Views/Components/Theme.swift`. Like Mood
+Pomodoro, the app always uses the light parchment appearance.
+
 ## Project layout
 
 ```

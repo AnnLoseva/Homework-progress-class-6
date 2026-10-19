@@ -27,6 +27,7 @@ struct CourseSettingsView: View {
 
     var body: some View {
         Form {
+            Group {
             Section("Course") {
                 TextField("Course name", text: $course.name)
                     .accessibilityIdentifier("courseNameField")
@@ -94,8 +95,8 @@ struct CourseSettingsView: View {
                     .autocorrectionDisabled()
                 if !linkIsValid {
                     Label("Use a web link (https://…) or a notability: link copied from Notability.", systemImage: "exclamationmark.triangle")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                        .font(.lora(12))
+                        .foregroundStyle(AppTheme.rust)
                 }
                 if let link = NotabilityIntegration.validatedLink(from: notebookLink) {
                     Button("Test Link") {
@@ -107,7 +108,7 @@ struct CourseSettingsView: View {
                     }
                 }
                 if let linkTestResult {
-                    Text(linkTestResult).font(.caption).foregroundStyle(.secondary)
+                    Text(linkTestResult).font(.lora(12)).foregroundStyle(.secondary)
                 }
             } header: {
                 Text("Notability Notebook")
@@ -120,7 +121,10 @@ struct CourseSettingsView: View {
             } footer: {
                 Text("Deleting a course deletes its assignments in every week. Weeks themselves are kept.")
             }
+            }
+            .listRowBackground(AppTheme.parchmentCard)
         }
+        .parchmentList()
         .navigationTitle("Course Settings")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

@@ -30,8 +30,9 @@ struct AssignmentDetailView: View {
                     HStack(spacing: 0) {
                         InlinePDFPane(assignment: assignment)
                             .frame(maxWidth: .infinity)
-                        Divider()
+                        Rectangle().fill(AppTheme.border).frame(width: 1)
                         controls
+                            .background { ForestBackdrop() }
                             .frame(width: min(420, proxy.size.width * 0.42))
                     }
                 } else {
@@ -39,7 +40,7 @@ struct AssignmentDetailView: View {
                 }
             }
         }
-        .background(Color.appBackground)
+        .background { ForestBackdrop() }
         .navigationTitle(assignment.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
@@ -56,13 +57,13 @@ struct AssignmentDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 AssignmentHeader(assignment: assignment)
+                    .card(padding: 18)
                 ExerciseProgressCard(assignment: assignment)
                 AttachmentsSection(assignment: assignment)
                 if let course = assignment.course {
                     NotabilitySection(assignment: assignment, course: course)
                 }
                 NotesSection(assignment: assignment)
-                MetadataFooter(assignment: assignment)
             }
             .padding(16)
             .frame(maxWidth: 640)
@@ -127,16 +128,16 @@ private struct AssignmentHeader: View {
             if let course = assignment.course {
                 HStack(spacing: 10) {
                     CourseIconView(iconName: course.iconName, palette: course.palette, size: 30)
-                    CourseTitleView(course: course, titleFont: .subheadline.weight(.semibold))
+                    CourseTitleView(course: course, titleFont: .lora(15, weight: .semibold))
                 }
             }
             Text(assignment.title.isEmpty ? String(localized: "Untitled") : assignment.title)
-                .font(.title2.weight(.bold))
+                .font(.lora(24, weight: .bold))
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 14) {
                 if let week = assignment.week {
                     Label(week.fullLabel, systemImage: "calendar")
-                        .font(.caption)
+                        .font(.lora(12))
                         .foregroundStyle(.secondary)
                 }
                 if let due = assignment.dueDate { DueDateText(date: due) }
@@ -153,11 +154,12 @@ private struct AssignmentHeader: View {
             } label: {
                 HStack(spacing: 4) {
                     StatusBadge(status: assignment.status)
-                    Image(systemName: "chevron.up.chevron.down").font(.caption2).foregroundStyle(.secondary)
+                    Image(systemName: "chevron.up.chevron.down").font(.lora(11)).foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(Color.track, in: Capsule())
+                .background(Capsule().fill(AppTheme.chipFill))
+                .overlay(Capsule().stroke(AppTheme.borderSoft, lineWidth: 1))
             }
             .accessibilityLabel(Text("Status: \(assignment.status.title)"))
             .accessibilityIdentifier("statusMenu")
@@ -181,7 +183,7 @@ struct ExerciseProgressCard: View {
     var body: some View {
         let state = assignment.exerciseState
         let progress = assignment.progress
-        let tint = assignment.course?.palette.color ?? .indigo
+        let tint = assignment.course?.palette.color ?? AppTheme.forest
 
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .firstTextBaseline) {
@@ -199,18 +201,18 @@ struct ExerciseProgressCard: View {
 
             if progress.isInconsistent, let total = progress.total {
                 HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(AppTheme.rust)
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Completed (\(progress.completed)) is more than the total (\(total)).")
-                            .font(.footnote)
+                            .font(.lora(13))
                         Button("Set completed to \(total)") {
                             assignment.apply(state.settingTotal(total, resolving: .lowerCompleted))
                         }
-                        .font(.footnote.weight(.semibold))
+                        .font(.lora(13, weight: .semibold))
                     }
                 }
                 .padding(10)
-                .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
+                .background(AppTheme.rust.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
             }
 
             HStack(spacing: 12) {
@@ -218,11 +220,8 @@ struct ExerciseProgressCard: View {
                     withAnimation(.snappy) { assignment.apply(state.decremented()) }
                 } label: {
                     Image(systemName: "minus")
-                        .font(.title3.weight(.semibold))
-                        .frame(width: 52, height: 52)
                 }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.circle)
+                .buttonStyle(RoundIconButtonStyle(size: 54))
                 .disabled(!state.canDecrement)
                 .keyboardShortcut("-", modifiers: .command)
                 .accessibilityLabel("Mark one exercise not done")
@@ -232,11 +231,8 @@ struct ExerciseProgressCard: View {
                     withAnimation(.snappy) { assignment.apply(state.incremented()) }
                 } label: {
                     Label("Exercise Done", systemImage: "plus")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(tint)
+                .buttonStyle(.goblinPrimary(tint))
                 .disabled(!state.canIncrement)
                 .keyboardShortcut("=", modifiers: .command)
                 .accessibilityLabel("Mark one more exercise done")
@@ -263,12 +259,13 @@ struct ExerciseProgressCard: View {
                     .accessibilityIdentifier("markCompleted")
                 }
             }
-            .font(.subheadline)
+            .font(.lora(15))
             .buttonStyle(.borderless)
         }
         .card(padding: 18)
         .sheet(isPresented: $showingEditor) {
             ExerciseCountEditor(assignment: assignment)
+                .goblinChrome()
         }
     }
 }
@@ -280,10 +277,10 @@ private struct CounterView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                .monospacedDigit()
+                .font(.lora(34, weight: .bold))
+                
                 .contentTransition(.numericText())
-            Text(label).font(.caption).foregroundStyle(.secondary)
+            Text(label).font(.lora(12)).foregroundStyle(.secondary)
         }
     }
 }
@@ -303,6 +300,7 @@ struct ExerciseCountEditor: View {
     var body: some View {
         NavigationStack {
             Form {
+                Group {
                 Section {
                     LabeledContent("Completed") {
                         TextField("0", text: $completedText)
@@ -321,7 +319,10 @@ struct ExerciseCountEditor: View {
                 } footer: {
                     Text("Leave the total empty if you don’t know it yet. Assignments without a total aren’t counted in exercise percentages.")
                 }
+                }
+                .listRowBackground(AppTheme.parchmentCard)
             }
+            .parchmentList()
             .navigationTitle("Exercise Counts")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -392,13 +393,16 @@ private struct NotesSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Notes").font(.headline)
+            Text("Notes").font(.lora(17, weight: .semibold))
             TextField("Add notes…", text: $assignment.notes, axis: .vertical)
                 .lineLimit(3...12)
                 .padding(12)
-                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(AppTheme.chipFill))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(AppTheme.borderSoft, lineWidth: 1))
                 .onChange(of: assignment.notes) { _, _ in assignment.touch() }
+            MetadataFooter(assignment: assignment)
         }
+        .card()
     }
 }
 
@@ -410,7 +414,7 @@ private struct MetadataFooter: View {
             Text("Created \(assignment.createdAt.formatted(date: .abbreviated, time: .shortened))")
             Text("Updated \(assignment.updatedAt.formatted(date: .abbreviated, time: .shortened))")
         }
-        .font(.caption2)
+        .font(.lora(11))
         .foregroundStyle(.tertiary)
         .padding(.top, 4)
     }
@@ -424,7 +428,7 @@ private struct NotabilitySection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Notability").font(.headline)
+            Text("Notability").font(.lora(17, weight: .semibold))
             if let attachment = assignment.sortedAttachments.first {
                 SendToNotabilityButton(attachment: attachment, prominent: true)
                     .controlSize(.large)
@@ -432,7 +436,7 @@ private struct NotabilitySection: View {
             OpenNotebookButton(course: course)
                 .controlSize(.large)
             Text(helpText)
-                .font(.caption)
+                .font(.lora(12))
                 .foregroundStyle(.secondary)
         }
         .card()

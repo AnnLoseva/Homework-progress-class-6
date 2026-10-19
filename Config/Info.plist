@@ -21,5 +21,14 @@
 	<!-- Incoming PDFs are copied into the app; the app then keeps its own copy. -->
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
+	<!-- Lora serif, shared with Mood Pomodoro. -->
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lora-Regular.ttf</string>
+		<string>Lora-Medium.ttf</string>
+		<string>Lora-SemiBold.ttf</string>
+		<string>Lora-Bold.ttf</string>
+		<string>Lora-Italic.ttf</string>
+	</array>
 </dict>
 </plist>

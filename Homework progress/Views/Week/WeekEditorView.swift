@@ -47,6 +47,7 @@ struct WeekEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Group {
                 Section {
                     TextField("Name, e.g. Week 5", text: $title)
                         .accessibilityIdentifier("weekTitleField")
@@ -62,7 +63,7 @@ struct WeekEditorView: View {
                         Text(WeekPlanner.rangeText(start: startDate, end: endDate))
                         if let overlapping {
                             Text("Overlaps \(overlapping.title). That’s allowed, but the dashboard picks one week per day.")
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(AppTheme.rust)
                         }
                     }
                 }
@@ -79,7 +80,7 @@ struct WeekEditorView: View {
                             Toggle("Copy exercise counts", isOn: $copyCounts)
                             Toggle("Shift due dates to the new week", isOn: $shiftDueDates)
                             Text("\(copySource.assignments.count) assignments will be created with fresh progress. PDFs and progress from \(copySource.title) are not copied, and that week isn’t changed.")
-                                .font(.caption)
+                                .font(.lora(12))
                                 .foregroundStyle(.secondary)
                         }
                     } header: {
@@ -94,7 +95,10 @@ struct WeekEditorView: View {
                         Text("Deletes this week’s \(week.assignments.count) assignments and their PDFs. Courses and other weeks are not affected.")
                     }
                 }
+                }
+                .listRowBackground(AppTheme.parchmentCard)
             }
+            .parchmentList()
             .navigationTitle(isCreating ? "New Week" : "Edit Week")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

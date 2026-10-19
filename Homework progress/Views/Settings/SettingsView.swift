@@ -29,6 +29,7 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            Group {
             Section("Courses") {
                 ForEach(courses) { course in
                     Button {
@@ -38,7 +39,7 @@ struct SettingsView: View {
                             CourseIconView(iconName: course.iconName, palette: course.palette, size: 30)
                             Text(course.name).foregroundStyle(.primary)
                             Spacer()
-                            Image(systemName: "chevron.forward").font(.caption).foregroundStyle(.tertiary)
+                            Image(systemName: "chevron.forward").font(.lora(12)).foregroundStyle(.tertiary)
                         }
                     }
                 }
@@ -86,8 +87,8 @@ struct SettingsView: View {
                 }
                 if notificationsDenied {
                     Label("Notifications are turned off for this app in iOS Settings.", systemImage: "bell.slash")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                        .font(.lora(12))
+                        .foregroundStyle(AppTheme.rust)
                 }
             } header: {
                 Text("Reminders")
@@ -124,10 +125,13 @@ struct SettingsView: View {
                     Label("How the Notability integration works", systemImage: "info.circle")
                 }
             }
+            }
+            .listRowBackground(AppTheme.parchmentCard)
         }
+        .parchmentList()
         .navigationTitle("Settings")
         .toolbar { EditButton() }
-        .sheet(isPresented: $showingNewCourse) { NewCourseView() }
+        .sheet(isPresented: $showingNewCourse) { NewCourseView().goblinChrome() }
         .fileExporter(isPresented: $isExporterPresented, document: exportDocument, contentType: .json,
                       defaultFilename: BackupService.suggestedFilename()) { result in
             if case .failure(let error) = result { message = error.localizedDescription }
@@ -222,6 +226,7 @@ struct NewCourseView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Group {
                 TextField("Course name", text: $name)
                 TextField("English label (optional)", text: $englishName)
                 TextField("Course page URL (optional)", text: $url)
@@ -230,7 +235,10 @@ struct NewCourseView: View {
                 Picker("Color", selection: $palette) {
                     ForEach(CoursePalette.allCases) { Text($0.name).tag($0) }
                 }
+                }
+                .listRowBackground(AppTheme.parchmentCard)
             }
+            .parchmentList()
             .navigationTitle("New Course")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -239,7 +247,7 @@ struct NewCourseView: View {
                     Button("Add") {
                         services.store(context).createCourse(name: name.trimmingCharacters(in: .whitespaces),
                                                              englishName: englishName, url: url.isEmpty ? nil : url,
-                                                             palette: palette, icon: "book.closed")
+                                                             palette: palette, icon: "CourseStudy")
                         dismiss()
                     }
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -252,6 +260,7 @@ struct NewCourseView: View {
 struct NotabilityInfoView: View {
     var body: some View {
         List {
+            Group {
             Section("Works today") {
                 Label("Add PDF to Notability: the share sheet sends a copy of the homework PDF. Choose Notability, then pick a new or existing note inside Notability.", systemImage: "checkmark.circle")
                 Label("Your PDF stays in this app. Notability gets its own copy.", systemImage: "checkmark.circle")
@@ -265,7 +274,10 @@ struct NotabilityInfoView: View {
                 Label("Choosing the destination note or folder inside Notability after sharing.", systemImage: "hand.tap")
                 Label("Opening Notability yourself when no notebook link is saved.", systemImage: "hand.tap")
             }
+            }
+            .listRowBackground(AppTheme.parchmentCard)
         }
+        .parchmentList()
         .navigationTitle("Notability")
     }
 }

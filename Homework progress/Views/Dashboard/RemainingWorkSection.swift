@@ -51,38 +51,47 @@ struct RemainingWorkSection: View {
 
     var body: some View {
         let open = sort.sorted(week.assignments.filter { !$0.isCompleted })
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Remaining Work").font(.title3.weight(.semibold))
-                Spacer()
-                Menu {
-                    Picker("Sort by", selection: $sort) {
-                        ForEach(RemainingSort.allCases) { Text($0.title).tag($0) }
+        if !week.assignments.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text("Remaining Work").font(.lora(20, weight: .semibold))
+                    Spacer()
+                    Menu {
+                        Picker("Sort by", selection: $sort) {
+                            ForEach(RemainingSort.allCases) { Text($0.title).tag($0) }
+                        }
+                    } label: {
+                        Label(sort.title, systemImage: "arrow.up.arrow.down")
+                            .font(.lora(13, weight: .medium))
+                            .foregroundStyle(AppTheme.forest)
+                            .chip()
                     }
-                } label: {
-                    Label(sort.title, systemImage: "arrow.up.arrow.down")
-                        .font(.subheadline)
+                    .accessibilityLabel(Text("Sort remaining work, currently \(sort.title)"))
                 }
-                .accessibilityLabel(Text("Sort remaining work, currently \(sort.title)"))
-            }
-            if open.isEmpty {
-                if !week.assignments.isEmpty {
-                    HStack(spacing: 10) {
-                        Image(systemName: "checkmark.seal").foregroundStyle(.green)
-                        Text("Everything for this week is done.")
-                            .foregroundStyle(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 4)
+
+                if open.isEmpty {
+                    HStack(spacing: 14) {
+                        Illustration(name: "MushroomCheer", size: 72)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("All done for this week").font(.lora(17, weight: .semibold))
+                            Text("Time for tea and a slow walk.")
+                                .font(.loraItalic(14))
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .card()
-                }
-            } else {
-                VStack(spacing: 0) {
+                    .padding(16)
+                } else {
                     ForEach(Array(open.enumerated()), id: \.element.id) { index, assignment in
                         AssignmentRow(assignment: assignment, showsCourse: true)
-                        if index < open.count - 1 { Divider().padding(.leading, 62) }
+                        if index < open.count - 1 { Divider().overlay(AppTheme.borderSoft).padding(.leading, 74) }
                     }
                 }
-                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
+            .padding(.bottom, 6)
+            .parchmentSurface()
         }
     }
 }
@@ -102,20 +111,20 @@ struct AssignmentRow: View {
         } label: {
             HStack(alignment: .center, spacing: 12) {
                 if showsCourse, let course = assignment.course {
-                    CourseIconView(iconName: course.iconName, palette: course.palette)
+                    CourseIconView(iconName: course.iconName, palette: course.palette, size: 48)
                 } else {
                     Image(systemName: assignment.status.symbolName)
-                        .font(.title3)
-                        .foregroundStyle(assignment.isCompleted ? Color.green : palette.color)
-                        .frame(width: 36)
+                        .font(.lora(20))
+                        .foregroundStyle(assignment.isCompleted ? AppTheme.forest : palette.color)
+                        .frame(width: 48)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(assignment.title.isEmpty ? String(localized: "Untitled") : assignment.title)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.lora(15, weight: .semibold))
                         .strikethrough(assignment.isCompleted, color: .secondary)
                     if showsCourse, let course = assignment.course {
                         Text(course.name)
-                            .font(.caption)
+                            .font(.lora(12))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -126,7 +135,7 @@ struct AssignmentRow: View {
                         }
                         if !assignment.attachments.isEmpty {
                             Image(systemName: "doc.richtext")
-                                .font(.caption)
+                                .font(.lora(12))
                                 .foregroundStyle(.secondary)
                                 .accessibilityLabel("Has PDF")
                         }
@@ -135,19 +144,19 @@ struct AssignmentRow: View {
                 Spacer(minLength: 8)
                 VStack(alignment: .trailing, spacing: 6) {
                     ExerciseCountText(progress: progress)
-                        .font(.caption.weight(.medium))
+                        .font(.lora(12, weight: .medium))
                     if progress.hasExerciseCount {
                         ProgressBar(fraction: progress.fraction, tint: palette.color, height: 5)
                             .frame(width: 64)
                     }
                 }
                 Image(systemName: "chevron.forward")
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.tertiary)
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(isInspected ? palette.color.opacity(0.10) : .clear)
+            .background(isInspected ? AppTheme.chipFill : .clear)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

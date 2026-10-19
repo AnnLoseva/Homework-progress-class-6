@@ -29,10 +29,10 @@ struct RootView: View {
             .onChange(of: proxy.size.width) { _, width in updateLayout(width: width) }
             .onChange(of: sizeClass) { _, _ in updateLayout(width: proxy.size.width) }
         }
-        .tint(.indigo)
         .onAppear(perform: selectCurrentWeekOnLaunch)
         .sheet(item: $router.activeSheet) { sheet in
             sheetContent(sheet)
+                .goblinChrome()
         }
         .onOpenURL { url in
             // PDFs shared to this app ("Open in Homework Progress") arrive here.
@@ -166,7 +166,7 @@ struct SplitRootView: View {
                     ForEach(courses) { course in
                         NavigationLink(value: AppRouter.SidebarItem.course(course)) {
                             HStack(spacing: 10) {
-                                CourseIconView(iconName: course.iconName, palette: course.palette, size: 28)
+                                CourseIconView(iconName: course.iconName, palette: course.palette, size: 34)
                                 Text(course.name).lineLimit(2)
                             }
                         }
@@ -181,6 +181,7 @@ struct SplitRootView: View {
                     }
                 }
             }
+            .parchmentList()
             .navigationTitle("Homework")
         } detail: {
             HStack(spacing: 0) {
@@ -193,7 +194,7 @@ struct SplitRootView: View {
                 // Side panel for the selected assignment, so browsing and inspecting don't
                 // require navigating back and forth.
                 if let assignment = router.inspectedAssignment, assignment.modelContext != nil {
-                    Divider().ignoresSafeArea()
+                    Rectangle().fill(AppTheme.border).frame(width: 1).ignoresSafeArea()
                     NavigationStack {
                         AssignmentDetailView(assignment: assignment, isInspector: true)
                     }
@@ -236,13 +237,13 @@ struct SidebarWeekRow: View {
         let summary = week.summary
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(week.title).font(.body.weight(isSelected ? .semibold : .regular))
+                Text(week.title).font(.lora(16, weight: isSelected ? .semibold : .regular))
                 Spacer()
                 if let percent = summary.percent {
-                    Text("\(percent)%").font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                    Text("\(percent)%").font(.lora(12)).foregroundStyle(.secondary)
                 }
             }
-            Text(week.dateRangeText).font(.caption).foregroundStyle(.secondary)
+            Text(week.dateRangeText).font(.lora(12)).foregroundStyle(.secondary)
         }
     }
 }
@@ -254,12 +255,15 @@ struct ToastView: View {
 
     var body: some View {
         if let message = services.toast {
-            Text(message)
-                .font(.callout)
+            HStack(spacing: 12) {
+                Illustration(name: "MushroomHappy", size: 40)
+                Text(message)
+                    .font(.lora(15))
+                    .foregroundStyle(AppTheme.ink)
+            }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
+                .parchmentSurface(cornerRadius: 20)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 24)
                 .transition(.move(edge: .bottom).combined(with: .opacity))

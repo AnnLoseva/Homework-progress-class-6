@@ -27,7 +27,7 @@ enum CourseSeeder {
             englishName: "Linear Algebra & Data Representation A",
             url: "https://md.hit.ac.il/course/view.php?id=27796",
             palette: .indigo,
-            icon: "square.grid.3x3"
+            icon: "CourseLinearAlgebra"
         ),
         CourseSeed(
             id: UUID(uuidString: "6A1C0A01-0000-4000-8000-000000027842")!,
@@ -35,7 +35,7 @@ enum CourseSeeder {
             englishName: "Computational Thinking & Programming",
             url: "https://md.hit.ac.il/course/view.php?id=27842",
             palette: .teal,
-            icon: "chevron.left.forwardslash.chevron.right"
+            icon: "CourseComputational"
         ),
         CourseSeed(
             id: UUID(uuidString: "6A1C0A01-0000-4000-8000-000000027864")!,
@@ -43,7 +43,7 @@ enum CourseSeeder {
             englishName: "Introduction to Analysis",
             url: "https://md.hit.ac.il/course/view.php?id=27864",
             palette: .coral,
-            icon: "function"
+            icon: "CourseAnalysis"
         ),
         CourseSeed(
             id: UUID(uuidString: "6A1C0A01-0000-4000-8000-000000027657")!,
@@ -51,7 +51,7 @@ enum CourseSeeder {
             englishName: "From Silicon to High-Level Language",
             url: "https://md.hit.ac.il/course/view.php?id=27657",
             palette: .green,
-            icon: "cpu"
+            icon: "CourseSilicon"
         ),
         CourseSeed(
             id: UUID(uuidString: "6A1C0A01-0000-4000-8000-000000027652")!,
@@ -59,7 +59,7 @@ enum CourseSeeder {
             englishName: "Discrete Mathematics",
             url: "https://md.hit.ac.il/course/view.php?id=27652",
             palette: .plum,
-            icon: "point.3.connected.trianglepath.dotted"
+            icon: "CourseDiscrete"
         ),
     ]
 
@@ -85,5 +85,28 @@ enum CourseSeeder {
         }
         store.set(true, forKey: didSeedKey)
         return existing == 0
+    }
+
+    /// Symbols the first version seeded; courses still using them get the illustration.
+    private static let legacySymbols: [UUID: String] = [
+        defaults[0].id: "square.grid.3x3",
+        defaults[1].id: "chevron.left.forwardslash.chevron.right",
+        defaults[2].id: "function",
+        defaults[3].id: "cpu",
+        defaults[4].id: "point.3.connected.trianglepath.dotted",
+    ]
+
+    /// Moves seeded courses from the original SF Symbols to the hand-drawn illustrations.
+    /// Icons the user picked themselves are left alone.
+    static func upgradeSeededIcons(context: ModelContext) {
+        guard let courses = try? context.fetch(FetchDescriptor<Course>()) else { return }
+        var changed = false
+        for course in courses {
+            guard let legacy = legacySymbols[course.id], course.iconName == legacy,
+                  let seed = defaults.first(where: { $0.id == course.id }) else { continue }
+            course.iconName = seed.icon
+            changed = true
+        }
+        if changed { try? context.save() }
     }
 }

@@ -17,11 +17,13 @@ struct Homework_progressApp: App {
             switch bootstrap.state {
             case .ready(let container, let services):
                 RootView()
+                    .goblinChrome()
                     .modelContainer(container)
                     .environment(services)
                     .environment(services.router)
             case .failed(let message):
                 StorageErrorView(message: message)
+                    .goblinChrome()
             }
         }
     }
@@ -39,6 +41,7 @@ final class AppBootstrap {
     let state: State
 
     init() {
+        AppChrome.apply()
         let arguments = ProcessInfo.processInfo.arguments
         var isEphemeral = arguments.contains("-uiTesting")
         #if DEBUG
@@ -49,6 +52,7 @@ final class AppBootstrap {
             let container = try PersistenceFactory.makeContainer(inMemory: isEphemeral)
             let defaults = isEphemeral ? (UserDefaults(suiteName: "ephemeral-\(UUID().uuidString)") ?? .standard) : .standard
             try CourseSeeder.seedIfNeeded(context: container.mainContext, defaults: defaults)
+            CourseSeeder.upgradeSeededIcons(context: container.mainContext)
             let files = AttachmentFileStore.appDefault()
             files.clearHandoffCopies()
             #if DEBUG

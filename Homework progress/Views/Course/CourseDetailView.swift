@@ -15,8 +15,11 @@ struct CourseDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                header
-                links
+                VStack(alignment: .leading, spacing: 16) {
+                    header
+                    links
+                }
+                .card(padding: 18)
                 if let week {
                     weekSection(week)
                     otherWeeksSection(excluding: week)
@@ -30,7 +33,7 @@ struct CourseDetailView: View {
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
         }
-        .background(Color.appBackground)
+        .background { ForestBackdrop() }
         .navigationTitle(course.englishName.isEmpty ? course.name : course.englishName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -58,14 +61,14 @@ struct CourseDetailView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 14) {
-            CourseIconView(iconName: course.iconName, palette: course.palette, size: 56)
+            CourseIconView(iconName: course.iconName, palette: course.palette, size: 72)
             VStack(alignment: .leading, spacing: 4) {
                 Text(course.name)
-                    .font(.title2.weight(.bold))
+                    .font(.lora(24, weight: .bold))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("courseHebrewTitle")
                 if !course.englishName.isEmpty {
-                    Text(course.englishName).font(.subheadline).foregroundStyle(.secondary)
+                    Text(course.englishName).font(.lora(15)).foregroundStyle(.secondary)
                 }
             }
         }
@@ -78,9 +81,8 @@ struct CourseDetailView: View {
                     openURL(url)
                 } label: {
                     Label("HIT Moodle", systemImage: "safari")
-                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.goblinPrimary(course.palette.color))
                 .accessibilityIdentifier("openMoodle")
             }
             OpenNotebookButton(course: course)
@@ -91,12 +93,12 @@ struct CourseDetailView: View {
     private func weekSection(_ week: AcademicWeek) -> some View {
         let assignments = course.assignments(in: week)
         let summary = ProgressCalculator.summarize(assignments.map(\.snapshot))
-        return VStack(alignment: .leading, spacing: 10) {
+        return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text(week.fullLabel).font(.title3.weight(.semibold))
+                Text(week.fullLabel).font(.lora(20, weight: .semibold))
                 Spacer()
                 if let percent = summary.percent {
-                    Text("\(percent)%").font(.headline).monospacedDigit().foregroundStyle(course.palette.color)
+                    Text("\(percent)%").font(.lora(17, weight: .semibold)).foregroundStyle(course.palette.color)
                 }
             }
             if assignments.isEmpty {
@@ -108,14 +110,13 @@ struct CourseDetailView: View {
                     } label: {
                         Label("Add Assignment", systemImage: "plus")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.goblinSecondary)
                 }
-                .card()
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     if summary.totalExercises > 0 {
                         Text("\(summary.completedExercises) of \(summary.totalExercises) exercises · \(summary.remainingExercises) remaining")
-                            .font(.subheadline)
+                            .font(.lora(15))
                             .foregroundStyle(.secondary)
                     }
                     ProgressBar(fraction: summary.fraction, tint: course.palette.color, height: 8)
@@ -126,9 +127,10 @@ struct CourseDetailView: View {
                         if index < assignments.count - 1 { Divider().padding(.leading, 62) }
                     }
                 }
-                .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .padding(.horizontal, -18)
             }
         }
+        .card(padding: 18)
     }
 
     /// Previous and upcoming weeks for this course — separate records, separate progress.
@@ -138,23 +140,24 @@ struct CourseDetailView: View {
         let sortedWeeks = others.keys.sorted { $0.startDate > $1.startDate }
         if !sortedWeeks.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Other Weeks").font(.title3.weight(.semibold))
+                Text("Other Weeks").font(.lora(20, weight: .semibold))
                 ForEach(sortedWeeks) { other in
                     let items = (others[other] ?? []).sorted(by: HomeworkAssignment.defaultOrder)
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-                            Text(other.fullLabel).font(.subheadline.weight(.semibold))
+                            Text(other.fullLabel).font(.lora(15, weight: .semibold))
                             Spacer()
                             Button("Go to Week") { router.select(other) }
-                                .font(.caption)
+                                .font(.lora(12))
                         }
                         VStack(spacing: 0) {
                             ForEach(items) { AssignmentRow(assignment: $0) }
                         }
-                        .background(Color.cardBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        .padding(.horizontal, -18)
                     }
                 }
             }
+            .card(padding: 18)
         }
     }
 }

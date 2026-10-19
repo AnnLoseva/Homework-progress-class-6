@@ -19,13 +19,17 @@ struct WeekArchiveView: View {
     var body: some View {
         let grouped = Dictionary(grouping: weeks) { planner.timing(start: $0.startDate, end: $0.endDate) }
         List {
+            Group {
             if weeks.isEmpty {
                 ContentUnavailableView("No weeks yet", systemImage: "calendar")
             }
             section(String(localized: "Current"), grouped[.current])
             section(String(localized: "Upcoming"), grouped[.upcoming]?.reversed())
             section(String(localized: "Past"), grouped[.past])
+            }
+            .listRowBackground(AppTheme.parchmentCard)
         }
+        .parchmentList()
         .navigationTitle("All Weeks")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -69,22 +73,22 @@ private struct ArchiveWeekRow: View {
         let summary = week.summary
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(week.title).font(.headline)
+                Text(week.title).font(.lora(17, weight: .semibold))
                 Spacer()
                 if let percent = summary.percent {
-                    Text("\(percent)%").font(.subheadline).monospacedDigit().foregroundStyle(.secondary)
+                    Text("\(percent)%").font(.lora(15)).foregroundStyle(.secondary)
                 } else if !summary.isEmpty, summary.openAssignmentCount == 0 {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(AppTheme.forest)
                 }
             }
-            Text(week.dateRangeText).font(.subheadline).foregroundStyle(.secondary)
+            Text(week.dateRangeText).font(.lora(15)).foregroundStyle(.secondary)
             if summary.isEmpty {
-                Text("No homework").font(.caption).foregroundStyle(.tertiary)
+                Text("No homework").font(.lora(12)).foregroundStyle(.tertiary)
             } else {
                 Text("\(summary.completedAssignmentCount) of \(summary.assignmentCount) assignments done")
-                    .font(.caption)
+                    .font(.lora(12))
                     .foregroundStyle(.secondary)
-                ProgressBar(fraction: summary.fraction, tint: .indigo, height: 5)
+                ProgressBar(fraction: summary.fraction, tint: AppTheme.forest, height: 5)
             }
         }
         .padding(.vertical, 4)

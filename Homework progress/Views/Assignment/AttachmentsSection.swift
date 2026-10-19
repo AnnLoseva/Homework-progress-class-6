@@ -29,7 +29,7 @@ struct AttachmentsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Homework Sheet").font(.headline)
+                Text("Homework Sheet").font(.lora(17, weight: .semibold))
                 Spacer()
                 if isWorking { ProgressView().controlSize(.small) }
             }
@@ -38,12 +38,11 @@ struct AttachmentsSection: View {
                     beginImport(.add)
                 } label: {
                     Label("Import PDF", systemImage: "doc.badge.plus")
-                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.goblinSecondary)
                 .accessibilityIdentifier("importPDF")
                 Text("From Files, iCloud Drive or any document provider. The app keeps its own copy.")
-                    .font(.caption)
+                    .font(.lora(12))
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(assignment.sortedAttachments) { attachment in
@@ -58,7 +57,7 @@ struct AttachmentsSection: View {
                     beginImport(.add)
                 } label: {
                     Label("Add Another PDF", systemImage: "plus")
-                        .font(.subheadline)
+                        .font(.lora(15))
                 }
                 .buttonStyle(.borderless)
             }
@@ -70,6 +69,7 @@ struct AttachmentsSection: View {
         }
         .fullScreenCover(item: $viewing) { attachment in
             PDFViewerScreen(attachment: attachment)
+                .goblinChrome()
         }
         .confirmationDialog(
             "Remove this PDF?",
@@ -151,20 +151,23 @@ struct AttachmentCard: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(attachment.originalFilename)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.lora(15, weight: .semibold))
                     .lineLimit(2)
                 if exists {
                     Text("\(attachment.pageCount) pages · \(attachment.sizeText)")
-                        .font(.caption)
+                        .font(.lora(12))
                         .foregroundStyle(.secondary)
                 } else {
                     Label("File missing — replace to fix", systemImage: "exclamationmark.triangle")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                        .font(.lora(12))
+                        .foregroundStyle(AppTheme.rust)
                 }
                 HStack(spacing: 8) {
                     Button("Open", action: onOpen)
-                        .buttonStyle(.bordered)
+                        .font(.lora(13, weight: .semibold))
+                        .buttonStyle(.plain)
+                        .foregroundStyle(AppTheme.forest)
+                        .chip()
                         .disabled(!exists)
                         .keyboardShortcut("o", modifiers: .command)
                         .accessibilityIdentifier("openPDF")
@@ -173,9 +176,10 @@ struct AttachmentCard: View {
                         Button(role: .destructive, action: onRemove) { Label("Remove PDF…", systemImage: "trash") }
                     } label: {
                         Image(systemName: "ellipsis")
-                            .frame(width: 30, height: 30)
+                            .foregroundStyle(AppTheme.forest)
+                            .frame(height: 18)
+                            .chip()
                     }
-                    .buttonStyle(.bordered)
                     .accessibilityLabel("PDF options")
                 }
                 .controlSize(.small)

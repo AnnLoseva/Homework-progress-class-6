@@ -33,7 +33,7 @@ final class Course {
         englishName: String = "",
         courseURLString: String? = nil,
         colorKey: String = CoursePalette.indigo.rawValue,
-        iconName: String = "book.closed",
+        iconName: String = "CourseStudy",
         sortOrder: Int = 0,
         createdAt: Date = .now
     ) {

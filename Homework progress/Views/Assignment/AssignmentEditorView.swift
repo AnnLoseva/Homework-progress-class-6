@@ -53,6 +53,7 @@ struct AssignmentEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Group {
                 Section {
                     TextField("Title, e.g. Homework 3", text: $title)
                         .focused($titleFocused)
@@ -100,7 +101,7 @@ struct AssignmentEditorView: View {
                                              size: CGSize(width: 36, height: 48))
                                 VStack(alignment: .leading) {
                                     Text(pdf.originalFilename).lineLimit(1)
-                                    Text("\(pdf.pageCount) pages").font(.caption).foregroundStyle(.secondary)
+                                    Text("\(pdf.pageCount) pages").font(.lora(12)).foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -124,7 +125,10 @@ struct AssignmentEditorView: View {
                     TextField("Optional", text: $notes, axis: .vertical)
                         .lineLimit(2...8)
                 }
+                }
+                .listRowBackground(AppTheme.parchmentCard)
             }
+            .parchmentList()
             .navigationTitle(isCreating ? "New Assignment" : "Edit Assignment")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

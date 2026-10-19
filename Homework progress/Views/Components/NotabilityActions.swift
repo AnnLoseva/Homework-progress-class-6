@@ -73,7 +73,7 @@ struct SendToNotabilityButton: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .modifier(ProminenceModifier(prominent: prominent && !compact))
+        .modifier(ProminenceModifier(prominent: prominent, compact: compact))
         .background(ShareSheetPresenter(item: $shareItem) { type, completed in
             let outcome = NotabilityIntegration.interpretShare(activityType: type, completed: completed)
             withAnimation {
@@ -106,12 +106,15 @@ struct SendToNotabilityButton: View {
 
 private struct ProminenceModifier: ViewModifier {
     let prominent: Bool
+    let compact: Bool
 
     func body(content: Content) -> some View {
-        if prominent {
-            content.buttonStyle(.borderedProminent)
+        if compact {
+            content
+        } else if prominent {
+            content.buttonStyle(.goblinPrimary(AppTheme.rust))
         } else {
-            content.buttonStyle(.bordered)
+            content.buttonStyle(.goblinSecondary)
         }
     }
 }
@@ -133,12 +136,13 @@ struct OpenNotebookButton: View {
                   systemImage: "book.pages")
                 .frame(maxWidth: fullWidth ? .infinity : nil)
         }
-        .buttonStyle(.bordered)
+        .buttonStyle(.goblinSecondary)
         .sheet(item: Binding(
             get: { outcome.flatMap(FallbackPresentation.init) },
             set: { if $0 == nil { outcome = nil } }
         )) { presentation in
             NotebookFallbackSheet(course: course, outcome: presentation.outcome)
+                .goblinChrome()
         }
     }
 
@@ -185,18 +189,19 @@ struct NotebookFallbackSheet: View {
     var body: some View {
         NavigationStack {
             List {
+                Group {
                 if case .linkFailed(let url, _) = outcome {
                     Section {
                         Label("Your saved link couldn’t be opened.", systemImage: "link.badge.plus")
-                        Text(url.absoluteString).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                        Text(url.absoluteString).font(.lora(12)).foregroundStyle(.secondary).textSelection(.enabled)
                     }
                 }
                 Section {
                     Text("Notability doesn’t offer a supported way for other apps to open a specific notebook, so this step is manual.")
-                        .font(.subheadline)
+                        .font(.lora(15))
                     if let notebookName {
                         LabeledContent("Go to folder") {
-                            Text(notebookName).font(.headline)
+                            Text(notebookName).font(.lora(17, weight: .semibold))
                         }
                         Button {
                             UIPasteboard.general.string = notebookName
@@ -206,7 +211,7 @@ struct NotebookFallbackSheet: View {
                         }
                     } else {
                         Text("Save this course’s Notability folder name in the course settings and it will be shown here.")
-                            .font(.subheadline)
+                            .font(.lora(15))
                             .foregroundStyle(.secondary)
                     }
                 } header: {
@@ -229,7 +234,10 @@ struct NotebookFallbackSheet: View {
                         Button("Get Notability on the App Store") { openURL(NotabilityIntegration.appStoreURL) }
                     }
                 }
+                }
+                .listRowBackground(AppTheme.parchmentCard)
             }
+            .parchmentList()
             .navigationTitle("Open in Notability")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
