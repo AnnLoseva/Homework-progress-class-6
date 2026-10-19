@@ -14,6 +14,8 @@ struct SettingsView: View {
     @Query(sort: \Course.sortOrder) private var courses: [Course]
 
     @AppStorage("weekStartsOn") private var weekStartsOn = 1
+    @AppStorage(MoodleIntegration.openInAppKey) private var moodleInApp = true
+    @AppStorage(MoodleIntegration.schemeKey) private var moodleScheme = MoodleIntegration.defaultScheme
     @AppStorage(ReminderSettings.deadlineEnabledKey) private var deadlineReminders = false
     @AppStorage(ReminderSettings.deadlineLeadHoursKey) private var leadHours = 24
     @AppStorage(ReminderSettings.weeklyReviewEnabledKey) private var weeklyReview = false
@@ -60,6 +62,27 @@ struct SettingsView: View {
                     Text("Sunday").tag(1)
                     Text("Monday").tag(2)
                 }
+            }
+
+            Section {
+                Toggle("Open courses in the Moodle app", isOn: $moodleInApp)
+                if moodleInApp {
+                    LabeledContent("App link scheme") {
+                        TextField(MoodleIntegration.defaultScheme, text: $moodleScheme)
+                            .multilineTextAlignment(.trailing)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                    }
+                    if MoodleIntegration.validatedScheme(moodleScheme) == nil {
+                        Label("Not a valid scheme — “\(MoodleIntegration.defaultScheme)” will be used.", systemImage: "exclamationmark.triangle")
+                            .font(.lora(12))
+                            .foregroundStyle(AppTheme.rust)
+                    }
+                }
+            } header: {
+                Text("Moodle")
+            } footer: {
+                Text("Course buttons open the course page right inside the Moodle app (it asks you to log in to md.hit.ac.il the first time). If the app isn’t installed, the page opens in the browser. Keep “moodlemobile” for the official Moodle app; a branded college app uses its own scheme.")
             }
 
             Section {

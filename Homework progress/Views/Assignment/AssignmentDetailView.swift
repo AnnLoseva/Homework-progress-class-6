@@ -129,6 +129,8 @@ private struct AssignmentHeader: View {
                 HStack(spacing: 10) {
                     CourseIconView(iconName: course.iconName, palette: course.palette, size: 30)
                     CourseTitleView(course: course, titleFont: .lora(15, weight: .semibold))
+                    Spacer(minLength: 8)
+                    OpenMoodleButton(course: course, style: .chip)
                 }
             }
             Text(assignment.title.isEmpty ? String(localized: "Untitled") : assignment.title)

@@ -76,15 +76,7 @@ struct CourseDetailView: View {
 
     private var links: some View {
         HStack(spacing: 10) {
-            if let url = course.courseURL {
-                Button {
-                    openURL(url)
-                } label: {
-                    Label("HIT Moodle", systemImage: "safari")
-                }
-                .buttonStyle(.goblinPrimary(course.palette.color))
-                .accessibilityIdentifier("openMoodle")
-            }
+            OpenMoodleButton(course: course)
             OpenNotebookButton(course: course)
         }
         .controlSize(.large)

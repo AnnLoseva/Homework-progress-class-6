@@ -23,6 +23,11 @@ analytics or subscription.
 - **PDFs** are copied into app storage with file coordination, so iCloud files download first.
   They are previewed with PDFKit and can be opened, replaced or removed. Removing a PDF never
   touches the assignment's progress.
+- **Moodle app:** the course buttons, and the "Moodle" chip on each assignment, open the course
+  directly in the Moodle app. They use the app's documented deep link
+  `moodlemobile://https://md.hit.ac.il?redirect=<course page>` (see Moodle Developer Resources →
+  Deep linking). If the app isn't installed, the page opens in Safari. In Settings you can switch
+  to the browser or set a branded app's link scheme.
 - **Notability:** the share-sheet handoff, plus a per-course notebook name and optional link.
   See [docs/NOTABILITY.md](docs/NOTABILITY.md) for what Notability does and doesn't allow.
 - **iPad** gets a sidebar for weeks and courses and a side panel for the selected assignment.
