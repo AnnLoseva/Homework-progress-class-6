@@ -134,7 +134,7 @@ struct CourseSettingsView: View {
         .onDisappear(perform: saveNotebook)
         .onChange(of: course.name) { _, _ in services.store(context).save() }
         .confirmationDialog("Delete “\(course.name)”?", isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button("Delete Course and \(course.assignments.count) Assignments", role: .destructive) {
+            Button("Delete Course and \(course.assignmentList.count) Assignments", role: .destructive) {
                 let store = services.store(context)
                 if case .course(let selected) = router.sidebar, selected.id == course.id { router.sidebar = nil }
                 router.resetPath()

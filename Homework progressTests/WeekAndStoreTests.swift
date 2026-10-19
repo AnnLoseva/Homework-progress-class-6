@@ -89,7 +89,7 @@ struct StoreTests {
         let week = env.store.createWeek(title: "Week 5", number: 5, start: date(2026, 10, 24), end: date(2026, 10, 18))
         #expect(week.startDate < week.endDate)
         #expect(week.title == "Week 5")
-        #expect(week.assignments.isEmpty) // never auto-creates homework
+        #expect(week.assignmentList.isEmpty) // never auto-creates homework
     }
 
     @Test func duplicatedWeekIsIndependent() throws {
@@ -112,7 +112,7 @@ struct StoreTests {
         #expect(copy.totalExercises == 9)
         #expect(copy.completedExercises == 0)
         #expect(copy.status == .notStarted)
-        #expect(copy.attachments.isEmpty)
+        #expect(copy.attachmentList.isEmpty)
         #expect(Calendar.current.dateComponents([.day], from: original.dueDate!, to: copy.dueDate!).day == 7)
 
         // Progress in one week never leaks into the other.
@@ -121,8 +121,8 @@ struct StoreTests {
         #expect(copy.completedExercises == 1)
         #expect(week5.summary.completedExercises == 6)
         #expect(week6.summary.completedExercises == 1)
-        #expect(week5.assignments.count == 1)
-        #expect(original.attachments.count == 1)
+        #expect(week5.assignmentList.count == 1)
+        #expect(original.attachmentList.count == 1)
     }
 
     @Test func deletingAWeekKeepsCoursesAndOtherWeeks() throws {
@@ -142,7 +142,7 @@ struct StoreTests {
         let remaining = try env.context.fetch(FetchDescriptor<HomeworkAssignment>())
         #expect(remaining.map(\.title) == ["B"])
         #expect(env.attachmentFileCount() == 0)
-        #expect(courses[0].assignments.count == 1)
+        #expect(courses[0].assignmentList.count == 1)
     }
 
     @Test func renamingAndReorderingCoursesKeepsAssignments() throws {

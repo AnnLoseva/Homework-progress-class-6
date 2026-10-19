@@ -79,7 +79,7 @@ struct WeekEditorView: View {
                         if let copySource {
                             Toggle("Copy exercise counts", isOn: $copyCounts)
                             Toggle("Shift due dates to the new week", isOn: $shiftDueDates)
-                            Text("\(copySource.assignments.count) assignments will be created with fresh progress. PDFs and progress from \(copySource.title) are not copied, and that week isn’t changed.")
+                            Text("\(copySource.assignmentList.count) assignments will be created with fresh progress. PDFs and progress from \(copySource.title) are not copied, and that week isn’t changed.")
                                 .font(.lora(12))
                                 .foregroundStyle(.secondary)
                         }
@@ -92,7 +92,7 @@ struct WeekEditorView: View {
                     Section {
                         Button("Delete Week…", role: .destructive) { confirmDelete = true }
                     } footer: {
-                        Text("Deletes this week’s \(week.assignments.count) assignments and their PDFs. Courses and other weeks are not affected.")
+                        Text("Deletes this week’s \(week.assignmentList.count) assignments and their PDFs. Courses and other weeks are not affected.")
                     }
                 }
                 }

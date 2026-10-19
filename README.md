@@ -28,6 +28,13 @@ analytics or subscription.
   `moodlemobile://https://md.hit.ac.il?redirect=<course page>` (see Moodle Developer Resources →
   Deep linking). If the app isn't installed, the page opens in Safari. In Settings you can switch
   to the browser or set a branded app's link scheme.
+- **iPhone ↔ iPad sync** through your private iCloud (SwiftData + CloudKit, container
+  `iCloud.AnnaLoseva.Homework-progress`). It syncs weeks, assignments, progress, notes, course
+  settings and PDFs. PDFs are stored as iCloud assets, and each device keeps a local copy for
+  PDFKit and the share sheet. The app still works fully offline. If iCloud is unavailable, data
+  stays on the device and nothing is deleted. After sync, housekeeping merges courses seeded on
+  both devices and duplicate records, without losing any data. The Settings screen shows the sync
+  status. Device-specific preferences (reminders, sort order, Moodle option) are not synced.
 - **Notability:** the share-sheet handoff, plus a per-course notebook name and optional link.
   See [docs/NOTABILITY.md](docs/NOTABILITY.md) for what Notability does and doesn't allow.
 - **iPad** gets a sidebar for weeks and courses and a side panel for the selected assignment.
@@ -59,12 +66,13 @@ Pomodoro, the app always uses the light parchment appearance.
 ```
 Homework progress/
   Models/      SwiftData models (Course, AcademicWeek, HomeworkAssignment,
-               HomeworkAttachment, NotabilityNotebookAssociation) + versioned schema
+               HomeworkAttachment, NotabilityNotebookAssociation) + iCloud/local store setup
   Domain/      Pure logic: progress math & count rules, week dates, filename/bidi helpers
   Services/    HomeworkStore (all multi-step mutations), AttachmentFileStore (PDF files),
                NotabilityIntegration, BackupService, ReminderScheduler, CourseSeeder
   Views/       SwiftUI screens: Dashboard, Course, Assignment, Week, Settings, Components
-Config/Info.plist   PDF document type (merged with the generated Info.plist)
+Config/Info.plist   PDF document type, fonts, background push (merged with the generated plist)
+Config/HomeworkProgress.entitlements   iCloud (CloudKit + key-value) and push
 docs/               Notability findings, backup format
 ```
 

@@ -9,20 +9,22 @@ import SwiftData
 /// The main organizational unit. Each week owns its own assignment records and progress.
 @Model
 final class AcademicWeek {
-    var id: UUID
-    var title: String
+    var id: UUID = UUID()
+    var title: String = ""
     /// Optional semester week number, used to suggest the next week's title.
     var number: Int?
     /// Start of the first day of the week (local time).
-    var startDate: Date
+    var startDate: Date = Date.now
     /// Start of the last day of the week (local time). Inclusive.
-    var endDate: Date
-    var notes: String
-    var createdAt: Date
+    var endDate: Date = Date.now
+    var notes: String = ""
+    var createdAt: Date = Date.now
 
     /// Deleting a week deletes only its own assignments; courses are untouched.
     @Relationship(deleteRule: .cascade, inverse: \HomeworkAssignment.week)
-    var assignments: [HomeworkAssignment] = []
+    var assignments: [HomeworkAssignment]? = []
+
+    var assignmentList: [HomeworkAssignment] { assignments ?? [] }
 
     init(
         id: UUID = UUID(),
@@ -48,7 +50,7 @@ final class AcademicWeek {
     var fullLabel: String { "\(title) — \(dateRangeText)" }
 
     var summary: ProgressSummary {
-        ProgressCalculator.summarize(assignments.map(\.snapshot))
+        ProgressCalculator.summarize(assignmentList.map(\.snapshot))
     }
 
     static func chronological(_ lhs: AcademicWeek, _ rhs: AcademicWeek) -> Bool {

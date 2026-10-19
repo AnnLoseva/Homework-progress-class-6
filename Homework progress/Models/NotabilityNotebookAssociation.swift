@@ -13,9 +13,9 @@ import SwiftData
 /// optionally, a link they copied themselves. A saved name is *not* a deep link, and the UI says so.
 @Model
 final class NotabilityNotebookAssociation {
-    var notebookName: String
+    var notebookName: String = ""
     var linkString: String?
-    var updatedAt: Date
+    var updatedAt: Date = Date.now
     var course: Course?
 
     init(notebookName: String, linkString: String? = nil, updatedAt: Date = .now) {

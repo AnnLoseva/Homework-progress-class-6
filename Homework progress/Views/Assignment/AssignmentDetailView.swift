@@ -47,7 +47,7 @@ struct AssignmentDetailView: View {
         .confirmationDialog("Delete this assignment?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Delete Assignment", role: .destructive, action: delete)
         } message: {
-            Text(assignment.attachments.isEmpty
+            Text(assignment.attachmentList.isEmpty
                  ? String(localized: "Its progress and notes will be deleted. Other weeks are not affected.")
                  : String(localized: "Its progress, notes and the app’s copies of its PDFs will be deleted. Copies already in Notability or Files are not affected."))
         }
@@ -446,7 +446,7 @@ private struct NotabilitySection: View {
 
     private var helpText: String {
         let folder = course.notebook?.notebookName.isEmpty == false ? course.notebook!.notebookName : nil
-        if assignment.attachments.isEmpty {
+        if assignment.attachmentList.isEmpty {
             return String(localized: "Add a PDF to send it to Notability.")
         }
         if let folder {

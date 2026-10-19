@@ -6,19 +6,24 @@
 import Foundation
 import SwiftData
 
-/// A PDF owned by the app. The file lives in app-managed storage (see `AttachmentFileStore`);
-/// only its relative stored filename is persisted, never a picker or container URL.
+/// A PDF owned by the app.
+///
+/// `pdfData` is the source of truth: it is stored outside the database file and synced through
+/// iCloud as an asset, so the PDF reaches the user's other devices. PDFKit and the share sheet
+/// need a real file, so each device keeps a local copy in app storage under `storedFilename`
+/// (see `AttachmentFileStore`), recreated from `pdfData` whenever it's missing.
 @Model
 final class HomeworkAttachment {
-    var id: UUID
+    var id: UUID = UUID()
     /// The name the user saw when importing ("Sheet 5.pdf"); de-duplicated within an assignment.
-    var originalFilename: String
-    /// Unique filename inside the attachments directory ("<uuid>.pdf").
-    var storedFilename: String
-    var byteCount: Int64
-    var pageCount: Int
-    var importedAt: Date
-    var sortIndex: Int
+    var originalFilename: String = ""
+    /// Unique filename of the local copy inside the attachments directory ("<uuid>.pdf").
+    var storedFilename: String = ""
+    @Attribute(.externalStorage) var pdfData: Data?
+    var byteCount: Int64 = 0
+    var pageCount: Int = 0
+    var importedAt: Date = Date.now
+    var sortIndex: Int = 0
     var assignment: HomeworkAssignment?
 
     init(
@@ -28,8 +33,10 @@ final class HomeworkAttachment {
         byteCount: Int64,
         pageCount: Int,
         importedAt: Date = .now,
-        sortIndex: Int = 0
+        sortIndex: Int = 0,
+        pdfData: Data? = nil
     ) {
+        self.pdfData = pdfData
         self.id = id
         self.originalFilename = originalFilename
         self.storedFilename = storedFilename

@@ -49,16 +49,21 @@ final class AppBootstrap {
         isEphemeral = isEphemeral || wantsDemo
         #endif
         do {
-            let container = try PersistenceFactory.makeContainer(inMemory: isEphemeral)
+            let (container, storeKind) = try PersistenceFactory.makeAppContainer(ephemeral: isEphemeral)
             let defaults = isEphemeral ? (UserDefaults(suiteName: "ephemeral-\(UUID().uuidString)") ?? .standard) : .standard
-            try CourseSeeder.seedIfNeeded(context: container.mainContext, defaults: defaults)
-            CourseSeeder.upgradeSeededIcons(context: container.mainContext)
+            let context = container.mainContext
+            try CourseSeeder.seedIfNeeded(context: context, defaults: defaults,
+                                          sharedFlag: storeKind == .iCloud ? UbiquitousSeedFlag() : nil)
+            CourseSeeder.upgradeSeededIcons(context: context)
             let files = AttachmentFileStore.appDefault()
             files.clearHandoffCopies()
             #if DEBUG
-            if wantsDemo { DemoData.populate(container.mainContext, files: files) }
+            if wantsDemo { DemoData.populate(context, files: files) }
             #endif
-            state = .ready(container, AppServices(files: files))
+            let maintenance = SyncMaintenance(context: context, files: files)
+            maintenance.run()
+            let sync = SyncMonitor(storeKind: storeKind) { maintenance.run() }
+            state = .ready(container, AppServices(files: files, sync: sync))
         } catch {
             state = .failed(error.localizedDescription)
         }
@@ -69,16 +74,24 @@ final class AppBootstrap {
 @Observable
 final class AppServices {
     let files: AttachmentFileStore
+    let sync: SyncMonitor
     let router = AppRouter()
     /// A transient, non-blocking message ("Sent to Notability…").
     var toast: String?
 
-    init(files: AttachmentFileStore) {
+    init(files: AttachmentFileStore, sync: SyncMonitor) {
         self.files = files
+        self.sync = sync
     }
 
     func store(_ context: ModelContext) -> HomeworkStore {
         HomeworkStore(context: context, files: files)
+    }
+
+    /// True when this device has (or could recreate) the PDF file — e.g. one that just synced
+    /// from the other device arrives as data and is written to a local file on first use.
+    func hasLocalFile(_ attachment: HomeworkAttachment) -> Bool {
+        files.ensureLocalFile(storedFilename: attachment.storedFilename) { attachment.pdfData }
     }
 
     func show(_ message: String?) {

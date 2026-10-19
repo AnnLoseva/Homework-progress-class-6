@@ -50,8 +50,8 @@ struct RemainingWorkSection: View {
     let week: AcademicWeek
 
     var body: some View {
-        let open = sort.sorted(week.assignments.filter { !$0.isCompleted })
-        if !week.assignments.isEmpty {
+        let open = sort.sorted(week.assignmentList.filter { !$0.isCompleted })
+        if !week.assignmentList.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Text("Remaining Work").font(.lora(20, weight: .semibold))
@@ -133,7 +133,7 @@ struct AssignmentRow: View {
                         if assignment.status == .postponed || assignment.status == .notAssigned {
                             StatusBadge(status: assignment.status)
                         }
-                        if !assignment.attachments.isEmpty {
+                        if !assignment.attachmentList.isEmpty {
                             Image(systemName: "doc.richtext")
                                 .font(.lora(12))
                                 .foregroundStyle(.secondary)

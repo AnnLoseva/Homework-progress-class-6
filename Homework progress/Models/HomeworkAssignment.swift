@@ -9,21 +9,23 @@ import SwiftData
 /// A homework assignment. Belongs to exactly one course and one week (enforced by `HomeworkStore`).
 @Model
 final class HomeworkAssignment {
-    var id: UUID
-    var title: String
+    var id: UUID = UUID()
+    var title: String = ""
     var course: Course?
     var week: AcademicWeek?
     var dueDate: Date?
     /// `nil` means "not specified". Zero is treated the same way by progress calculations.
     var totalExercises: Int?
-    var completedExercises: Int
-    var notes: String
-    var statusRaw: String
-    var createdAt: Date
-    var updatedAt: Date
+    var completedExercises: Int = 0
+    var notes: String = ""
+    var statusRaw: String = AssignmentStatus.notStarted.rawValue
+    var createdAt: Date = Date.now
+    var updatedAt: Date = Date.now
 
     @Relationship(deleteRule: .cascade, inverse: \HomeworkAttachment.assignment)
-    var attachments: [HomeworkAttachment] = []
+    var attachments: [HomeworkAttachment]? = []
+
+    var attachmentList: [HomeworkAttachment] { attachments ?? [] }
 
     init(
         id: UUID = UUID(),
@@ -77,7 +79,7 @@ final class HomeworkAssignment {
     }
 
     var sortedAttachments: [HomeworkAttachment] {
-        attachments.sorted { ($0.sortIndex, $0.importedAt) < ($1.sortIndex, $1.importedAt) }
+        attachmentList.sorted { ($0.sortIndex, $0.importedAt) < ($1.sortIndex, $1.importedAt) }
     }
 
     static func defaultOrder(_ lhs: HomeworkAssignment, _ rhs: HomeworkAssignment) -> Bool {

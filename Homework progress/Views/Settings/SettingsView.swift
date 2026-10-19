@@ -57,6 +57,8 @@ struct SettingsView: View {
                 }
             }
 
+            SyncStatusSection()
+
             Section("Weeks") {
                 Picker("Weeks start on", selection: $weekStartsOn) {
                     Text("Sunday").tag(1)
@@ -302,5 +304,71 @@ struct NotabilityInfoView: View {
         }
         .parchmentList()
         .navigationTitle("Notability")
+    }
+}
+
+/// Shows whether iPhone and iPad are syncing through iCloud.
+struct SyncStatusSection: View {
+    @Environment(AppServices.self) private var services
+
+    var body: some View {
+        let sync = services.sync
+        Section {
+            HStack(spacing: 12) {
+                Image(systemName: symbol(sync.status))
+                    .font(.title3)
+                    .foregroundStyle(sync.status == .active ? AppTheme.forest : AppTheme.rust)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title(sync.status)).font(.lora(16, weight: .semibold))
+                    if let last = sync.lastSync {
+                        Text("Last synced \(last.formatted(.relative(presentation: .named)))")
+                            .font(.lora(12))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .accessibilityElement(children: .combine)
+            // When signed out, CloudKit's error only repeats the status above (e.g. Cocoa error 134400).
+            if sync.status == .active, let error = sync.lastError {
+                Text(error).font(.lora(12)).foregroundStyle(AppTheme.rust)
+            }
+        } header: {
+            Text("iCloud Sync")
+        } footer: {
+            Text(footer(sync.status))
+        }
+        .task { await sync.refreshAccountStatus() }
+    }
+
+    private func symbol(_ status: SyncMonitor.Status) -> String {
+        switch status {
+        case .active: "checkmark.icloud"
+        case .checking: "icloud"
+        case .signedOut: "icloud.slash"
+        case .localOnly, .disabled: "externaldrive"
+        }
+    }
+
+    private func title(_ status: SyncMonitor.Status) -> String {
+        switch status {
+        case .active: String(localized: "Syncing with your other devices")
+        case .checking: String(localized: "Checking iCloud…")
+        case .signedOut: String(localized: "iCloud isn’t available")
+        case .localOnly: String(localized: "Saved on this device only")
+        case .disabled: String(localized: "Sync is off (test data)")
+        }
+    }
+
+    private func footer(_ status: SyncMonitor.Status) -> String {
+        switch status {
+        case .active, .checking:
+            String(localized: "Weeks, assignments, progress, notes, course settings and PDFs sync through your private iCloud between iPhone and iPad signed in to the same Apple Account. Changes usually appear within seconds when both are online; offline changes upload later.")
+        case .signedOut:
+            String(localized: "Sign in to iCloud in the Settings app (and allow iCloud for this app) to sync with your iPad or iPhone. Your homework stays saved on this device meanwhile.")
+        case .localOnly:
+            String(localized: "The iCloud store couldn’t be opened, so data is kept on this device. Nothing was deleted; sync starts after the app is reinstalled from a build with iCloud enabled.")
+        case .disabled:
+            String(localized: "This session uses temporary data.")
+        }
     }
 }

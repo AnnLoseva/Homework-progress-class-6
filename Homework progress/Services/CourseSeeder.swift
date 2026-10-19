@@ -65,9 +65,16 @@ enum CourseSeeder {
 
     /// Seeds the default courses exactly once. If the user later deletes courses, they are not
     /// re-created: the flag survives, and an existing database with courses is never touched.
+    /// `sharedFlag` is the same flag in iCloud key-value storage, so a newly set-up device
+    /// doesn't re-create courses the user deleted on another device (their data arrives via sync).
     @discardableResult
-    static func seedIfNeeded(context: ModelContext, defaults store: UserDefaults = .standard) throws -> Bool {
+    static func seedIfNeeded(context: ModelContext, defaults store: UserDefaults = .standard,
+                             sharedFlag: SharedSeedFlag? = nil) throws -> Bool {
         guard !store.bool(forKey: didSeedKey) else { return false }
+        if let sharedFlag, sharedFlag.isSet {
+            store.set(true, forKey: didSeedKey)
+            return false
+        }
         let existing = try context.fetchCount(FetchDescriptor<Course>())
         if existing == 0 {
             for (index, seed) in defaults.enumerated() {
@@ -84,6 +91,7 @@ enum CourseSeeder {
             try context.save()
         }
         store.set(true, forKey: didSeedKey)
+        sharedFlag?.markSet()
         return existing == 0
     }
 
@@ -108,5 +116,25 @@ enum CourseSeeder {
             changed = true
         }
         if changed { try? context.save() }
+    }
+}
+
+protocol SharedSeedFlag {
+    var isSet: Bool { get }
+    func markSet()
+}
+
+/// The seed flag in iCloud key-value storage (synced between the user's devices).
+struct UbiquitousSeedFlag: SharedSeedFlag {
+    private let store = NSUbiquitousKeyValueStore.default
+
+    var isSet: Bool {
+        store.synchronize()
+        return store.bool(forKey: CourseSeeder.didSeedKey)
+    }
+
+    func markSet() {
+        store.set(true, forKey: CourseSeeder.didSeedKey)
+        store.synchronize()
     }
 }

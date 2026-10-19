@@ -33,7 +33,7 @@ struct AttachmentsSection: View {
                 Spacer()
                 if isWorking { ProgressView().controlSize(.small) }
             }
-            if assignment.attachments.isEmpty {
+            if assignment.attachmentList.isEmpty {
                 Button {
                     beginImport(.add)
                 } label: {
@@ -141,7 +141,7 @@ struct AttachmentCard: View {
     var onRemove: () -> Void
 
     var body: some View {
-        let exists = services.files.fileExists(storedFilename: attachment.storedFilename)
+        let exists = services.hasLocalFile(attachment)
         HStack(alignment: .top, spacing: 12) {
             Button(action: onOpen) {
                 PDFThumbnail(url: services.files.url(forStoredFilename: attachment.storedFilename))
@@ -196,7 +196,7 @@ struct InlinePDFPane: View {
 
     var body: some View {
         if let attachment = assignment.sortedAttachments.first {
-            if services.files.fileExists(storedFilename: attachment.storedFilename) {
+            if services.hasLocalFile(attachment) {
                 PDFKitView(url: services.files.url(forStoredFilename: attachment.storedFilename))
                     .ignoresSafeArea(edges: .bottom)
             } else {

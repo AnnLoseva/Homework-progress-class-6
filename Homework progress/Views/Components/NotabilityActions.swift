@@ -94,6 +94,7 @@ struct SendToNotabilityButton: View {
     }
 
     private func prepare() {
+        _ = services.hasLocalFile(attachment)
         do {
             let url = try services.files.makeHandoffCopy(storedFilename: attachment.storedFilename,
                                                          displayName: attachment.originalFilename)

@@ -129,7 +129,7 @@ struct BackupService {
                 guard let assignment = file.assignment else { return nil }
                 return .init(id: file.id, assignmentID: assignment.id, originalFilename: file.originalFilename,
                              pageCount: file.pageCount, sortIndex: file.sortIndex, importedAt: file.importedAt,
-                             pdf: try? files.data(forStoredFilename: file.storedFilename))
+                             pdf: file.pdfData ?? (try? files.data(forStoredFilename: file.storedFilename)))
             }
         )
     }
@@ -215,7 +215,7 @@ struct BackupService {
             let attachment = HomeworkAttachment(id: record.id, originalFilename: record.originalFilename,
                                                 storedFilename: imported.storedFilename, byteCount: imported.byteCount,
                                                 pageCount: imported.pageCount, importedAt: record.importedAt,
-                                                sortIndex: record.sortIndex)
+                                                sortIndex: record.sortIndex, pdfData: pdf)
             context.insert(attachment)
             attachment.assignment = assignment
             report.attachmentsAdded += 1

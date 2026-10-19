@@ -128,7 +128,7 @@ struct CourseDetailView: View {
     /// Previous and upcoming weeks for this course — separate records, separate progress.
     @ViewBuilder
     private func otherWeeksSection(excluding week: AcademicWeek) -> some View {
-        let others = Dictionary(grouping: course.assignments.filter { $0.week != nil && $0.week?.id != week.id }) { $0.week! }
+        let others = Dictionary(grouping: course.assignmentList.filter { $0.week != nil && $0.week?.id != week.id }) { $0.week! }
         let sortedWeeks = others.keys.sorted { $0.startDate > $1.startDate }
         if !sortedWeeks.isEmpty {
             VStack(alignment: .leading, spacing: 10) {

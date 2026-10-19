@@ -30,5 +30,10 @@
 		<string>Lora-Bold.ttf</string>
 		<string>Lora-Italic.ttf</string>
 	</array>
+	<!-- Lets iCloud wake the app briefly to download changes made on the other device. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

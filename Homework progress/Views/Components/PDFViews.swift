@@ -91,7 +91,7 @@ struct PDFViewerScreen: View {
         let url = services.files.url(forStoredFilename: attachment.storedFilename)
         NavigationStack {
             Group {
-                if services.files.fileExists(storedFilename: attachment.storedFilename) {
+                if services.hasLocalFile(attachment) {
                     PDFKitView(url: url).ignoresSafeArea(edges: .bottom)
                 } else {
                     MissingPDFView(filename: attachment.originalFilename)

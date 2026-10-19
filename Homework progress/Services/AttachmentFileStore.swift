@@ -119,6 +119,32 @@ nonisolated struct AttachmentFileStore: Sendable {
         return try Data(contentsOf: url(forStoredFilename: name))
     }
 
+    /// Makes sure this device has a local copy, writing it from synced `data` if needed.
+    /// Returns false only when there is neither a file nor data to recreate it.
+    @discardableResult
+    func ensureLocalFile(storedFilename name: String, data: () -> Data?) -> Bool {
+        guard !name.isEmpty else { return false }
+        if fileExists(storedFilename: name) { return true }
+        guard let data = data(), !data.isEmpty else { return false }
+        do {
+            try ensureDirectory()
+            try data.write(to: url(forStoredFilename: name), options: .atomic)
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /// Stored filenames of local copies, with their modification dates.
+    func localFiles() -> [(name: String, modified: Date)] {
+        let keys: [URLResourceKey] = [.contentModificationDateKey]
+        let urls = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: keys)) ?? []
+        return urls.map { url in
+            let modified = (try? url.resourceValues(forKeys: Set(keys)).contentModificationDate) ?? .distantPast
+            return (url.lastPathComponent, modified)
+        }
+    }
+
     /// Deletes the app's copy. Missing files are not an error.
     func delete(storedFilename name: String) throws {
         guard !name.isEmpty else { return }

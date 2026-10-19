@@ -100,7 +100,7 @@ struct AttachmentTests {
 
         env.store.remove(attachment)
 
-        #expect(assignment.attachments.isEmpty)
+        #expect(assignment.attachmentList.isEmpty)
         #expect(!env.files.fileExists(storedFilename: stored))
         #expect(assignment.completedExercises == 2)
     }
@@ -159,7 +159,7 @@ struct PersistenceTests {
         #expect(assignment.totalExercises == 9)
         #expect(assignment.course?.name == "מתמטיקה בדידה")
         #expect(assignment.week?.title == "Week 5")
-        let attachment = try #require(assignment.attachments.first)
+        let attachment = try #require(assignment.attachmentList.first)
         #expect(attachment.storedFilename == storedFilename)
         #expect(relaunched.files.fileExists(storedFilename: storedFilename))
         #expect(try relaunched.context.fetchCount(FetchDescriptor<Course>()) == 5)

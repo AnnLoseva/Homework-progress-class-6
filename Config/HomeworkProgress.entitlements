@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Silent pushes tell the app when the other device changed something. -->
+	<key>aps-environment</key>
+	<string>development</string>
+	<!-- iCloud private database that syncs weeks, assignments, progress and PDFs. -->
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.AnnaLoseva.Homework-progress</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
+	<!-- Small key-value flags shared between devices (course seeding). -->
+	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
+	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
+</dict>
+</plist>

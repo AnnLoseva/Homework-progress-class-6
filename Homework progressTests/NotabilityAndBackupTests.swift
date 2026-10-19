@@ -90,7 +90,7 @@ struct BackupTests {
         #expect(restored.course?.name == "אלגברה ליניארית וייצוג נתונים - חלק א")
         #expect(restored.course?.courseURLString == "https://md.hit.ac.il/course/view.php?id=27796")
         #expect(restored.course?.notebook?.notebookName == "Linear Algebra")
-        let file = try #require(restored.attachments.first)
+        let file = try #require(restored.attachmentList.first)
         #expect(target.files.fileExists(storedFilename: file.storedFilename))
 
         // Restoring again changes nothing.

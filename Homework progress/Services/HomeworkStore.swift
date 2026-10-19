@@ -38,7 +38,7 @@ struct HomeworkStore {
                               options: DuplicationOptions = DuplicationOptions(),
                               planner: WeekPlanner = WeekPlanner()) -> [HomeworkAssignment] {
         let offset = planner.dayOffset(from: source.startDate, to: target.startDate)
-        let originals = source.assignments.sorted { $0.createdAt < $1.createdAt }
+        let originals = source.assignmentList.sorted { $0.createdAt < $1.createdAt }
         var copies: [HomeworkAssignment] = []
         for original in originals {
             guard let course = original.course else { continue }
@@ -61,7 +61,7 @@ struct HomeworkStore {
 
     /// Deletes a week, its own assignments and their PDF files. Courses are never deleted.
     func delete(_ week: AcademicWeek) {
-        for assignment in week.assignments { deleteFiles(of: assignment) }
+        for assignment in week.assignmentList { deleteFiles(of: assignment) }
         context.delete(week)
         save()
     }
@@ -92,7 +92,7 @@ struct HomeworkStore {
     }
 
     func delete(_ course: Course) {
-        for assignment in course.assignments { deleteFiles(of: assignment) }
+        for assignment in course.assignmentList { deleteFiles(of: assignment) }
         context.delete(course)
         save()
     }
@@ -111,13 +111,15 @@ struct HomeworkStore {
 
     @discardableResult
     func attach(_ imported: AttachmentFileStore.ImportedPDF, to assignment: HomeworkAssignment) -> HomeworkAttachment {
-        let existing = assignment.attachments.map(\.originalFilename)
+        let existing = assignment.attachmentList.map(\.originalFilename)
         let attachment = HomeworkAttachment(
             originalFilename: FilenameDeduplicator.unique(imported.originalFilename, existing: existing),
             storedFilename: imported.storedFilename,
             byteCount: imported.byteCount,
             pageCount: imported.pageCount,
-            sortIndex: (assignment.attachments.map(\.sortIndex).max() ?? -1) + 1
+            sortIndex: (assignment.attachmentList.map(\.sortIndex).max() ?? -1) + 1,
+            // The bytes travel with the record so the PDF syncs to the user's other devices.
+            pdfData: try? files.data(forStoredFilename: imported.storedFilename)
         )
         context.insert(attachment)
         attachment.assignment = assignment
@@ -135,11 +137,12 @@ struct HomeworkStore {
             try files.importPDF(from: url)
         }.value
         let oldStored = attachment.storedFilename
-        let siblings = attachment.assignment?.attachments.filter { $0.id != attachment.id }.map(\.originalFilename) ?? []
+        let siblings = attachment.assignment?.attachmentList.filter { $0.id != attachment.id }.map(\.originalFilename) ?? []
         attachment.originalFilename = FilenameDeduplicator.unique(imported.originalFilename, existing: siblings)
         attachment.storedFilename = imported.storedFilename
         attachment.byteCount = imported.byteCount
         attachment.pageCount = imported.pageCount
+        attachment.pdfData = try? files.data(forStoredFilename: imported.storedFilename)
         attachment.importedAt = .now
         attachment.assignment?.touch()
         save()
@@ -157,7 +160,7 @@ struct HomeworkStore {
     }
 
     private func deleteFiles(of assignment: HomeworkAssignment) {
-        for attachment in assignment.attachments {
+        for attachment in assignment.attachmentList {
             try? files.delete(storedFilename: attachment.storedFilename)
         }
     }

@@ -9,20 +9,21 @@ import SwiftData
 /// A university course. Courses persist across weeks; assignments reference them.
 @Model
 final class Course {
-    var id: UUID
+    // Defaults on every stored property and optional relationships: required for iCloud sync.
+    var id: UUID = UUID()
     /// The original course name (Hebrew for the seeded HIT courses). Never transliterated.
-    var name: String
+    var name: String = ""
     /// Optional short English label shown as a secondary line in the English UI.
-    var englishName: String
+    var englishName: String = ""
     var courseURLString: String?
-    var colorKey: String
-    var iconName: String
-    var sortOrder: Int
-    var createdAt: Date
+    var colorKey: String = CoursePalette.indigo.rawValue
+    var iconName: String = "CourseStudy"
+    var sortOrder: Int = 0
+    var createdAt: Date = Date.now
 
     /// Deleting a course deletes its assignments (the UI warns first). Weeks are never touched.
     @Relationship(deleteRule: .cascade, inverse: \HomeworkAssignment.course)
-    var assignments: [HomeworkAssignment] = []
+    var assignments: [HomeworkAssignment]? = []
 
     @Relationship(deleteRule: .cascade, inverse: \NotabilityNotebookAssociation.course)
     var notebook: NotabilityNotebookAssociation?
@@ -57,8 +58,10 @@ final class Course {
     /// The name wrapped in Unicode first-strong isolates so Hebrew embeds cleanly in English sentences.
     var isolatedName: String { BidiText.isolate(name) }
 
+    var assignmentList: [HomeworkAssignment] { assignments ?? [] }
+
     func assignments(in week: AcademicWeek) -> [HomeworkAssignment] {
-        assignments
+        assignmentList
             .filter { $0.week?.id == week.id }
             .sorted(by: HomeworkAssignment.defaultOrder)
     }
