@@ -28,7 +28,20 @@ certification is claimed.
   The service-role key exists only inside the `delete-account` Edge Function.
 * **Class code:** stored as a salted SHA-256 hash; at most 10 failed attempts per hour per user.
 
-These guarantees are tested in `supabase/tests/*.sql`, which run in CI.
+These guarantees are tested in `supabase/tests/*.sql`, which run in CI and were verified
+on a hosted Supabase project.
+
+### Expected database-advisor warnings
+
+Supabase's security advisor flags three `SECURITY DEFINER` functions that signed-in users can
+call: `join_class`, `set_class_join_code` and `class_join_code_updated_at`. This is
+intentional. They're the only way to reach the private class-code tables, each one checks
+the caller itself (only administrators can set or inspect the code), and
+`03_roles_and_admin.sql` and `08_class_enrollment.sql` test that. Any *new* advisor warning
+should be investigated.
+
+Real Supabase Storage also refuses every direct `DELETE` on `storage.objects`
+(`storage.protect_delete`), so deleting files always goes through the Storage API.
 
 ## Rules for contributors
 

@@ -67,9 +67,8 @@ select tests.throws(
 select tests.is(
   tests.rows_affected(format('update storage.objects set metadata = ''{"hacked":true}'' where bucket_id = ''lesson-materials''')),
   0::bigint, 'students cannot overwrite lesson materials');
-select tests.is(
-  tests.rows_affected('delete from storage.objects where bucket_id = ''lesson-materials'''),
-  0::bigint, 'students cannot delete lesson materials');
+select tests.no_effect('delete from storage.objects where bucket_id = ''lesson-materials''',
+  'students cannot delete lesson materials');
 select tests.is(
   tests.rows_affected(format('update public.lesson_attachments set visibility = ''public'' where id = %L', tests.id('att_restricted'))),
   0::bigint, 'students cannot make a restricted attachment public');
@@ -85,10 +84,17 @@ select tests.throws(
 select tests.authenticate_as(tests.id('other'));
 select tests.is((select count(*)::int from storage.objects where bucket_id = 'student-private'), 0,
   'another student cannot read someone else''s private files');
-select tests.is(
-  tests.rows_affected(format('delete from storage.objects where name = %L', tests.id('enrolled') || '/my-solution.pdf')),
-  0::bigint, 'another student cannot delete someone else''s private files');
+select tests.no_effect(format('delete from storage.objects where name = %L', tests.id('enrolled') || '/my-solution.pdf'),
+  'another student cannot delete someone else''s private files');
 
 select tests.authenticate_as(tests.id('admin'));
 select tests.is((select count(*)::int from storage.objects where bucket_id = 'student-private'), 0,
   'the administrator cannot read students'' private files');
+
+reset role;
+select tests.is((select count(*)::int from storage.objects where bucket_id = 'lesson-materials'), 4,
+  'every lesson file survived the students'' delete and overwrite attempts');
+select tests.is((select count(*)::int from storage.objects where name = tests.id('enrolled') || '/my-solution.pdf'), 1,
+  'the student''s private file survived the other student''s delete attempt');
+select tests.is((select count(*)::int from storage.objects where metadata ? 'hacked'), 0,
+  'no lesson file metadata was overwritten');

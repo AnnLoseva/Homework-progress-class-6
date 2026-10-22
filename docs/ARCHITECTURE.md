@@ -190,7 +190,7 @@ also checks the `%PDF-` header before upload.
 
 | Layer | Tool | What it proves |
 |---|---|---|
-| Database / RLS | `supabase/tests/*.sql` run by `tools/db-tests` (PGlite, i.e. real Postgres 17 in WebAssembly, with a minimal `auth`/`storage` shim) or against `supabase start` | Isolation between students, role escalation, draft visibility, storage access, category changes, idempotency |
+| Database / RLS | `supabase/tests/*.sql` run by `tools/db-tests` (PGlite, i.e. real Postgres in WebAssembly, with a minimal `auth`/`storage` shim) or against `supabase start` | Isolation between students, role escalation, draft visibility, storage access, category changes, idempotency |
 | Domain | `swift test` (StudyDomainTests) | Workload, progress validation, dashboard math, filters |
 | Data | `swift test` (StudyDataTests) | Outbox, retries, offline/reconnect, two-device sync, upload validation, auth state machine |
 | Supabase mapping | `swift test` (StudySupabaseTests) | Row JSON ↔ domain mapping |

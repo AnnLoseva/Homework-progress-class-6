@@ -178,7 +178,7 @@ On a real device you need your team set in `Local.xcconfig`.
 
 | What | Command | Proves |
 |---|---|---|
-| **Database security (RLS)** | `cd tools/db-tests && npm ci && npm test` | 172 assertions in 9 suites: student isolation, role escalation, drafts, storage access, enrollment, progress rules, account deletion. Runs migrations on **PGlite** (real Postgres 17 in WebAssembly) with a small `auth`/`storage` shim. No Docker needed. |
+| **Database security (RLS)** | `cd tools/db-tests && npm ci && npm test` | 175 assertions in 9 suites: student isolation, role escalation, drafts, storage access, enrollment, progress rules, account deletion. Runs migrations on **PGlite** (real Postgres compiled to WebAssembly) with a small `auth`/`storage` shim. No Docker needed. |
 | …against a real local Supabase | `npm test -- --database-url postgresql://postgres:postgres@127.0.0.1:54322/postgres` | The same suites on the real Supabase stack (`npx supabase start` first). Refuses hosted URLs. |
 | Edge Function helpers | `cd tools/db-tests && npm run test:edge` | Apple client-secret signing and revocation flow |
 | Domain + sync logic | `cd Packages/StudyKit && swift test` | 101 tests: workload, progress rules, dashboard math, offline outbox, retries, two-device sync, auth state, attachments, Supabase row mapping |
@@ -283,9 +283,10 @@ docs/                          architecture, admin guide, distribution, assets, 
 
 * **Notability** has no public import API, so PDFs go through the standard share sheet
   ("Open in Notability"). The app can't choose a notebook.
-* The SQL suites ran here on **PGlite** with a minimal Supabase shim. Run them against
-  `npx supabase start` (Docker) before relying on a new deployment; storage-API behaviors
-  such as signed-URL issuance are exercised there, not in PGlite.
+* The SQL suites run locally on **PGlite** with a minimal Supabase shim, and all 175
+  assertions also passed on a hosted Supabase dev project (Postgres 17, real Auth and Storage
+  schemas) on 2026-10-22. Run them against `npx supabase start` before relying on a new
+  deployment. Signed-URL issuance by the Storage API itself isn't exercised by SQL tests.
 * The **Edge Function**'s Apple-revocation helper is unit-tested with Node. The function
   itself runs on Deno and still needs an end-to-end test on a deployed or local Supabase.
 * Sign in with Apple on real devices and TestFlight need a **paid Apple Developer** account.
