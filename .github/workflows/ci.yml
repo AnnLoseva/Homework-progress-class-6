@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # scan the full history
+      - run: python3 scripts/secret-scan.py
+
+  database:
+    name: database (RLS & migrations)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/db-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/db-tests/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:edge
+
+  swift:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package tests (domain, sync, Supabase mapping)
+        working-directory: Packages/StudyKit
+        run: swift test
+      - name: Build the app (demo configuration, no signing)
+        run: >
+          xcodebuild build -project WoodlandStudy.xcodeproj -scheme WoodlandStudy
+          -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO

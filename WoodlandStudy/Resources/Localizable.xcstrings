@@ -1,0 +1,2846 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld / %lld": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "%lld PDF": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld PDF"
+          }
+        }
+      }
+    },
+    "%lld attachment(s)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld קבצים מצורפים"
+          }
+        }
+      }
+    },
+    "%lld change(s) haven't synced yet and will be lost. Downloaded files and cached data are removed from this device.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld שינויים עדיין לא סונכרנו ויאבדו. קבצים שהורדו ונתונים שמורים יימחקו מהמכשיר."
+          }
+        }
+      }
+    },
+    "%lld change(s) waiting": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld שינויים ממתינים"
+          }
+        }
+      }
+    },
+    "%lld of %lld lessons completed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld מתוך %2$lld שיעורים הושלמו"
+          }
+        }
+      }
+    },
+    "%lld remaining": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נותרו %lld"
+          }
+        }
+      }
+    },
+    "%lld/%lld exercises": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld/%2$lld תרגילים"
+          }
+        }
+      }
+    },
+    "A cache of lessons, your progress and downloaded PDFs, so the app works offline. It is removed when you sign out or delete your account. Recently opened lessons are remembered on this device only.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עותק של השיעורים, ההתקדמות שלך וקובצי PDF שהורדו, כדי שהאפליקציה תעבוד גם בלי חיבור. העותק נמחק כשמתנתקים או מוחקים את החשבון. שיעורים שנפתחו לאחרונה נשמרים רק במכשיר הזה."
+          }
+        }
+      }
+    },
+    "A lesson can't be its own prerequisite.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעור לא יכול להיות דרישת קדם של עצמו."
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אודות"
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חשבון"
+          }
+        }
+      }
+    },
+    "Add PDF": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הוספת PDF"
+          }
+        }
+      }
+    },
+    "Add a title.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יש להוסיף כותרת."
+          }
+        }
+      }
+    },
+    "Administrator": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מנהל/ת"
+          }
+        }
+      }
+    },
+    "All categories": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל הקטגוריות"
+          }
+        }
+      }
+    },
+    "All courses": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל הקורסים"
+          }
+        }
+      }
+    },
+    "All lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל השיעורים"
+          }
+        }
+      }
+    },
+    "All required work is done or not started.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל עבודות החובה הושלמו או שעוד לא התחילו."
+          }
+        }
+      }
+    },
+    "Always in your workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תמיד בעומס העבודה שלך"
+          }
+        }
+      }
+    },
+    "Always included": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תמיד כלול"
+          }
+        }
+      }
+    },
+    "Any status": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל סטטוס"
+          }
+        }
+      }
+    },
+    "Any week": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל שבוע"
+          }
+        }
+      }
+    },
+    "Anyone": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כולם"
+          }
+        }
+      }
+    },
+    "Apple didn't return a sign-in token. Please try again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple לא החזירה אסימון התחברות. אפשר לנסות שוב."
+          }
+        }
+      }
+    },
+    "Apple sign-in was not accepted. Please try again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההתחברות עם Apple לא התקבלה. אפשר לנסות שוב."
+          }
+        }
+      }
+    },
+    "Archive": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "העברה לארכיון"
+          }
+        }
+      }
+    },
+    "Archived": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בארכיון"
+          }
+        }
+      }
+    },
+    "Archived by your instructor": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הועבר לארכיון על ידי המרצה"
+          }
+        }
+      }
+    },
+    "At least 8 letters or digits. Changing the code doesn't remove students who already joined. Wrong guesses are limited to 10 per hour.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפחות 8 אותיות או ספרות. שינוי הקוד לא מסיר סטודנטים שכבר הצטרפו. מוגבל ל־10 ניחושים שגויים בשעה."
+          }
+        }
+      }
+    },
+    "Attachment": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קובץ מצורף"
+          }
+        }
+      }
+    },
+    "Attachments": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קבצים מצורפים"
+          }
+        }
+      }
+    },
+    "Available from": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "זמין מתאריך"
+          }
+        }
+      }
+    },
+    "Before this lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפני השיעור הזה"
+          }
+        }
+      }
+    },
+    "Browse lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עיון בשיעורים"
+          }
+        }
+      }
+    },
+    "By course & week": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפי קורס ושבוע"
+          }
+        }
+      }
+    },
+    "By due date": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפי תאריך הגשה"
+          }
+        }
+      }
+    },
+    "By title": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפי כותרת"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול"
+          }
+        }
+      }
+    },
+    "Categories": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קטגוריות"
+          }
+        }
+      }
+    },
+    "Category": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קטגוריה"
+          }
+        }
+      }
+    },
+    "Category: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קטגוריה: %@"
+          }
+        }
+      }
+    },
+    "Choose PDF…": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בחירת PDF…"
+          }
+        }
+      }
+    },
+    "Choose a course": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בחירת קורס"
+          }
+        }
+      }
+    },
+    "Choose a course.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יש לבחור קורס."
+          }
+        }
+      }
+    },
+    "Choose a different PDF": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בחירת PDF אחר"
+          }
+        }
+      }
+    },
+    "Choose the ones you want to follow": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בחרו את השיעורים שתרצו לעקוב אחריהם"
+          }
+        }
+      }
+    },
+    "Class code": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קוד כיתה"
+          }
+        }
+      }
+    },
+    "Class members": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חברי הכיתה"
+          }
+        }
+      }
+    },
+    "Class membership": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חברות בכיתה"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סגירה"
+          }
+        }
+      }
+    },
+    "Color": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "צבע"
+          }
+        }
+      }
+    },
+    "Completed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הושלם"
+          }
+        }
+      }
+    },
+    "Completed %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הושלם ב־%@"
+          }
+        }
+      }
+    },
+    "Couldn't join: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההצטרפות נכשלה: %@"
+          }
+        }
+      }
+    },
+    "Couldn't open the file: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא ניתן לפתוח את הקובץ: %@"
+          }
+        }
+      }
+    },
+    "Couldn't save changes on this device: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא ניתן לשמור שינויים במכשיר: %@"
+          }
+        }
+      }
+    },
+    "Couldn't sync: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הסנכרון נכשל: %@"
+          }
+        }
+      }
+    },
+    "Course": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קורס"
+          }
+        }
+      }
+    },
+    "Courses": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קורסים"
+          }
+        }
+      }
+    },
+    "Dates": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תאריכים"
+          }
+        }
+      }
+    },
+    "Deadlines": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מועדי הגשה"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחיקה"
+          }
+        }
+      }
+    },
+    "Delete account and data": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחיקת החשבון והנתונים"
+          }
+        }
+      }
+    },
+    "Delete draft": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחיקת טיוטה"
+          }
+        }
+      }
+    },
+    "Delete permanently": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחיקה לצמיתות"
+          }
+        }
+      }
+    },
+    "Delete this draft?": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "למחוק את הטיוטה?"
+          }
+        }
+      }
+    },
+    "Delete your account?": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "למחוק את החשבון?"
+          }
+        }
+      }
+    },
+    "Deleting your data": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחיקת הנתונים שלך"
+          }
+        }
+      }
+    },
+    "Deleting…": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מוחק…"
+          }
+        }
+      }
+    },
+    "Demo account": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חשבון הדגמה"
+          }
+        }
+      }
+    },
+    "Demo mode uses sample lessons stored only on this device. Nothing is sent anywhere.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מצב הדגמה משתמש בשיעורים לדוגמה שנשמרים רק במכשיר. שום דבר לא נשלח."
+          }
+        }
+      }
+    },
+    "Description": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תיאור"
+          }
+        }
+      }
+    },
+    "Description (optional)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תיאור (רשות)"
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרטים"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סיום"
+          }
+        }
+      }
+    },
+    "Downloaded files and cached data are removed from this device. Your progress stays in your account.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קבצים שהורדו ונתונים שמורים יימחקו מהמכשיר. ההתקדמות שלך נשארת בחשבון."
+          }
+        }
+      }
+    },
+    "Draft": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טיוטה"
+          }
+        }
+      }
+    },
+    "Drafts are invisible to students. Archived lessons stay in students' history but are no longer active work. Changing a lesson from required to optional automatically subscribes students who already started it.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טיוטות אינן גלויות לסטודנטים. שיעורים בארכיון נשארים בהיסטוריה של הסטודנטים אך אינם עבודה פעילה. שינוי שיעור מחובה לרשות רושם אוטומטית סטודנטים שכבר התחילו אותו."
+          }
+        }
+      }
+    },
+    "Due": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגשה"
+          }
+        }
+      }
+    },
+    "Due %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגשה עד %@"
+          }
+        }
+      }
+    },
+    "Edit course": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עריכת קורס"
+          }
+        }
+      }
+    },
+    "Edit lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עריכת שיעור"
+          }
+        }
+      }
+    },
+    "Estimated minutes": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "זמן משוער (דקות)"
+          }
+        }
+      }
+    },
+    "Estimated time": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "זמן משוער"
+          }
+        }
+      }
+    },
+    "Estimated time must be 1–10,000 minutes.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הזמן המשוער צריך להיות בין 1 ל־10,000 דקות."
+          }
+        }
+      }
+    },
+    "Everything in your workload is done. Lovely work.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כל העבודה הושלמה. עבודה יפה."
+          }
+        }
+      }
+    },
+    "Exercises": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תרגילים"
+          }
+        }
+      }
+    },
+    "Exercises done": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תרגילים שהושלמו"
+          }
+        }
+      }
+    },
+    "Exercises must be between 0 and 500.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מספר התרגילים צריך להיות בין 0 ל־500."
+          }
+        }
+      }
+    },
+    "Exercises: %lld/%lld (%@)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תרגילים: %1$lld/%2$lld (%3$@)"
+          }
+        }
+      }
+    },
+    "Explore the demo": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כניסה להדגמה"
+          }
+        }
+      }
+    },
+    "Export failed: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הייצוא נכשל: %@"
+          }
+        }
+      }
+    },
+    "Export my data": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ייצוא הנתונים שלי"
+          }
+        }
+      }
+    },
+    "File": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קובץ"
+          }
+        }
+      }
+    },
+    "Follow this optional lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מעקב אחר שיעור הרשות הזה"
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "היסטוריה"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בית"
+          }
+        }
+      }
+    },
+    "Identifier": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מזהה"
+          }
+        }
+      }
+    },
+    "Illustration": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "איור"
+          }
+        }
+      }
+    },
+    "In my workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בעומס העבודה שלי"
+          }
+        }
+      }
+    },
+    "In progress": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בתהליך"
+          }
+        }
+      }
+    },
+    "In workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בעומס העבודה"
+          }
+        }
+      }
+    },
+    "Invalid identifier.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מזהה לא תקין."
+          }
+        }
+      }
+    },
+    "Join class": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצטרפות לכיתה"
+          }
+        }
+      }
+    },
+    "Join your class": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצטרפו לכיתה שלכם"
+          }
+        }
+      }
+    },
+    "Joined": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצטרפת"
+          }
+        }
+      }
+    },
+    "Last changed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שונה לאחרונה"
+          }
+        }
+      }
+    },
+    "Last synced": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סנכרון אחרון"
+          }
+        }
+      }
+    },
+    "Lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעור"
+          }
+        }
+      }
+    },
+    "Lesson status": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סטטוס השיעור"
+          }
+        }
+      }
+    },
+    "Lesson status and exercises are tracked separately: you can mark a lesson completed without ticking every exercise.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סטטוס השיעור והתרגילים נשמרים בנפרד: אפשר לסמן שיעור כהושלם גם בלי לסמן כל תרגיל."
+          }
+        }
+      }
+    },
+    "Lesson unavailable": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעור אינו זמין"
+          }
+        }
+      }
+    },
+    "Lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורים"
+          }
+        }
+      }
+    },
+    "Lessons completed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורים שהושלמו"
+          }
+        }
+      }
+    },
+    "Lessons with no numbered exercises are completed manually by students.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורים ללא תרגילים ממוספרים מסומנים כהושלמו ידנית על ידי הסטודנטים."
+          }
+        }
+      }
+    },
+    "Lessons, materials and your own progress, in one calm place.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורים, חומרים וההתקדמות שלך, במקום אחד ורגוע."
+          }
+        }
+      }
+    },
+    "Load preview": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טעינת תצוגה מקדימה"
+          }
+        }
+      }
+    },
+    "Manage": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ניהול"
+          }
+        }
+      }
+    },
+    "Manage lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ניהול שיעורים"
+          }
+        }
+      }
+    },
+    "Materials": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חומרים"
+          }
+        }
+      }
+    },
+    "Module (optional)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יחידה (רשות)"
+          }
+        }
+      }
+    },
+    "My Lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעורים שלי"
+          }
+        }
+      }
+    },
+    "My optional lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורי הרשות שלי"
+          }
+        }
+      }
+    },
+    "My progress": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההתקדמות שלי"
+          }
+        }
+      }
+    },
+    "New": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חדש"
+          }
+        }
+      }
+    },
+    "New code": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קוד חדש"
+          }
+        }
+      }
+    },
+    "New course": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קורס חדש"
+          }
+        }
+      }
+    },
+    "New lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעור חדש"
+          }
+        }
+      }
+    },
+    "Newest first": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "החדשים קודם"
+          }
+        }
+      }
+    },
+    "No advertising, analytics or tracking SDKs. Your data is never sold.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין פרסומות, אנליטיקה או ספריות מעקב. הנתונים שלך לעולם לא נמכרים."
+          }
+        }
+      }
+    },
+    "No class code yet. Students can't open “Class members” materials until you set one.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עדיין אין קוד כיתה. סטודנטים לא יוכלו לפתוח חומרים של „חברי הכיתה” עד שתגדירו קוד."
+          }
+        }
+      }
+    },
+    "No data yet": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין עדיין נתונים"
+          }
+        }
+      }
+    },
+    "No deadlines in the next two weeks.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין מועדי הגשה בשבועיים הקרובים."
+          }
+        }
+      }
+    },
+    "No lessons match": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין שיעורים תואמים"
+          }
+        }
+      }
+    },
+    "No lessons match.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין שיעורים תואמים."
+          }
+        }
+      }
+    },
+    "No longer published · progress kept": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כבר לא מפורסם · ההתקדמות נשמרה"
+          }
+        }
+      }
+    },
+    "No materials for this lesson.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין חומרים לשיעור הזה."
+          }
+        }
+      }
+    },
+    "No optional lessons published yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עדיין לא פורסמו שיעורי רשות."
+          }
+        }
+      }
+    },
+    "No other lessons yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין עדיין שיעורים אחרים."
+          }
+        }
+      }
+    },
+    "No required lessons published yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עדיין לא פורסמו שיעורי חובה."
+          }
+        }
+      }
+    },
+    "No tracking": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ללא מעקב"
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין"
+          }
+        }
+      }
+    },
+    "Not found.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא נמצא."
+          }
+        }
+      }
+    },
+    "Not in my workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא בעומס העבודה שלי"
+          }
+        }
+      }
+    },
+    "Not joined": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא הצטרפת"
+          }
+        }
+      }
+    },
+    "Not saved": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא נשמר"
+          }
+        }
+      }
+    },
+    "Not started": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טרם התחיל"
+          }
+        }
+      }
+    },
+    "Not subscribed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא רשום"
+          }
+        }
+      }
+    },
+    "Nothing started yet. Pick one from “Study next”.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עוד לא התחלת כלום. בחרו שיעור מ„ללמוד עכשיו”."
+          }
+        }
+      }
+    },
+    "Nothing to study yet": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין עדיין מה ללמוד"
+          }
+        }
+      }
+    },
+    "Numbered exercises": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תרגילים ממוספרים"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא מקוון"
+          }
+        }
+      }
+    },
+    "Offline · %lld change(s) will sync when you reconnect": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא מקוון · %lld שינויים יסונכרנו כשהחיבור יחזור"
+          }
+        }
+      }
+    },
+    "Offline · showing saved data": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא מקוון · מוצגים נתונים שמורים"
+          }
+        }
+      }
+    },
+    "On this device": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "במכשיר הזה"
+          }
+        }
+      }
+    },
+    "One fewer": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אחד פחות"
+          }
+        }
+      }
+    },
+    "One more": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עוד אחד"
+          }
+        }
+      }
+    },
+    "Only PDF files can be uploaded.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אפשר להעלות רק קובצי PDF."
+          }
+        }
+      }
+    },
+    "Only you can see these notes. Not even the administrator can read them.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "רק את/ה רואה את ההערות האלה. גם המנהל/ת לא יכול/ה לקרוא אותן."
+          }
+        }
+      }
+    },
+    "Only you. Database rules prevent other students and the administrator from reading your progress and notes.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "רק את/ה. כללי מסד הנתונים מונעים מסטודנטים אחרים ומהמנהל/ת לקרוא את ההתקדמות וההערות שלך."
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פתיחה"
+          }
+        }
+      }
+    },
+    "Opening your study nook…": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פותח את פינת הלימוד שלך…"
+          }
+        }
+      }
+    },
+    "Optional": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "רשות"
+          }
+        }
+      }
+    },
+    "Organization": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ארגון"
+          }
+        }
+      }
+    },
+    "PDF only, up to 50 MB.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PDF בלבד, עד 50MB."
+          }
+        }
+      }
+    },
+    "Please fix the highlighted fields.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יש לתקן את השדות המסומנים."
+          }
+        }
+      }
+    },
+    "Please sign in again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יש להתחבר שוב."
+          }
+        }
+      }
+    },
+    "Position: %lld": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מיקום: %lld"
+          }
+        }
+      }
+    },
+    "Prerequisites": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "דרישות קדם"
+          }
+        }
+      }
+    },
+    "Preview": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תצוגה מקדימה"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרטיות"
+          }
+        }
+      }
+    },
+    "Private notes": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הערות פרטיות"
+          }
+        }
+      }
+    },
+    "Public": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ציבורי"
+          }
+        }
+      }
+    },
+    "Publish": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרסום"
+          }
+        }
+      }
+    },
+    "Publish again": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרסום מחדש"
+          }
+        }
+      }
+    },
+    "Published": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פורסם"
+          }
+        }
+      }
+    },
+    "Publishing": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרסום"
+          }
+        }
+      }
+    },
+    "Recently opened": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נפתחו לאחרונה"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הסרה"
+          }
+        }
+      }
+    },
+    "Replace PDF": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "החלפת PDF"
+          }
+        }
+      }
+    },
+    "Replacing a PDF keeps the same attachment and never affects students' progress. Students re-download the new version automatically.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "החלפת PDF שומרת על אותו קובץ מצורף ולעולם לא משפיעה על התקדמות הסטודנטים. הגרסה החדשה תורד אוטומטית."
+          }
+        }
+      }
+    },
+    "Required": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חובה"
+          }
+        }
+      }
+    },
+    "Required lessons are always in your workload.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעורי חובה תמיד נמצאים בעומס העבודה שלך."
+          }
+        }
+      }
+    },
+    "Required, in progress": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חובה, בתהליך"
+          }
+        }
+      }
+    },
+    "Role": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תפקיד"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמירה"
+          }
+        }
+      }
+    },
+    "Save code": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמירת הקוד"
+          }
+        }
+      }
+    },
+    "Save the lesson to add PDFs and publish it.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמרו את השיעור כדי להוסיף קובצי PDF ולפרסם אותו."
+          }
+        }
+      }
+    },
+    "Saved offline": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמור לשימוש לא מקוון"
+          }
+        }
+      }
+    },
+    "Saved. Share it with your class now; it can't be shown again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נשמר. שתפו אותו עם הכיתה עכשיו; לא ניתן להציג אותו שוב."
+          }
+        }
+      }
+    },
+    "Search lessons": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חיפוש שיעורים"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות"
+          }
+        }
+      }
+    },
+    "Settings → Delete account removes your account and all personal data from the server immediately.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות ← מחיקת החשבון מוחקת מיד את החשבון ואת כל הנתונים האישיים מהשרת."
+          }
+        }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיתוף"
+          }
+        }
+      }
+    },
+    "Share %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיתוף %@"
+          }
+        }
+      }
+    },
+    "Share export file": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיתוף קובץ הייצוא"
+          }
+        }
+      }
+    },
+    "Sign in with Apple was turned off for this app, so you were signed out.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההתחברות עם Apple בוטלה עבור האפליקציה, ולכן נותקת."
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "התנתקות"
+          }
+        }
+      }
+    },
+    "Sign out?": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "להתנתק?"
+          }
+        }
+      }
+    },
+    "Sign-in failed: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההתחברות נכשלה: %@"
+          }
+        }
+      }
+    },
+    "Signed in with": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מחובר/ת באמצעות"
+          }
+        }
+      }
+    },
+    "Signing in": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מתחבר"
+          }
+        }
+      }
+    },
+    "Size": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גודל"
+          }
+        }
+      }
+    },
+    "Sort": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מיון"
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סטטוס"
+          }
+        }
+      }
+    },
+    "Student": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סטודנט/ית"
+          }
+        }
+      }
+    },
+    "Study next": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ללמוד עכשיו"
+          }
+        }
+      }
+    },
+    "Subscribed": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "רשום"
+          }
+        }
+      }
+    },
+    "Subtitle (e.g. the Hebrew name)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כותרת משנה (למשל השם בעברית)"
+          }
+        }
+      }
+    },
+    "Suggest a code": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הצעת קוד"
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סנכרון"
+          }
+        }
+      }
+    },
+    "Sync now": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "סנכרון עכשיו"
+          }
+        }
+      }
+    },
+    "Syncing %lld change(s)…": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מסנכרן %lld שינויים…"
+          }
+        }
+      }
+    },
+    "Syncing…": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מסנכרן…"
+          }
+        }
+      }
+    },
+    "That change isn't allowed for this lesson.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השינוי הזה אינו מותר לשיעור הזה."
+          }
+        }
+      }
+    },
+    "That code isn't right. Check it with your instructor.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקוד שגוי. כדאי לבדוק אותו עם המרצה."
+          }
+        }
+      }
+    },
+    "That item no longer exists.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הפריט כבר לא קיים."
+          }
+        }
+      }
+    },
+    "The Supabase settings in Config/Local.xcconfig look invalid, so the app is running in demo mode.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות Supabase בקובץ Config/Local.xcconfig נראות לא תקינות, ולכן האפליקציה פועלת במצב הדגמה."
+          }
+        }
+      }
+    },
+    "The app was built with a Supabase SECRET key. It refuses to use it. Put the publishable key in Config/Local.xcconfig and rotate the secret key now.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "האפליקציה נבנתה עם מפתח SECRET של Supabase והיא מסרבת להשתמש בו. הכניסו את המפתח הציבורי (publishable) לקובץ Config/Local.xcconfig והחליפו מיד את המפתח הסודי."
+          }
+        }
+      }
+    },
+    "The description is longer than %lld characters.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "התיאור ארוך מ־%lld תווים."
+          }
+        }
+      }
+    },
+    "The downloaded file isn't a valid PDF.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקובץ שהורד אינו PDF תקין."
+          }
+        }
+      }
+    },
+    "The due date is before the availability date.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "תאריך ההגשה מוקדם מתאריך הזמינות."
+          }
+        }
+      }
+    },
+    "The export contains everything stored about you: subscriptions, progress, notes and your account id.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הייצוא כולל את כל מה שנשמר עליך: הרשמות, התקדמות, הערות ומזהה החשבון."
+          }
+        }
+      }
+    },
+    "The file is empty.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקובץ ריק."
+          }
+        }
+      }
+    },
+    "The file is larger than 50 MB.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקובץ גדול מ־50MB."
+          }
+        }
+      }
+    },
+    "The file name isn't valid.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שם הקובץ אינו תקין."
+          }
+        }
+      }
+    },
+    "The lesson and its PDFs are removed. Lessons that students have worked on can't be deleted; archive them instead.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעור וקובצי ה־PDF שלו יוסרו. אי אפשר למחוק שיעורים שסטודנטים עבדו עליהם; במקום זאת העבירו אותם לארכיון."
+          }
+        }
+      }
+    },
+    "The sign-in service is not available.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שירות ההתחברות אינו זמין."
+          }
+        }
+      }
+    },
+    "The title is longer than %lld characters.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הכותרת ארוכה מ־%lld תווים."
+          }
+        }
+      }
+    },
+    "This file is for class members. Join the class in Settings with the code from your instructor.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקובץ מיועד לחברי הכיתה. הצטרפו לכיתה בהגדרות עם הקוד שקיבלתם מהמרצה."
+          }
+        }
+      }
+    },
+    "This file is missing on the server. Please let your instructor know so they can upload it again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקובץ חסר בשרת. עדכנו את המרצה כדי שיעלה אותו מחדש."
+          }
+        }
+      }
+    },
+    "This lesson has no numbered exercises. Mark it completed when you're done.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לשיעור הזה אין תרגילים ממוספרים. סמנו אותו כהושלם כשתסיימו."
+          }
+        }
+      }
+    },
+    "This lesson is archived. Your progress is kept for your records.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעור בארכיון. ההתקדמות שלך נשמרת לתיעוד."
+          }
+        }
+      }
+    },
+    "This lesson is no longer available.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעור כבר לא זמין."
+          }
+        }
+      }
+    },
+    "This lesson isn't available yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השיעור עדיין לא זמין."
+          }
+        }
+      }
+    },
+    "This lesson was unpublished or removed. Any progress you recorded is kept.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרסום השיעור בוטל או שהוא הוסר. כל ההתקדמות שתיעדת נשמרת."
+          }
+        }
+      }
+    },
+    "This permanently deletes your account, subscriptions, progress and notes from the server and this device. It cannot be undone. You'll be asked to confirm with Apple.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הפעולה מוחקת לצמיתות את החשבון, ההרשמות, ההתקדמות וההערות מהשרת ומהמכשיר. אי אפשר לבטל אותה. תתבקשו לאשר באמצעות Apple."
+          }
+        }
+      }
+    },
+    "Title": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כותרת"
+          }
+        }
+      }
+    },
+    "Too many attempts. Try again in an hour.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יותר מדי ניסיונות. נסו שוב בעוד שעה."
+          }
+        }
+      }
+    },
+    "Try removing a filter.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נסו להסיר מסנן."
+          }
+        }
+      }
+    },
+    "Unavailable lesson": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיעור לא זמין"
+          }
+        }
+      }
+    },
+    "Unpublish (back to draft)": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול פרסום (חזרה לטיוטה)"
+          }
+        }
+      }
+    },
+    "Unsubscribing keeps your progress; subscribe again any time.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול ההרשמה שומר את ההתקדמות; אפשר להירשם שוב בכל עת."
+          }
+        }
+      }
+    },
+    "Unsubscribing never deletes your progress. Subscribe again and it's all still there.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטול הרשמה לעולם לא מוחק את ההתקדמות. הירשמו שוב והכול עדיין שם."
+          }
+        }
+      }
+    },
+    "Up to date": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מעודכן"
+          }
+        }
+      }
+    },
+    "Upload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "העלאה"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גרסה"
+          }
+        }
+      }
+    },
+    "Was due %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "היה להגשה עד %@"
+          }
+        }
+      }
+    },
+    "Week": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שבוע"
+          }
+        }
+      }
+    },
+    "Week %lld": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שבוע %lld"
+          }
+        }
+      }
+    },
+    "Week must be between 0 and 60.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "השבוע צריך להיות בין 0 ל־60."
+          }
+        }
+      }
+    },
+    "Welcome to the class!": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ברוכים הבאים לכיתה!"
+          }
+        }
+      }
+    },
+    "What this app stores": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מה האפליקציה שומרת"
+          }
+        }
+      }
+    },
+    "When required lessons are published, or you subscribe to optional ones, they'll appear here.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כשיתפרסמו שיעורי חובה, או כשתירשמו לשיעורי רשות, הם יופיעו כאן."
+          }
+        }
+      }
+    },
+    "Who can open it": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מי יכול לפתוח"
+          }
+        }
+      }
+    },
+    "Who can see it": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מי יכול לראות"
+          }
+        }
+      }
+    },
+    "Woodland Study": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Woodland Study"
+          }
+        }
+      }
+    },
+    "Woodland Study Tracker is open-source software (MIT License). Lora font: SIL Open Font License 1.1.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Woodland Study Tracker היא תוכנת קוד פתוח (רישיון MIT). הגופן Lora: SIL Open Font License 1.1."
+          }
+        }
+      }
+    },
+    "Workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עומס עבודה"
+          }
+        }
+      }
+    },
+    "You don't have access to this file.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין לך גישה לקובץ הזה."
+          }
+        }
+      }
+    },
+    "You haven't subscribed to optional lessons. Browse the catalog to add some.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עוד לא נרשמת לשיעורי רשות. עיינו בקטלוג כדי להוסיף."
+          }
+        }
+      }
+    },
+    "You signed out. Data from this device was removed.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "התנתקת. הנתונים נמחקו מהמכשיר."
+          }
+        }
+      }
+    },
+    "You unsubscribed · progress kept": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ביטלת הרשמה · ההתקדמות נשמרה"
+          }
+        }
+      }
+    },
+    "You're already a member.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כבר הצטרפת."
+          }
+        }
+      }
+    },
+    "You're offline and this file hasn't been downloaded yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין חיבור והקובץ עוד לא הורד."
+          }
+        }
+      }
+    },
+    "You're offline. Changes will sync when you reconnect.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין חיבור. השינויים יסונכרנו כשהחיבור יחזור."
+          }
+        }
+      }
+    },
+    "You're offline. Connect to the internet to sign in.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין חיבור. התחברו לאינטרנט כדי להיכנס."
+          }
+        }
+      }
+    },
+    "You're offline. Content changes need a connection.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין חיבור. שינויי תוכן דורשים חיבור."
+          }
+        }
+      }
+    },
+    "Your Apple ID is only used to sign you in. Your progress and notes are private to you.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ה־Apple ID משמש רק להתחברות. ההתקדמות וההערות שלך פרטיות."
+          }
+        }
+      }
+    },
+    "Your account and all your data were deleted.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "החשבון וכל הנתונים שלך נמחקו."
+          }
+        }
+      }
+    },
+    "Your account doesn't have administrator rights for this.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לחשבון שלך אין הרשאות ניהול לפעולה הזו."
+          }
+        }
+      }
+    },
+    "Your account was not deleted: %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "החשבון לא נמחק: %@"
+          }
+        }
+      }
+    },
+    "Your data": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הנתונים שלך"
+          }
+        }
+      }
+    },
+    "Your instructor hasn't published lessons yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המרצה עוד לא פרסם שיעורים."
+          }
+        }
+      }
+    },
+    "Your instructor hasn't set a class code yet.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המרצה עוד לא הגדיר קוד כיתה."
+          }
+        }
+      }
+    },
+    "Your instructor shares this code. It unlocks materials marked “Class members”.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המרצה משתף את הקוד הזה. הוא פותח חומרים שמסומנים „חברי הכיתה”."
+          }
+        }
+      }
+    },
+    "Your session expired. Please sign in again.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פג תוקף ההתחברות. יש להתחבר שוב."
+          }
+        }
+      }
+    },
+    "Your session expired. Please sign in again; changes saved on this device will sync afterwards.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פג תוקף ההתחברות. יש להתחבר שוב; שינויים שנשמרו במכשיר יסונכרנו לאחר מכן."
+          }
+        }
+      }
+    },
+    "Your subscriptions and progress are stored in your account and sync to every device you sign in on. The app also keeps a copy on this device so it works offline.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ההרשמות וההתקדמות שלך נשמרות בחשבון ומסתנכרנות לכל מכשיר שבו תתחברו. האפליקציה שומרת גם עותק במכשיר כדי לעבוד בלי חיבור."
+          }
+        }
+      }
+    },
+    "Your workload": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עומס העבודה שלך"
+          }
+        }
+      }
+    },
+    "v%lld · %@ · %@": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גרסה %1$lld · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "–": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
+          }
+        }
+      }
+    },
+    "• A stable account id from Sign in with Apple. No name, email or Apple ID password is requested or stored.\n• Which optional lessons you follow.\n• Your progress, exercise counts and private notes.\n• Whether you joined the class with its code.": {
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• מזהה חשבון קבוע מ־Sign in with Apple. לא מתבקשים ולא נשמרים שם, דוא״ל או סיסמת Apple ID.\n• שיעורי הרשות שאת/ה עוקב/ת אחריהם.\n• ההתקדמות, מספר התרגילים וההערות הפרטיות שלך.\n• האם הצטרפת לכיתה עם הקוד."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

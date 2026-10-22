@@ -1,0 +1,14 @@
+// Shared build settings for Woodland Study Tracker.
+//
+// Personal values (your team, bundle id, Supabase project) go in Config/Local.xcconfig,
+// which is git-ignored. Copy Config/Local.example.xcconfig to get started.
+// Never put a service-role / secret key here: only the publishable key belongs in the app.
+
+APP_BUNDLE_ID = org.example.woodland-study
+DEVELOPMENT_TEAM =
+
+// Empty = demo mode (synthetic data, no network).
+SUPABASE_URL =
+SUPABASE_PUBLISHABLE_KEY =
+
+#include? "Local.xcconfig"

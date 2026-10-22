@@ -1,0 +1,48 @@
+# ---- Secrets & local configuration (NEVER commit) -------------------------
+.env
+.env.*
+!.env.example
+supabase/.env
+supabase/functions/.env
+Config/Local.xcconfig
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+*.keychain
+*.pem
+*.key
+AuthKey_*.p8
+service-account*.json
+
+# ---- Database dumps & exports (may contain real users) ---------------------
+*.dump
+*.backup
+*.sql.gz
+dumps/
+woodland-study-export*.json
+
+# ---- Xcode -----------------------------------------------------------------
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcarchive
+
+# ---- Swift Package Manager ---------------------------------------------------
+.build/
+.swiftpm/
+
+# ---- Supabase CLI ------------------------------------------------------------
+supabase/.branches/
+supabase/.temp/
+
+# ---- Node (db test runner) ---------------------------------------------------
+node_modules/
+
+# ---- macOS -------------------------------------------------------------------
+.DS_Store
