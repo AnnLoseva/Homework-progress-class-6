@@ -27,6 +27,7 @@ Re-run the automated part with `scripts/testflight.sh check`.
 | Signed archive | PASS | `build/HomeworkProgress-1.0-11.xcarchive` |
 | App Store export (no upload) | PASS | `build/export-11/Homework progress.ipa`: Apple Distribution cert, App Store profile, `aps-environment=production`, `get-task-allow=false`, `codesign --verify --deep --strict` OK |
 | App Store Connect validation | NOT VERIFIED | Needs an App Store Connect record; use Organizer → Validate App, or the upload itself validates |
+| Xcode Cloud: shared scheme + `ci_scripts/ci_post_clone.sh` | PASS (local) / NOT VERIFIED (cloud) | Script tested with missing vars, opt-out and real-shaped values; Xcode parses its output; tests pass through the shared scheme (82/82). No Xcode Cloud build has been run yet — needs the environment variables (guide, option C) |
 | Archive refuses bad backend config | PASS | Archive with empty `SUPABASE_URL` fails with a clear error; script tested with HTTP, placeholder, `sb_secret_`, `service_role` JWT |
 | Release points at the hosted backend | PASS | Archive Info.plist: the hosted `https://<ref>.supabase.co` URL from `Config/Local.xcconfig` and an `sb_publishable_…` key |
 | Export compliance | PASS | `ITSAppUsesNonExemptEncryption = NO` |

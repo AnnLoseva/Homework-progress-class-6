@@ -63,6 +63,34 @@ your Xcode account's signing and uploads. Use `export` instead of `upload` to on
 `.ipa`. Don't mix options A and B for the same version unless the build number keeps
 increasing.
 
+### Option C — Xcode Cloud
+
+Xcode Cloud builds from the GitHub repository, where `Config/Local.xcconfig` doesn't exist.
+`ci_scripts/ci_post_clone.sh` writes it from the workflow's environment variables; without
+them the archive stops with an error instead of shipping a Class tab that can't connect.
+
+1. Commit and push `ci_scripts/`, the shared scheme
+   (`Homework progress.xcodeproj/xcshareddata/xcschemes/`) and
+   `xcshareddata/xcodecloud/manifest.json`.
+2. App Store Connect → your app → **Xcode Cloud → Manage Workflows** → your workflow →
+   **Environment**. In Xcode: Report navigator → Cloud → right-click the product → *Manage
+   Workflows…*. Under **Environment Variables** add:
+
+   | Name | Value | Secret |
+   |---|---|---|
+   | `SUPABASE_URL` | `https://<project-ref>.supabase.co` — the same URL as in your `Config/Local.xcconfig` | optional |
+   | `SUPABASE_PUBLISHABLE_KEY` | the `sb_publishable_…` key from your `Config/Local.xcconfig` (Supabase → Project Settings → API Keys). **Never** the secret / service-role key. | tick it, so it's hidden in logs |
+
+   For a homework-only build, set `ALLOW_ARCHIVE_WITHOUT_CLASS_BACKEND` = `YES` instead.
+3. In the same workflow: **Actions → Archive** (platform iOS, *TestFlight (Internal and
+   External Testing)*), and under **Post-Actions → TestFlight External Testing** pick your
+   group if you want builds to go to classmates automatically.
+4. **Build numbers:** Xcode Cloud sets its own increasing build number. If you already
+   uploaded a higher one from the Mac (e.g. 11), raise Xcode Cloud's next build number in
+   the product's Settings → Build Number, or App Store Connect will reject the upload.
+5. Start a build (Xcode → Product → Xcode Cloud → Start Build). The log of the
+   `ci_post_clone.sh` step should say "Wrote Config/Local.xcconfig for <ref>.supabase.co".
+
 ## 3. After the upload
 
 1. App Store Connect → your app → **TestFlight**. The build shows *Processing* for
