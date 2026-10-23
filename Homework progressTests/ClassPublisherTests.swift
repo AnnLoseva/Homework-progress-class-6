@@ -156,5 +156,7 @@ struct ClassPublisherTests {
         #expect(draft.isValid)
         #expect(draft.description.isEmpty)
         #expect(draft.sortOrder == 2)
+        #expect(draft.weekStartsOn == "2026-11-01" && draft.weekEndsOn == "2026-11-07",
+                "the week's dates go with the lesson, so students get the same week")
     }
 }

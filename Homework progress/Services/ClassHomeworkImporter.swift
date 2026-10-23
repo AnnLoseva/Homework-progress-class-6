@@ -124,6 +124,7 @@ struct ClassHomeworkImporter {
                 guard lesson.isActive(at: now), !skippedCourses.contains(lesson.courseID),
                       catalog.course(lesson.courseID) != nil, existingAssignment(id: lesson.id) == nil,
                       includingRemoved || !ledger.known.contains(lesson.id) else { return false }
+                if let dates = classWeekDates(of: lesson) { return planner.contains(dates.start, start: start, end: end) }
                 if let week = lesson.week, let number { return week == number }
                 return lesson.dueAt.map { planner.contains($0, start: start, end: end) } ?? false
             }
@@ -244,6 +245,18 @@ struct ClassHomeworkImporter {
     /// dates contradict the user's calendar. Without numbered weeks the due date decides.
     func homeworkWeek(for lesson: Lesson, now: Date) -> AcademicWeek {
         let weeks = (try? context.fetch(FetchDescriptor<AcademicWeek>())) ?? []
+        // The class week's own dates come first: the student's week that holds its first day,
+        // else a week with exactly those dates, so everyone has the same calendar week.
+        if let dates = classWeekDates(of: lesson) {
+            if let match = weeks.first(where: { planner.contains(dates.start, start: $0.startDate, end: $0.endDate) }) {
+                return match
+            }
+            let number = lesson.week ?? WeekPlanner.nextNumber(after: weeks.map(\.number))
+            let module = lesson.moduleTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            return store.createWeek(title: module.isEmpty ? WeekPlanner.defaultTitle(number: number) : module,
+                                    number: number, start: dates.start, end: dates.end, planner: planner,
+                                    id: UUID.derived(from: "class-week:\(number):\(lesson.weekStartsOn ?? "")"))
+        }
         if let number = lesson.week, let match = weeks.first(where: { $0.number == number }) { return match }
         let anchored = lesson.week.flatMap { anchoredDate(forWeek: $0, among: weeks) }
         if let day = anchored ?? lesson.dueAt,
@@ -261,6 +274,14 @@ struct ClassHomeworkImporter {
 }
 
 extension ClassHomeworkImporter {
+    /// The class week's first and last day on this device's calendar, when the class has them.
+    func classWeekDates(of lesson: Lesson) -> (start: Date, end: Date)? {
+        guard let first = lesson.weekStartsOn.flatMap({ CalendarDay.date(from: $0, calendar: planner.calendar) }),
+              let last = lesson.weekEndsOn.flatMap({ CalendarDay.date(from: $0, calendar: planner.calendar) }),
+              first <= last else { return nil }
+        return (first, last)
+    }
+
     /// A day inside week `number` on the user's calendar: counted in whole weeks from their
     /// nearest numbered week. Nil when they have no numbered week to count from.
     func anchoredDate(forWeek number: Int, among weeks: [AcademicWeek]) -> Date? {

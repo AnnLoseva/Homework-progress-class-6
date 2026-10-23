@@ -30,11 +30,15 @@ public struct LessonDraft: Equatable, Sendable {
     public var estimatedMinutes: Int?
     public var exerciseCount: Int
     public var prerequisiteIDs: [UUID]
+    /// The class week's first and last day ("2026-10-18"); both or neither.
+    public var weekStartsOn: String?
+    public var weekEndsOn: String?
 
     public init(id: UUID? = nil, courseID: UUID? = nil, title: String = "", description: String = "",
                 category: LessonCategory = .required, week: Int? = nil, moduleTitle: String = "",
                 sortOrder: Int = 0, availableFrom: Date? = nil, dueAt: Date? = nil,
-                estimatedMinutes: Int? = nil, exerciseCount: Int = 0, prerequisiteIDs: [UUID] = []) {
+                estimatedMinutes: Int? = nil, exerciseCount: Int = 0, prerequisiteIDs: [UUID] = [],
+                weekStartsOn: String? = nil, weekEndsOn: String? = nil) {
         self.id = id
         self.courseID = courseID
         self.title = title
@@ -48,6 +52,10 @@ public struct LessonDraft: Equatable, Sendable {
         self.estimatedMinutes = estimatedMinutes
         self.exerciseCount = exerciseCount
         self.prerequisiteIDs = prerequisiteIDs
+        if let weekStartsOn, let weekEndsOn, weekStartsOn <= weekEndsOn {
+            self.weekStartsOn = weekStartsOn
+            self.weekEndsOn = weekEndsOn
+        }
     }
 
     public init(lesson: Lesson) {
@@ -55,7 +63,8 @@ public struct LessonDraft: Equatable, Sendable {
                   category: lesson.category, week: lesson.week, moduleTitle: lesson.moduleTitle ?? "",
                   sortOrder: lesson.sortOrder, availableFrom: lesson.availableFrom, dueAt: lesson.dueAt,
                   estimatedMinutes: lesson.estimatedMinutes, exerciseCount: lesson.exerciseCount,
-                  prerequisiteIDs: lesson.prerequisiteIDs)
+                  prerequisiteIDs: lesson.prerequisiteIDs, weekStartsOn: lesson.weekStartsOn,
+                  weekEndsOn: lesson.weekEndsOn)
     }
 
     public var trimmedTitle: String { title.trimmingCharacters(in: .whitespacesAndNewlines) }

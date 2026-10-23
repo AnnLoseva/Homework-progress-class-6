@@ -224,6 +224,8 @@ public actor InMemoryServer {
         lesson.estimatedMinutes = draft.estimatedMinutes
         lesson.exerciseCount = draft.exerciseCount
         lesson.prerequisiteIDs = draft.prerequisiteIDs
+        lesson.weekStartsOn = draft.weekStartsOn
+        lesson.weekEndsOn = draft.weekEndsOn
         lesson.updatedAt = date
         lessons[lesson.id] = lesson
         if lesson.category != draft.category { setLessonCategory(lesson.id, draft.category) }

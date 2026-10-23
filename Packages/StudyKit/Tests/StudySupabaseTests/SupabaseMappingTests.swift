@@ -32,6 +32,31 @@ struct RowMappingTests {
         #expect(lesson.exerciseCount == 8)
         #expect(lesson.dueAt != nil)
         #expect(lesson.moduleTitle == nil)
+        #expect(lesson.weekStartsOn == nil, "rows from before the week dates existed still decode")
+    }
+
+    @Test func classWeekDatesRoundTripAsCalendarDays() throws {
+        let json = """
+        {"id":"00000000-0000-4000-8000-0000000001a1","course_id":"00000000-0000-4000-8000-000000000c01",
+         "title":"HW1","description":"","category":"optional","status":"published","week":1,
+         "module_title":"Week 1","sort_order":0,"available_from":null,"due_at":null,"estimated_minutes":null,
+         "exercise_count":9,"published_at":"2026-10-20T08:00:00+00:00","archived_at":null,
+         "created_at":"2026-10-01T08:00:00+00:00","updated_at":"2026-10-21T08:00:00+00:00",
+         "week_starts_on":"2026-10-18","week_ends_on":"2026-10-23"}
+        """
+        let lesson = try SupabaseCoding.decoder.decode(LessonRow.self, from: Data(json.utf8)).domain(prerequisites: [])
+        #expect(lesson.weekStartsOn == "2026-10-18" && lesson.weekEndsOn == "2026-10-23")
+
+        let data = try JSONEncoder().encode(LessonWrite(draft: LessonDraft(lesson: lesson)))
+        let object = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(object["week_starts_on"] as? String == "2026-10-18")
+        #expect(object["week_ends_on"] as? String == "2026-10-23")
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Jerusalem")!
+        let day = try #require(CalendarDay.date(from: "2026-10-18", calendar: calendar))
+        #expect(CalendarDay.string(from: day, calendar: calendar) == "2026-10-18")
+        #expect(CalendarDay.date(from: "2026-02-30", calendar: calendar) == nil)
     }
 
     @Test func decodesProgressAndSubscriptionRows() throws {

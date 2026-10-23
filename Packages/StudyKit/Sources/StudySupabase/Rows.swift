@@ -137,6 +137,9 @@ struct LessonRow: Codable, Equatable {
     var archivedAt: Date?
     var createdAt: Date
     var updatedAt: Date
+    /// `date` columns arrive as "2026-10-18" and are kept as that string.
+    var weekStartsOn: String?
+    var weekEndsOn: String?
 
     enum CodingKeys: String, CodingKey {
         case id, title, description, category, status, week
@@ -151,6 +154,8 @@ struct LessonRow: Codable, Equatable {
         case archivedAt = "archived_at"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
+        case weekStartsOn = "week_starts_on"
+        case weekEndsOn = "week_ends_on"
     }
 
     func domain(prerequisites: [UUID]) -> Lesson {
@@ -158,7 +163,8 @@ struct LessonRow: Codable, Equatable {
                status: status, week: week, moduleTitle: moduleTitle, sortOrder: sortOrder,
                availableFrom: availableFrom, dueAt: dueAt, estimatedMinutes: estimatedMinutes,
                exerciseCount: exerciseCount, publishedAt: publishedAt, archivedAt: archivedAt,
-               createdAt: createdAt, updatedAt: updatedAt, prerequisiteIDs: prerequisites)
+               createdAt: createdAt, updatedAt: updatedAt, prerequisiteIDs: prerequisites,
+               weekStartsOn: weekStartsOn, weekEndsOn: weekEndsOn)
     }
 }
 
@@ -176,6 +182,8 @@ struct LessonWrite: Encodable {
         case dueAt = "due_at"
         case estimatedMinutes = "estimated_minutes"
         case exerciseCount = "exercise_count"
+        case weekStartsOn = "week_starts_on"
+        case weekEndsOn = "week_ends_on"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -192,6 +200,8 @@ struct LessonWrite: Encodable {
         try c.encode(draft.dueAt.map(PostgresDate.format), forKey: .dueAt)
         try c.encode(draft.estimatedMinutes, forKey: .estimatedMinutes)
         try c.encode(draft.exerciseCount, forKey: .exerciseCount)
+        try c.encode(draft.weekStartsOn, forKey: .weekStartsOn)
+        try c.encode(draft.weekEndsOn, forKey: .weekEndsOn)
     }
 }
 

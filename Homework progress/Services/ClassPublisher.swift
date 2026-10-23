@@ -40,6 +40,9 @@ struct ClassPublishItem: Identifiable, Equatable {
     var course: CourseInfo
     var weekNumber: Int?
     var weekTitle: String
+    /// The homework week's first and last day: students get the same calendar week.
+    var weekStart: Date?
+    var weekEnd: Date?
     var orderInWeek: Int
     var dueDate: Date?
     var totalExercises: Int?
@@ -54,6 +57,8 @@ struct ClassPublishItem: Identifiable, Equatable {
                                  sortOrder: course?.sortOrder ?? 0)
         weekNumber = assignment.week?.number
         weekTitle = assignment.week?.title ?? ""
+        weekStart = assignment.week?.startDate
+        weekEnd = assignment.week?.endDate
         self.orderInWeek = orderInWeek
         dueDate = assignment.dueDate
         totalExercises = assignment.totalExercises
@@ -64,8 +69,10 @@ struct ClassPublishItem: Identifiable, Equatable {
     }
 
     init(id: UUID, title: String, course: CourseInfo, weekNumber: Int?, weekTitle: String, orderInWeek: Int,
-         dueDate: Date?, totalExercises: Int?, files: [File]) {
+         dueDate: Date?, totalExercises: Int?, files: [File], weekStart: Date? = nil, weekEnd: Date? = nil) {
         self.id = id
+        self.weekStart = weekStart
+        self.weekEnd = weekEnd
         self.title = title
         self.course = course
         self.weekNumber = weekNumber
@@ -170,12 +177,21 @@ struct ClassPublisher {
             colorKey: Self.colorKey(for: course.colorKey), sortOrder: course.sortOrder))
     }
 
-    static func lessonDraft(for item: ClassPublishItem, courseID: UUID, category: LessonCategory) -> LessonDraft {
+    static func lessonDraft(for item: ClassPublishItem, courseID: UUID, category: LessonCategory,
+                            calendar: Calendar = .current) -> LessonDraft {
         let week = item.weekNumber.flatMap { (0...60).contains($0) ? $0 : nil }
+        // The database takes weeks of at most two weeks; anything longer is left undated.
+        var days: (String, String)?
+        if let start = item.weekStart, let end = item.weekEnd,
+           let length = calendar.dateComponents([.day], from: calendar.startOfDay(for: start),
+                                                to: calendar.startOfDay(for: end)).day, (0...13).contains(length) {
+            days = (CalendarDay.string(from: start, calendar: calendar), CalendarDay.string(from: end, calendar: calendar))
+        }
         return LessonDraft(id: item.id, courseID: courseID, title: String(item.title.prefix(200)),
                            category: category, week: week, moduleTitle: item.weekTitle,
                            sortOrder: item.orderInWeek, dueAt: item.dueDate,
-                           exerciseCount: min(max(item.totalExercises ?? 0, 0), 500))
+                           exerciseCount: min(max(item.totalExercises ?? 0, 0), 500),
+                           weekStartsOn: days?.0, weekEndsOn: days?.1)
     }
 
     /// From the English name when there is one (Hebrew names have no ASCII slug); otherwise

@@ -72,13 +72,19 @@ public struct Lesson: Identifiable, Hashable, Codable, Sendable {
     public var createdAt: Date
     public var updatedAt: Date
     public var prerequisiteIDs: [UUID]
+    /// The class week's first and last day ("2026-10-18"), from the homework week the lesson
+    /// was published from, so every student's copy lands in the same calendar week. Nil for
+    /// lessons published before the dates existed.
+    public var weekStartsOn: String?
+    public var weekEndsOn: String?
 
     public init(id: UUID = UUID(), courseID: UUID, title: String, description: String = "",
                 category: LessonCategory, status: LessonStatus = .draft, week: Int? = nil,
                 moduleTitle: String? = nil, sortOrder: Int = 0, availableFrom: Date? = nil,
                 dueAt: Date? = nil, estimatedMinutes: Int? = nil, exerciseCount: Int = 0,
                 publishedAt: Date? = nil, archivedAt: Date? = nil,
-                createdAt: Date = Date(), updatedAt: Date = Date(), prerequisiteIDs: [UUID] = []) {
+                createdAt: Date = Date(), updatedAt: Date = Date(), prerequisiteIDs: [UUID] = [],
+                weekStartsOn: String? = nil, weekEndsOn: String? = nil) {
         self.id = id
         self.courseID = courseID
         self.title = title
@@ -97,6 +103,8 @@ public struct Lesson: Identifiable, Hashable, Codable, Sendable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.prerequisiteIDs = prerequisiteIDs
+        self.weekStartsOn = weekStartsOn
+        self.weekEndsOn = weekEndsOn
     }
 
     public var hasExercises: Bool { exerciseCount > 0 }
@@ -234,5 +242,22 @@ public enum StoragePath {
     /// `<lesson_id>/<attachment_id>/v<version>.pdf`, the only layout the storage policies accept.
     public static func lessonMaterial(lessonID: UUID, attachmentID: UUID, version: Int) -> String {
         "\(lessonID.uuidString.lowercased())/\(attachmentID.uuidString.lowercased())/v\(version).pdf"
+    }
+}
+
+/// A calendar day as the database stores a `date`: "2026-10-18", read in the user's own calendar.
+public enum CalendarDay {
+    public static func string(from date: Date, calendar: Calendar) -> String {
+        let c = calendar.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
+    }
+
+    /// The start of that day, or nil for anything that isn't a valid "yyyy-MM-dd".
+    public static func date(from string: String, calendar: Calendar) -> Date? {
+        let parts = string.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nil }
+        let components = DateComponents(year: parts[0], month: parts[1], day: parts[2])
+        guard components.isValidDate(in: calendar) else { return nil }
+        return calendar.date(from: components).map(calendar.startOfDay(for:))
     }
 }

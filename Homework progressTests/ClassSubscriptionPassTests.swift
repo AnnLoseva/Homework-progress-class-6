@@ -295,4 +295,70 @@ struct ClassSubscriptionPassTests {
         guard case .done = outcome.phase else { Issue.record("expected success: \(outcome.phase)"); return }
         #expect(outcome.report.filesPending == 0, "these lessons have no PDFs to wait for")
     }
+
+    // Every account that subscribes gets the administrator's week as it is: "Week 1",
+    // 18–23 Oct, the same 12 assignments in the same five courses, with its own progress
+    // (0 of 143) — never the administrator's 97.
+    @Test func everySubscriberGetsTheSameWeekAndCoursesWithTheirOwnProgress() async throws {
+        let computational = StudyDomain.Course(slug: "computational-thinking-programming", title: "חשיבה חישובית ותכנותית",
+                                               subtitle: "Computational Thinking & Programming", sortOrder: 1)
+        let silicon = StudyDomain.Course(slug: "from-silicon-to-high-level-language", title: "מסיליקון לשפה עילית",
+                                         subtitle: "From Silicon to High-Level Language", sortOrder: 3)
+        func published(_ title: String, _ course: StudyDomain.Course, due day: Int, _ exercises: Int) -> Lesson {
+            var lesson = Self.lesson(title, course, week: 1, due: date(2026, 10, day, hour: 9), category: .optional, exercises: exercises)
+            lesson.weekStartsOn = "2026-10-18"
+            lesson.weekEndsOn = "2026-10-23"
+            return lesson
+        }
+        let classLessons = [
+            published("Targil 1", algebra, due: 25, 6), published("HW1", algebra, due: 25, 9),
+            published("Class Work 2", algebra, due: 25, 5), published("Exercise 1", computational, due: 25, 10),
+            published("Test quantifiers", discrete, due: 25, 52), published("Exer DNF and CNF", discrete, due: 25, 1),
+            published("Exer quantif", discrete, due: 25, 20), published("Tirgul Logic 1", discrete, due: 25, 9),
+            published("Exercise 1 (silicon)", silicon, due: 26, 13), published("Add_List_1", analysis, due: 28, 8),
+            published("List_1", analysis, due: 28, 9), published("Review sheet", analysis, due: 28, 1),
+        ]
+        let server = InMemoryServer(catalog: Catalog(courses: [algebra, computational, analysis, silicon, discrete],
+                                                     lessons: classLessons))
+        await server.addUser(adminID, isAdmin: true, isEnrolled: true)
+        // The administrator has done 97 exercises in Class.
+        let admin = StudentStore(userID: adminID, backend: InMemoryConnection(server: server, userID: adminID),
+                                 snapshots: SnapshotStore(directory: cache.appendingPathComponent("admin")), automaticRetry: false)
+        await admin.start()
+        for lesson in classLessons.prefix(5) { await admin.setCompletedExercises(lesson.exerciseCount, lessonID: lesson.id) }
+
+        for account in 1...2 {                                 // two other accounts, on fresh devices
+            let device = try TestEnvironment()
+            let studentID = UUID()
+            await server.addUser(studentID)
+            let student = StudentStore(userID: studentID, backend: InMemoryConnection(server: server, userID: studentID),
+                                       snapshots: SnapshotStore(directory: cache.appendingPathComponent("s\(account)")),
+                                       automaticRetry: false)
+            await student.loadCache()
+            var subject = ClassSubscriptionPass(student: student, importer: ClassHomeworkImporter(
+                store: device.store, planner: planner, ledger: ClassImportLedger(defaults: device.defaults),
+                fetchFile: { _ in throw URLError(.userAuthenticationRequired) }))
+            let outcome = try #require(await subject.run(refresh: true, now: date(2026, 10, 23, hour: 17)))
+
+            let weeks = try device.context.fetch(FetchDescriptor<AcademicWeek>())
+            let week = try #require(weeks.first)
+            #expect(weeks.count == 1)
+            #expect(week.title == "Week 1" && week.number == 1)
+            #expect(week.startDate == date(2026, 10, 18, hour: 0) && week.endDate == date(2026, 10, 23, hour: 0), "18–23 Oct")
+            #expect(outcome.weekToShow?.id == week.id)
+
+            let summary = ProgressCalculator.summarize(week.assignmentList.map(\.snapshot))
+            #expect(summary.assignmentCount == 12)
+            #expect(summary.totalExercises == 143)
+            #expect(summary.completedExercises == 0, "their own progress, not the administrator's")
+
+            // The Courses list on the week: every course has its assignments.
+            let courses = try device.context.fetch(FetchDescriptor<Homework_progress.Course>())
+            #expect(Set(courses.map(\.id)) == Set(CourseSeeder.defaults.map(\.id)))
+            let perCourse = Dictionary(uniqueKeysWithValues: courses.map { ($0.englishName, $0.assignments(in: week).count) })
+            #expect(perCourse == ["Linear Algebra & Data Representation A": 3, "Computational Thinking & Programming": 1,
+                                  "Introduction to Analysis": 3, "From Silicon to High-Level Language": 1,
+                                  "Discrete Mathematics": 4])
+        }
+    }
 }
