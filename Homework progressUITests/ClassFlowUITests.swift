@@ -1,0 +1,69 @@
+//
+//  ClassFlowUITests.swift
+//  Homework progressUITests
+//
+//  Drives the Class area signed in, against an in-memory server with two made-up lessons
+//  (`-uiTestingClassSignedIn`, DEBUG builds only). Using a lesson must keep the user in Class
+//  instead of sending them back to Homework. Works on iPhone (tab bar) and iPad (sidebar).
+//
+
+import XCTest
+
+final class ClassFlowUITests: XCTestCase {
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+    }
+
+    @MainActor
+    func testUsingALessonStaysInClass() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingClassSignedIn"]
+        app.launch()
+        try runLessonFlow(app)
+    }
+
+    @MainActor
+    private func runLessonFlow(_ app: XCUIApplication) throws {
+        let classTab = app.tabBars.buttons["Class"]
+        if classTab.waitForExistence(timeout: 5) {
+            classTab.tap()
+        } else {
+            let sidebarRow = app.staticTexts["Class Home"].firstMatch
+            if !sidebarRow.waitForExistence(timeout: 2) { app.buttons["Show Sidebar"].firstMatch.tap() }
+            XCTAssertTrue(sidebarRow.waitForExistence(timeout: 5))
+            sidebarRow.tap()
+        }
+
+        let lesson = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "UI required lesson")).firstMatch
+        XCTAssertTrue(lesson.waitForExistence(timeout: 10))
+        lesson.tap()
+
+        let plus = app.buttons["exercisePlus"]
+        XCTAssertTrue(plus.waitForExistence(timeout: 5))
+        for id in ["exercisePlus", "exercisePlus", "exerciseMinus"] {
+            app.buttons[id].tap()
+            assertStillInClass(app)
+        }
+        for status in ["In progress", "Completed"] {
+            app.buttons[status].firstMatch.tap()
+            assertStillInClass(app)
+        }
+    }
+
+    /// Same flow with the app's real (persistent, iCloud-mirrored) store, like TestFlight builds.
+    @MainActor
+    func testUsingALessonStaysInClassWithTheRealStore() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestingClassSignedIn"]
+        app.launch()
+        try runLessonFlow(app)
+    }
+
+    @MainActor
+    private func assertStillInClass(_ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(app.buttons["exercisePlus"].waitForExistence(timeout: 3), "Left the lesson screen", file: file, line: line)
+        XCTAssertFalse(app.buttons["createFirstWeek"].exists, "Jumped to the Homework dashboard", file: file, line: line)
+        let classTab = app.tabBars.buttons["Class"]
+        if classTab.exists { XCTAssertTrue(classTab.isSelected, "Class tab lost its selection", file: file, line: line) }
+    }
+}

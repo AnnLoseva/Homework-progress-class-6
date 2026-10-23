@@ -171,3 +171,35 @@ final class InMemoryAppleIDStore: AppleUserIDStore, @unchecked Sendable {
     func load() -> String? { lock.withLock { value } }
     func save(_ id: String?) { lock.withLock { value = id } }
 }
+
+#if DEBUG
+extension ClassroomEnvironment {
+    /// UI tests only (never in Release builds): a signed-in administrator on an in-memory server
+    /// with two made-up lessons, so the Class screens can be driven without Supabase or an Apple ID.
+    public static func uiTestingSignedIn() -> ClassroomEnvironment {
+        let userID = UUID()
+        let now = Date()
+        let course = Course(id: UUID(), slug: "ui-test", title: "UI Test Course", subtitle: nil,
+                            iconName: "CourseStudy", colorKey: "moss", sortOrder: 1)
+        func lesson(_ title: String, _ category: LessonCategory, exercises: Int) -> Lesson {
+            Lesson(id: UUID(), courseID: course.id, title: title, description: "Made-up lesson for UI tests.",
+                   category: category, status: .published, week: 1, moduleTitle: "Module", sortOrder: 1,
+                   dueAt: now.addingTimeInterval(3 * 24 * 3600), estimatedMinutes: 30, exerciseCount: exercises,
+                   publishedAt: now.addingTimeInterval(-3600), archivedAt: nil,
+                   createdAt: now.addingTimeInterval(-7200), updatedAt: now.addingTimeInterval(-3600))
+        }
+        let catalog = Catalog(courses: [course],
+                              lessons: [lesson("UI required lesson", .required, exercises: 4),
+                                        lesson("UI optional lesson", .optional, exercises: 2)],
+                              attachments: [])
+        let server = InMemoryServer(catalog: catalog)
+        return ClassroomEnvironment(
+            mode: .supabase, problem: nil,
+            auth: InMemoryAuthService(server: server, userID: userID, isAdmin: true, startSignedIn: true),
+            credentialChecker: nil, appleUserIDStore: InMemoryAppleIDStore(),
+            studentBackend: { InMemoryConnection(server: server, userID: $0) },
+            adminBackend: { InMemoryConnection(server: server, userID: $0) },
+            snapshotDirectory: FileManager.default.temporaryDirectory.appendingPathComponent("UITesting-\(UUID().uuidString)"))
+    }
+}
+#endif

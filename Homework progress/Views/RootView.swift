@@ -103,12 +103,21 @@ struct RootView: View {
 // MARK: - iPhone / narrow
 
 struct CompactRootView: View {
+    enum Tab: String {
+        case homework
+        case classroom
+    }
+
     @Environment(AppRouter.self) private var router
+    /// Stored outside the view tree: without an explicit selection, a TabView that SwiftUI
+    /// rebuilds (for example after Class data changes) falls back to its first tab, and the
+    /// user was thrown from Class back to Homework.
+    @SceneStorage("compactRoot.tab") private var tab = Tab.homework
     var selectedWeek: AcademicWeek?
 
     var body: some View {
         @Bindable var router = router
-        TabView {
+        TabView(selection: $tab) {
             NavigationStack(path: $router.path) {
                 DashboardView(week: selectedWeek)
                     .navigationDestination(for: AppRouter.Route.self) { route in
@@ -116,9 +125,11 @@ struct CompactRootView: View {
                     }
             }
             .tabItem { Label("Homework", systemImage: "book.closed") }
+            .tag(Tab.homework)
 
             ClassroomCompactView()
                 .tabItem { Label("Class", systemImage: "graduationcap") }
+                .tag(Tab.classroom)
         }
     }
 }

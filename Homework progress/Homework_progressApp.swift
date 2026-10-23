@@ -58,7 +58,12 @@ final class AppBootstrap {
             maintenance.run()
             let sync = SyncMonitor(storeKind: storeKind) { maintenance.run() }
             // UI tests never reach the class backend.
-            let classroom = isEphemeral ? ClassroomEnvironment(info: [:]) : ClassroomEnvironment()
+            var classroom = isEphemeral ? ClassroomEnvironment(info: [:]) : ClassroomEnvironment()
+            #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("-uiTestingClassSignedIn") {
+                classroom = .uiTestingSignedIn()
+            }
+            #endif
             state = .ready(container, AppServices(files: files, sync: sync, classroom: classroom))
         } catch {
             state = .failed(error.localizedDescription)

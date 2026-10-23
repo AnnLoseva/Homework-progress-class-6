@@ -85,7 +85,8 @@ private struct ClassroomLifecycle: ViewModifier {
 /// iPhone: the whole Class area in one tab, with a menu between its sections.
 public struct ClassroomCompactView: View {
     @Environment(ClassroomEnvironment.self) private var environment
-    @State private var section: ClassroomSection = .home
+    /// Scene storage, so the chosen section survives SwiftUI rebuilding this view.
+    @SceneStorage("classroom.compactSection") private var section: ClassroomSection = .home
 
     public init() {}
 
