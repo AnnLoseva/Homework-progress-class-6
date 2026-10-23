@@ -75,6 +75,8 @@ struct RootView: View {
             WeekEditorView(mode: .create)
         case .editWeek(let week):
             WeekEditorView(mode: .edit(week))
+        case .addClassLessons(let week):
+            AddClassLessonsView(week: week)
         case .newAssignment(let course, let week):
             AssignmentEditorView(mode: .create(course: course, week: week))
         case .editAssignment(let assignment):

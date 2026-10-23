@@ -162,6 +162,35 @@ struct SyncTests {
         #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 0) // they arrive through sync
     }
 
+    @Test func coursesThatNeverArriveThroughSyncAreAddedOnceICloudCaughtUp() throws {
+        let env = try TestEnvironment()
+        _ = try CourseSeeder.seedIfNeeded(context: env.context, defaults: env.defaults, sharedFlag: FakeSharedFlag(true))
+        #expect(CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+        let courses = try env.context.fetch(FetchDescriptor<Course>())
+        #expect(Set(courses.map(\.id)) == Set(CourseSeeder.defaults.map(\.id)), "same ids, so sync merges them")
+
+        // Only once: courses deleted later stay deleted.
+        courses.forEach(env.context.delete)
+        try env.context.save()
+        #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+        #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 0)
+    }
+
+    @Test func coursesThatArrivedThroughSyncAreNotAddedAgain() throws {
+        let env = try TestEnvironment()
+        _ = try CourseSeeder.seedIfNeeded(context: env.context, defaults: env.defaults, sharedFlag: FakeSharedFlag(true))
+        _ = seedSecondDevice(env, createdAt: .now)        // what iCloud delivered
+        #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+        #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 5)
+    }
+
+    @Test func aDeviceThatSeededItselfNeverSeedsAgain() throws {
+        let env = try TestEnvironment()
+        _ = try env.seed()
+        try env.context.fetch(FetchDescriptor<Course>()).forEach(env.context.delete)
+        #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+    }
+
     @Test func firstDeviceSetsTheSharedFlag() throws {
         let env = try TestEnvironment()
         let flag = FakeSharedFlag(false)

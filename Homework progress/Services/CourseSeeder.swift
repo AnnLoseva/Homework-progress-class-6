@@ -73,26 +73,45 @@ enum CourseSeeder {
         guard !store.bool(forKey: didSeedKey) else { return false }
         if let sharedFlag, sharedFlag.isSet {
             store.set(true, forKey: didSeedKey)
+            store.set(true, forKey: awaitingSyncedCoursesKey)
             return false
         }
         let existing = try context.fetchCount(FetchDescriptor<Course>())
-        if existing == 0 {
-            for (index, seed) in defaults.enumerated() {
-                context.insert(Course(
-                    id: seed.id,
-                    name: seed.name,
-                    englishName: seed.englishName,
-                    courseURLString: seed.url,
-                    colorKey: seed.palette.rawValue,
-                    iconName: seed.icon,
-                    sortOrder: index
-                ))
-            }
-            try context.save()
-        }
+        if existing == 0 { try insertDefaults(context: context) }
         store.set(true, forKey: didSeedKey)
         sharedFlag?.markSet()
         return existing == 0
+    }
+
+    /// Set on a device that skipped seeding because another device already had: the courses
+    /// should arrive through iCloud.
+    static let awaitingSyncedCoursesKey = "awaitingSyncedCourses.v1"
+
+    /// Called once the first iCloud import has finished. If the courses the other device seeded
+    /// still haven't arrived (e.g. iCloud wasn't reachable), the five courses are added here
+    /// anyway, with the same ids, so sync merges them with the other device's copies. Runs at
+    /// most once per device, so courses the user deletes later aren't brought back.
+    @discardableResult
+    static func seedIfCoursesNeverArrived(context: ModelContext, defaults store: UserDefaults = .standard) -> Bool {
+        guard store.bool(forKey: awaitingSyncedCoursesKey) else { return false }
+        store.set(false, forKey: awaitingSyncedCoursesKey)
+        guard (try? context.fetchCount(FetchDescriptor<Course>())) == 0 else { return false }
+        return (try? insertDefaults(context: context)) != nil
+    }
+
+    private static func insertDefaults(context: ModelContext) throws {
+        for (index, seed) in defaults.enumerated() {
+            context.insert(Course(
+                id: seed.id,
+                name: seed.name,
+                englishName: seed.englishName,
+                courseURLString: seed.url,
+                colorKey: seed.palette.rawValue,
+                iconName: seed.icon,
+                sortOrder: index
+            ))
+        }
+        try context.save()
     }
 
     /// Symbols the first version seeded; courses still using them get the illustration.

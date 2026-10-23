@@ -57,6 +57,7 @@ final class AppBootstrap {
             let maintenance = SyncMaintenance(context: context, files: files)
             maintenance.run()
             let sync = SyncMonitor(storeKind: storeKind) { maintenance.run() }
+            sync.onCaughtUp = { CourseSeeder.seedIfCoursesNeverArrived(context: context, defaults: defaults) }
             // UI tests never reach the class backend.
             var classroom = isEphemeral ? ClassroomEnvironment(info: [:]) : ClassroomEnvironment()
             #if DEBUG

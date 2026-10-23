@@ -243,4 +243,38 @@ struct ClassHomeworkImporterTests {
         #expect(phoneCopy.week?.id == padCopy.week?.id)
         #expect(phoneCopy.course?.id == robotics.id && padCopy.course?.id == robotics.id)
     }
+
+    // MARK: Adding to a week by hand
+
+    @Test func aWeekOffersItsLessonsFromSubscribedCoursesOnly() async throws {
+        let robotics = StudyDomain.Course(slug: "robotics", title: "Robotics")
+        let byNumber = lesson("Sets", .required, week: 3, due: date(2026, 12, 1))
+        let byDate = lesson("Logic", .optional, week: nil, due: date(2026, 11, 4))
+        let otherWeek = lesson("Graphs", .required, week: 4)
+        let skipped = lesson("Motors", .required, week: 3, course: robotics)
+        let catalog = Catalog(courses: [discrete, robotics], lessons: [byNumber, byDate, otherWeek, skipped])
+        let subject = try importer(skipping: [robotics.id])
+
+        let offered = subject.lessons(forWeekNumber: 3, start: date(2026, 11, 1), end: date(2026, 11, 7), catalog: catalog, now: now)
+        #expect(Set(offered.map(\.id)) == [byNumber.id, byDate.id])
+    }
+
+    @Test func addingByHandPutsLessonsInThatWeekAndCanBringBackARemovedOne() async throws {
+        let sets = lesson("Sets", .required, week: 9)
+        let catalog = Catalog(courses: [discrete], lessons: [sets])
+        var subject = try importer()
+        _ = await subject.run(catalog: catalog, now: now)
+        env.store.delete(try #require(try assignments().first))
+        let week = env.store.createWeek(title: "Catch-up", number: nil, start: date(2026, 11, 22), end: date(2026, 11, 28))
+
+        #expect(subject.lessons(forWeekNumber: 9, start: week.startDate, end: week.endDate, catalog: catalog, now: now).isEmpty,
+                "a removed lesson isn't offered automatically")
+        let offered = subject.lessons(forWeekNumber: 9, start: week.startDate, end: week.endDate, catalog: catalog,
+                                      includingRemoved: true, now: now)
+        #expect(offered.map(\.id) == [sets.id])
+
+        let report = await subject.add(offered, to: week, catalog: catalog)
+        #expect(report.added == 1)
+        #expect(try assignments().first?.week?.id == week.id)
+    }
 }

@@ -31,7 +31,11 @@ final class SyncMonitor {
     /// False until this launch's first import from iCloud has finished (or failed, or there is
     /// nothing to wait for). Work that creates records waits for it, so it sees what the other
     /// device already did first.
-    private(set) var hasCaughtUp = false
+    private(set) var hasCaughtUp = false {
+        didSet { if hasCaughtUp, !oldValue { onCaughtUp?() } }
+    }
+    /// Runs once, when `hasCaughtUp` becomes true.
+    @ObservationIgnored var onCaughtUp: (() -> Void)?
 
     let storeKind: PersistenceFactory.StoreKind
     private var observers: [NSObjectProtocol] = []

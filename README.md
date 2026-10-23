@@ -94,6 +94,13 @@ Pomodoro, the app always uses the light parchment appearance.
   was already copied follow your Apple ID to your other devices (iCloud key-value storage),
   and a device waits for its first iCloud import before adding anything, so iPhone and iPad
   don't add the same lesson twice.
+- **From the Homework tab:** *Settings → Class → Subscribe to class* has the same switch and
+  course list, and each course's *Course Settings* has *Add class lessons automatically*. A
+  **new week** offers the class lessons that belong to it (same week number, or due within its
+  dates) and adds them with their PDFs; *Add → Add Class Lessons…* on a week adds the ones it
+  is missing, including a lesson you removed earlier.
+- On a new device the five default courses arrive through iCloud; if they still haven't after
+  the first iCloud import, they are created there with the same ids, so sync merges them.
 - **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
   replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
   to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise

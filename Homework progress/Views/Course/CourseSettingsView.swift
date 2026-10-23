@@ -5,6 +5,8 @@
 
 import SwiftUI
 import SwiftData
+import ClassroomUI
+import StudyDomain
 
 /// Course name, color, icon, Moodle link and the Notability / Goodnotes notebook association.
 /// Changes apply to every week, because weeks only reference the course.
@@ -115,6 +117,25 @@ struct CourseSettingsView: View {
                 Text("\(noteApp.name) Notebook")
             } footer: {
                 Text("\(noteApp.name) doesn’t publish a way for other apps to open a specific notebook. The folder name is shown as a reminder when you open \(noteApp.name) yourself. If you have a link that opens this notebook (for example one you copied in \(noteApp.name)), paste it here and the app will open it — but it can’t check which note the link opens.")
+            }
+
+            if let homework = services.classroom.homework, let catalog = services.classCatalog,
+               let classCourse = ClassHomeworkImporter.classCourse(for: course, in: catalog) {
+                Section {
+                    Toggle(isOn: Binding(
+                        get: { homework.isOn && homework.isSubscribed(toCourse: classCourse.id) },
+                        set: { on in
+                            homework.setSubscribed(on, toCourse: classCourse.id)
+                            if on { homework.isOn = true }
+                        })) {
+                        Label("Add class lessons automatically", systemImage: "calendar.badge.plus")
+                    }
+                    .accessibilityIdentifier("courseClassSubscription")
+                } header: {
+                    Text("Class")
+                } footer: {
+                    Text("New lessons of this course in the class go to the matching week with their PDFs as soon as they're published.")
+                }
             }
 
             Section {

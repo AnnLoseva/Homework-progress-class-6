@@ -41,16 +41,7 @@ private struct ClassHomeworkSync: ViewModifier {
         content.task(id: trigger) {
             guard trigger != nil, let homework = services.classroom.homework,
                   let student = services.classroom.student else { return }
-            let attachments = services.classroom.attachments
-            var importer = ClassHomeworkImporter(
-                store: services.store(context),
-                planner: WeekPlanner(firstWeekday: weekStartsOn),
-                ledger: ClassImportLedger(settings: homework.settings),
-                skippedCourses: homework.skippedCourses,
-                fetchFile: { file in
-                    guard let attachments else { throw AttachmentError.notAuthorized }
-                    return try await attachments.file(for: file)
-                })
+            guard var importer = services.classImporter(context: context, weekStartsOn: weekStartsOn) else { return }
             let report = await importer.run(catalog: student.catalog)
             homework.status = report.message
             scheduleProgressSync()
@@ -68,6 +59,39 @@ private struct ClassHomeworkSync: ViewModifier {
                   let student = services.classroom.student, student.hasLoadedCache else { return nil }
             return ClassProgressSync(store: services.store(context), student: student, settings: homework.settings,
                                      skippedCourses: homework.skippedCourses)
+        }
+    }
+}
+
+extension AppServices {
+    /// The class lessons the user can see, or nil when signed out of the Class tab.
+    var classCatalog: Catalog? {
+        guard let student = classroom.student, student.hasLoadedCache else { return nil }
+        return student.catalog
+    }
+
+    /// "Subscribe to class" with the user's course choices; nil when signed out of the Class tab.
+    func classImporter(context: ModelContext, weekStartsOn: Int) -> ClassHomeworkImporter? {
+        guard let homework = classroom.homework, classCatalog != nil else { return nil }
+        let attachments = classroom.attachments
+        return ClassHomeworkImporter(
+            store: store(context),
+            planner: WeekPlanner(firstWeekday: weekStartsOn),
+            ledger: ClassImportLedger(settings: homework.settings),
+            skippedCourses: homework.skippedCourses,
+            fetchFile: { file in
+                guard let attachments else { throw AttachmentError.notAuthorized }
+                return try await attachments.file(for: file)
+            })
+    }
+
+    /// Adds the chosen class lessons to `week` (PDFs follow as they download) and says so.
+    func addClassLessons(_ lessons: [Lesson], to week: AcademicWeek, context: ModelContext, weekStartsOn: Int) {
+        guard !lessons.isEmpty, var importer = classImporter(context: context, weekStartsOn: weekStartsOn),
+              let catalog = classCatalog else { return }
+        Task { @MainActor in
+            let report = await importer.add(lessons, to: week, catalog: catalog)
+            show(report.message)
         }
     }
 }

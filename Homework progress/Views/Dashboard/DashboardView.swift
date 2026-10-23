@@ -9,6 +9,7 @@ import SwiftData
 /// Answers: how much is done this week, how much remains, and what to work on next.
 struct DashboardView: View {
     @Environment(AppRouter.self) private var router
+    @Environment(AppServices.self) private var services
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Query(sort: \AcademicWeek.startDate) private var weeks: [AcademicWeek]
     @Query(sort: \Course.sortOrder) private var courses: [Course]
@@ -80,6 +81,14 @@ struct DashboardView: View {
                         Label("New Assignment", systemImage: "doc.badge.plus")
                     }
                     .keyboardShortcut("n", modifiers: .command)
+                    if services.classCatalog != nil {
+                        Button {
+                            router.activeSheet = .addClassLessons(week)
+                        } label: {
+                            Label("Add Class Lessons…", systemImage: "graduationcap")
+                        }
+                        .accessibilityIdentifier("addClassLessons")
+                    }
                 }
                 Button {
                     router.activeSheet = .newWeek

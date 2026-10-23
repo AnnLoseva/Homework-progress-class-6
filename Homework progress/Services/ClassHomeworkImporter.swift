@@ -103,21 +103,53 @@ struct ClassHomeworkImporter {
             }
             // Copied before and deleted by the user since: respect that.
             if ledger.known.contains(lesson.id) { continue }
-            guard let classCourse = catalog.course(lesson.courseID) else { continue }
-
-            let assignment = store.createAssignment(
-                title: lesson.title, course: homeworkCourse(for: classCourse), week: homeworkWeek(for: lesson, now: now),
-                dueDate: lesson.dueAt, totalExercises: lesson.exerciseCount,
-                notes: lesson.category == .optional ? String(localized: "Optional lesson from the class.") : "",
-                id: lesson.id)
-            ledger.created.insert(lesson.id)
-            ledger.known.insert(lesson.id)
-            ledger.save()
+            guard let assignment = copy(lesson, into: homeworkWeek(for: lesson, now: now), catalog: catalog) else { continue }
             report.added += 1
             await attachMissingFiles(of: lesson, to: assignment, catalog: catalog, report: &report)
         }
         ledger.save()
         return report
+    }
+
+    /// Class lessons of the subscribed courses that belong to a week (same number, or due within
+    /// its dates) and aren't in the homework yet. With `includingRemoved`, also the ones the user
+    /// deleted earlier, for adding them back by hand.
+    func lessons(forWeekNumber number: Int?, start: Date, end: Date, catalog: Catalog,
+                 includingRemoved: Bool = false, now: Date = .now) -> [Lesson] {
+        catalog.lessons
+            .filter { lesson in
+                guard lesson.isActive(at: now), !skippedCourses.contains(lesson.courseID),
+                      catalog.course(lesson.courseID) != nil, existingAssignment(id: lesson.id) == nil,
+                      includingRemoved || !ledger.known.contains(lesson.id) else { return false }
+                if let week = lesson.week, let number { return week == number }
+                return lesson.dueAt.map { planner.contains($0, start: start, end: end) } ?? false
+            }
+            .sorted { ($0.dueAt ?? .distantFuture, $0.sortOrder, $0.title) < ($1.dueAt ?? .distantFuture, $1.sortOrder, $1.title) }
+    }
+
+    /// Copies the chosen lessons into `week`, whatever week the class gives them.
+    mutating func add(_ lessons: [Lesson], to week: AcademicWeek, catalog: Catalog) async -> ClassImportReport {
+        var report = ClassImportReport()
+        for lesson in lessons where existingAssignment(id: lesson.id) == nil {
+            guard let assignment = copy(lesson, into: week, catalog: catalog) else { continue }
+            report.added += 1
+            await attachMissingFiles(of: lesson, to: assignment, catalog: catalog, report: &report)
+        }
+        ledger.save()
+        return report
+    }
+
+    private mutating func copy(_ lesson: Lesson, into week: AcademicWeek, catalog: Catalog) -> HomeworkAssignment? {
+        guard let classCourse = catalog.course(lesson.courseID) else { return nil }
+        let assignment = store.createAssignment(
+            title: lesson.title, course: homeworkCourse(for: classCourse), week: week,
+            dueDate: lesson.dueAt, totalExercises: lesson.exerciseCount,
+            notes: lesson.category == .optional ? String(localized: "Optional lesson from the class.") : "",
+            id: lesson.id)
+        ledger.created.insert(lesson.id)
+        ledger.known.insert(lesson.id)
+        ledger.save()
+        return assignment
     }
 
     private func existingAssignment(id: UUID) -> HomeworkAssignment? {
@@ -165,13 +197,23 @@ struct ClassHomeworkImporter {
     /// with the same name, else a new course.
     private func homeworkCourse(for classCourse: StudyDomain.Course) -> Course {
         let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
-        if let match = courses.first(where: { Self.slug(of: $0) == classCourse.slug })
-            ?? courses.first(where: { $0.name == classCourse.title }) {
-            return match
-        }
-        let palette = CoursePalette.allCases.first { ClassPublisher.colorKey(for: $0.rawValue) == classCourse.colorKey } ?? .indigo
+        if let match = courses.first(where: { Self.matches($0, classCourse) }) { return match }
         return store.createCourse(name: classCourse.title, englishName: classCourse.subtitle ?? "", url: nil,
-                                  palette: palette, icon: classCourse.iconName, id: classCourse.id)
+                                  palette: Self.palette(for: classCourse), icon: classCourse.iconName, id: classCourse.id)
+    }
+
+    /// The same course on both sides: same id, same slug (publishing's rule) or same name.
+    static func matches(_ course: Course, _ classCourse: StudyDomain.Course) -> Bool {
+        course.id == classCourse.id || slug(of: course) == classCourse.slug || course.name == classCourse.title
+    }
+
+    /// The class course a homework course belongs to, if the class has it.
+    static func classCourse(for course: Course, in catalog: Catalog) -> StudyDomain.Course? {
+        catalog.courses.first { !$0.isArchived && matches(course, $0) }
+    }
+
+    static func palette(for classCourse: StudyDomain.Course) -> CoursePalette {
+        CoursePalette.allCases.first { ClassPublisher.colorKey(for: $0.rawValue) == classCourse.colorKey } ?? .indigo
     }
 
     static func slug(of course: Course) -> String {

@@ -5,8 +5,10 @@
 
 import SwiftUI
 import SwiftData
+import StudyDomain
 
-/// Creates a week (optionally copying another week's assignment structure) or edits one.
+/// Creates a week (optionally copying another week's assignment structure, and with the class
+/// lessons of the subscribed courses that belong to it) or edits one.
 struct WeekEditorView: View {
     enum Mode {
         case create
@@ -31,10 +33,21 @@ struct WeekEditorView: View {
     @State private var shiftDueDates = true
     @State private var confirmDelete = false
     @State private var didLoad = false
+    @State private var addClassLessons = true
 
     private var planner: WeekPlanner { WeekPlanner(firstWeekday: weekStartsOn) }
     private var isCreating: Bool { if case .create = mode { true } else { false } }
     private var copySource: AcademicWeek? { weeks.first { $0.id == copySourceID } }
+
+    /// Class lessons of the subscribed courses for the week being created (never ones the user
+    /// removed before).
+    private var classLessons: [Lesson] {
+        guard isCreating, let catalog = services.classCatalog,
+              let importer = services.classImporter(context: context, weekStartsOn: weekStartsOn) else { return [] }
+        let range = planner.normalized(start: startDate, end: endDate)
+        return importer.lessons(forWeekNumber: parsedNumber(title) ?? number, start: range.start, end: range.end,
+                                catalog: catalog)
+    }
 
     private var overlapping: AcademicWeek? {
         let range = planner.normalized(start: startDate, end: endDate)
@@ -85,6 +98,24 @@ struct WeekEditorView: View {
                         }
                     } header: {
                         Text("Structure")
+                    }
+                }
+
+                if isCreating, case let lessons = classLessons, !lessons.isEmpty {
+                    Section {
+                        Toggle(isOn: $addClassLessons) {
+                            Label("Add \(lessons.count) class lesson(s)", systemImage: "graduationcap")
+                        }
+                        .accessibilityIdentifier("newWeekAddClassLessons")
+                        if addClassLessons {
+                            ForEach(lessons) { lesson in
+                                Text(lesson.title).font(.lora(13)).foregroundStyle(.secondary)
+                            }
+                        }
+                    } header: {
+                        Text("Class")
+                    } footer: {
+                        Text("Lessons of your subscribed courses for this week, with their PDFs.")
                     }
                 }
 
@@ -149,6 +180,7 @@ struct WeekEditorView: View {
         let cleanTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         switch mode {
         case .create:
+            let lessons = addClassLessons ? classLessons : []
             let week = store.createWeek(title: cleanTitle, number: parsedNumber(cleanTitle) ?? number,
                                         start: startDate, end: endDate, planner: planner)
             if let copySource {
@@ -158,6 +190,7 @@ struct WeekEditorView: View {
                     planner: planner
                 )
             }
+            services.addClassLessons(lessons, to: week, context: context, weekStartsOn: weekStartsOn)
             router.select(week)
         case .edit(let week):
             let range = planner.normalized(start: startDate, end: endDate)

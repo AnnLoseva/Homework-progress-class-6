@@ -21,13 +21,16 @@ struct ClassPublishSection: View {
         let classroom = services.classroom
         Section {
             if let homework = classroom.homework, classroom.session.currentUserID != nil {
-                Toggle(isOn: Binding(get: { homework.isOn }, set: { homework.isOn = $0 })) {
-                    Label("Subscribe to class", systemImage: "calendar.badge.plus")
+                NavigationLink {
+                    ClassSubscriptionView(subscription: homework)
+                } label: {
+                    LabeledContent {
+                        Text(subscriptionSummary(homework))
+                    } label: {
+                        Label("Subscribe to class", systemImage: "calendar.badge.plus")
+                    }
                 }
-                .accessibilityIdentifier("settingsHomeworkSubscriptionToggle")
-                if homework.isOn, let status = homework.status {
-                    Text(status).font(.lora(12)).foregroundStyle(.secondary)
-                }
+                .accessibilityIdentifier("settingsHomeworkSubscription")
             }
             if classroom.admin != nil {
                 Button {
@@ -42,7 +45,7 @@ struct ClassPublishSection: View {
         } header: {
             Text("Class")
         } footer: {
-            Text("Subscribe to class adds every class lesson, required and optional, to your weeks with its PDFs and keeps their progress in step with Class; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
+            Text("Subscribe to class adds the lessons of the class courses you pick, required and optional, to your weeks with their PDFs and keeps their progress in step with Class; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
         }
         .sheet(isPresented: $isPublishing) {
             if let admin = classroom.admin {
@@ -50,6 +53,13 @@ struct ClassPublishSection: View {
                     .goblinChrome()
             }
         }
+    }
+
+    private func subscriptionSummary(_ homework: HomeworkSubscription) -> String {
+        guard homework.isOn else { return String(localized: "Off") }
+        let courses = (services.classCatalog?.courses ?? []).filter { !$0.isArchived }
+        let subscribed = courses.filter { homework.isSubscribed(toCourse: $0.id) }.count
+        return String(localized: "\(subscribed) of \(courses.count) courses")
     }
 
     private func statusText(_ classroom: ClassroomEnvironment) -> LocalizedStringKey {

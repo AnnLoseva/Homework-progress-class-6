@@ -87,6 +87,49 @@ final class ClassFlowUITests: XCTestCase {
         }
     }
 
+    /// A new week comes with the class lessons that belong to it.
+    @MainActor
+    func testANewWeekStartsWithItsClassLessons() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingClassSignedIn"]
+        app.launch()
+        let create = app.buttons["createFirstWeek"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        create.tap()
+        XCTAssertTrue(app.switches["newWeekAddClassLessons"].waitForExistence(timeout: 10), "class lessons offered")
+        app.buttons["saveWeek"].tap()
+        for title in ["UI required lesson", "UI optional lesson"] {
+            XCTAssertTrue(app.descendants(matching: .any)["assignmentRow-\(title)"].waitForExistence(timeout: 10), "Missing \(title)")
+        }
+    }
+
+    /// Week → Add → Add Class Lessons fills a week created without them.
+    @MainActor
+    func testAddingClassLessonsToAWeekByHand() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingClassSignedIn"]
+        app.launch()
+        let create = app.buttons["createFirstWeek"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        create.tap()
+        let offer = app.switches["newWeekAddClassLessons"]
+        XCTAssertTrue(offer.waitForExistence(timeout: 10))
+        offer.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+        app.buttons["saveWeek"].tap()
+        XCTAssertFalse(app.descendants(matching: .any)["assignmentRow-UI required lesson"].waitForExistence(timeout: 3))
+
+        app.buttons["dashboardAddMenu"].firstMatch.tap()
+        let add = app.buttons["addClassLessons"]
+        XCTAssertTrue(add.waitForExistence(timeout: 5))
+        add.tap()
+        let confirm = app.buttons["addClassLessonsConfirm"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
+        for title in ["UI required lesson", "UI optional lesson"] {
+            XCTAssertTrue(app.descendants(matching: .any)["assignmentRow-\(title)"].waitForExistence(timeout: 10), "Missing \(title)")
+        }
+    }
+
     @MainActor
     private func openClassHome(_ app: XCUIApplication) {
         let classTab = app.tabBars.buttons["Class"]

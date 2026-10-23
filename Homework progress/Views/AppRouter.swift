@@ -32,6 +32,7 @@ final class AppRouter {
         case newAssignment(course: Course?, week: AcademicWeek)
         case editAssignment(HomeworkAssignment)
         case importSharedPDF(URL)
+        case addClassLessons(AcademicWeek)
 
         var id: String {
             switch self {
@@ -40,6 +41,7 @@ final class AppRouter {
             case .newAssignment(let c, let w): "newAssignment-\(c?.id.uuidString ?? "any")-\(w.id)"
             case .editAssignment(let a): "editAssignment-\(a.id)"
             case .importSharedPDF(let url): "import-\(url.absoluteString)"
+            case .addClassLessons(let w): "addClassLessons-\(w.id)"
             }
         }
     }
