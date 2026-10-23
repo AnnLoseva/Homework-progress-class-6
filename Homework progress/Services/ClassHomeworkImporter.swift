@@ -201,6 +201,12 @@ struct ClassHomeworkImporter {
     private func homeworkCourse(for classCourse: StudyDomain.Course) -> Course {
         let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
         if let match = courses.first(where: { Self.matches($0, classCourse) }) { return match }
+        // One of the five default courses: create it as seeding would (same id, Moodle link and
+        // icon), so it merges with the other device's copy instead of becoming a second course.
+        if let seed = CourseSeeder.defaults.first(where: { Self.matches($0, classCourse) }) {
+            return store.createCourse(name: seed.name, englishName: seed.englishName, url: seed.url,
+                                      palette: seed.palette, icon: seed.icon, id: seed.id)
+        }
         return store.createCourse(name: classCourse.title, englishName: classCourse.subtitle ?? "", url: nil,
                                   palette: Self.palette(for: classCourse), icon: classCourse.iconName, id: classCourse.id)
     }
@@ -208,6 +214,12 @@ struct ClassHomeworkImporter {
     /// The same course on both sides: same id, same slug (publishing's rule) or same name.
     static func matches(_ course: Course, _ classCourse: StudyDomain.Course) -> Bool {
         course.id == classCourse.id || slug(of: course) == classCourse.slug || course.name == classCourse.title
+    }
+
+    static func matches(_ seed: CourseSeed, _ classCourse: StudyDomain.Course) -> Bool {
+        seed.id == classCourse.id || seed.name == classCourse.title
+            || (!seed.englishName.isEmpty && seed.englishName == classCourse.subtitle)
+            || CourseDraft.suggestedSlug(for: seed.englishName) == classCourse.slug
     }
 
     /// The class course a homework course belongs to, if the class has it.

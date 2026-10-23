@@ -184,10 +184,27 @@ struct SyncTests {
         #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 5)
     }
 
-    @Test func aDeviceThatSeededItselfNeverSeedsAgain() throws {
+    @Test func coursesDeletedAfterTheOneTimeCheckStayDeleted() throws {
         let env = try TestEnvironment()
         _ = try env.seed()
+        #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults), "has courses")
         try env.context.fetch(FetchDescriptor<Course>()).forEach(env.context.delete)
+        try env.context.save()
+        #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+        #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 0)
+    }
+
+    /// An earlier version skipped seeding on a second device without waiting for iCloud: that
+    /// device (no course, no assignment) gets the courses once, then never again.
+    @Test func aDeviceLeftWithoutCoursesByAnEarlierVersionGetsThemOnce() throws {
+        let env = try TestEnvironment()
+        env.defaults.set(true, forKey: CourseSeeder.didSeedKey)          // what the old version left
+        _ = env.store.createWeek(title: "Week 1", number: 1, start: .now, end: .now)
+        #expect(CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
+        #expect(try env.context.fetchCount(FetchDescriptor<Course>()) == 5)
+
+        try env.context.fetch(FetchDescriptor<Course>()).forEach(env.context.delete)
+        try env.context.save()
         #expect(!CourseSeeder.seedIfCoursesNeverArrived(context: env.context, defaults: env.defaults))
     }
 

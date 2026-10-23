@@ -91,13 +91,22 @@ enum CourseSeeder {
     /// still haven't arrived (e.g. iCloud wasn't reachable), the five courses are added here
     /// anyway, with the same ids, so sync merges them with the other device's copies. Runs at
     /// most once per device, so courses the user deletes later aren't brought back.
+    ///
+    /// Devices set up by an earlier version skipped seeding without setting the waiting flag;
+    /// they get the courses too if they have none (deleting a course deletes its assignments,
+    /// so nothing of the user's is attached to them). Checked once per device.
     @discardableResult
     static func seedIfCoursesNeverArrived(context: ModelContext, defaults store: UserDefaults = .standard) -> Bool {
-        guard store.bool(forKey: awaitingSyncedCoursesKey) else { return false }
+        let awaiting = store.bool(forKey: awaitingSyncedCoursesKey)
+        let checkedBefore = store.bool(forKey: checkedForMissingCoursesKey)
+        guard awaiting || !checkedBefore else { return false }
         store.set(false, forKey: awaitingSyncedCoursesKey)
+        store.set(true, forKey: checkedForMissingCoursesKey)
         guard (try? context.fetchCount(FetchDescriptor<Course>())) == 0 else { return false }
         return (try? insertDefaults(context: context)) != nil
     }
+
+    static let checkedForMissingCoursesKey = "checkedForMissingCourses.v1"
 
     private static func insertDefaults(context: ModelContext) throws {
         for (index, seed) in defaults.enumerated() {

@@ -277,4 +277,16 @@ struct ClassHomeworkImporterTests {
         #expect(report.added == 1)
         #expect(try assignments().first?.week?.id == week.id)
     }
+
+    @Test func aDefaultCourseMissingOnThisDeviceIsCreatedAsSeedingWould() async throws {
+        try env.context.fetch(FetchDescriptor<Homework_progress.Course>()).forEach(env.context.delete)
+        try env.context.save()
+        var subject = try importer()
+        _ = await subject.run(catalog: Catalog(courses: [discrete], lessons: [lesson("Sets", .required)]), now: now)
+
+        let course = try #require(try assignments().first?.course)
+        let seed = try #require(CourseSeeder.defaults.first { $0.englishName == "Discrete Mathematics" })
+        #expect(course.id == seed.id, "same id as the other device's seeded course, so sync merges them")
+        #expect(course.courseURLString == seed.url)
+    }
 }
