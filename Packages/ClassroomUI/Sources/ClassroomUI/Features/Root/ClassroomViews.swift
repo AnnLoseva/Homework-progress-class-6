@@ -63,6 +63,11 @@ private struct ClassroomLifecycle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .environment(environment)
+            // The stores go here, above the host app's NavigationSplitView: on iPad SwiftUI
+            // hoists `.searchable` of a pushed screen to the split view, and it would not see
+            // stores injected only inside the detail column.
+            .environment(environment.student)
+            .environment(environment.admin)
             .task { await environment.start() }
             .onChange(of: environment.session.currentUserID) {
                 Task { await environment.sessionChanged() }

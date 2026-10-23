@@ -30,10 +30,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C1A55000000000000000B001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/Base.xcconfig; sourceTree = "<group>"; };
 		8860D32530867788004AE0BC /* Homework progress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Homework progress.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8860D33730867788004AE0BC /* Homework progressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Homework progressTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8860D34130867788004AE0BC /* Homework progressUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Homework progressUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1A55000000000000000B001 /* Config/Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/Base.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,7 +79,7 @@
 		8860D31C30867788004AE0BC = {
 			isa = PBXGroup;
 			children = (
-				C1A55000000000000000B001 /* Base.xcconfig */,
+				C1A55000000000000000B001 /* Config/Base.xcconfig */,
 				8860D32730867788004AE0BC /* Homework progress */,
 				8860D33A30867788004AE0BC /* Homework progressTests */,
 				8860D34430867788004AE0BC /* Homework progressUITests */,
@@ -386,7 +386,7 @@
 		};
 		8860D34A30867788004AE0BC /* Debug configuration for PBXNativeTarget "Homework progress" */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1A55000000000000000B001 /* Base.xcconfig */;
+			baseConfigurationReference = C1A55000000000000000B001 /* Config/Base.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -421,7 +421,7 @@
 		};
 		8860D34B30867788004AE0BC /* Release configuration for PBXNativeTarget "Homework progress" */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1A55000000000000000B001 /* Base.xcconfig */;
+			baseConfigurationReference = C1A55000000000000000B001 /* Config/Base.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -574,6 +574,7 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
 /* Begin XCLocalSwiftPackageReference section */
 		C1A55000000000000000B002 /* XCLocalSwiftPackageReference "Packages/ClassroomUI" */ = {
 			isa = XCLocalSwiftPackageReference;
