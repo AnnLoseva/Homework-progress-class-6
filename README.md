@@ -94,6 +94,15 @@ Pomodoro, the app always uses the light parchment appearance.
   was already copied follow your Apple ID to your other devices (iCloud key-value storage),
   and a device waits for its first iCloud import before adding anything, so iPhone and iPad
   don't add the same lesson twice.
+- **What subscribing does, in order:** fetches the class from the server, copies the lessons
+  of every subscribed course into your weeks, then opens the week they went to (this week when
+  it has class work). A lesson's week is its class week number on your own calendar (a week
+  you numbered the same, or counted from your numbered weeks), else the week containing its
+  due date. Each lesson is one assignment with the lesson's id, so subscribing again,
+  reopening or relaunching never duplicates it, and the teacher's changes to the title, due
+  date and exercise total reach it without touching your progress or notes. The status says
+  how many class assignments this week has (none is fine), and says so when the class
+  couldn't be reached instead of reporting success.
 - **From the Homework tab:** *Settings → Class → Subscribe to class* has the same switch and
   course list, and each course's *Course Settings* has *Add class lessons automatically*. A
   **new week** offers the class lessons that belong to it (same week number, or due within its

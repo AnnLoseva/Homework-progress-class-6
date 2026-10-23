@@ -40,10 +40,19 @@ private struct ClassHomeworkSync: ViewModifier {
     func body(content: Content) -> some View {
         content.task(id: trigger) {
             guard trigger != nil, let homework = services.classroom.homework,
-                  let student = services.classroom.student else { return }
-            guard var importer = services.classImporter(context: context, weekStartsOn: weekStartsOn) else { return }
-            let report = await importer.run(catalog: student.catalog)
-            homework.status = report.message
+                  let student = services.classroom.student,
+                  let importer = services.classImporter(context: context, weekStartsOn: weekStartsOn) else { return }
+            let refresh = homework.needsRefresh
+            homework.needsRefresh = false
+            if refresh { homework.phase = .working }
+            var pass = ClassSubscriptionPass(student: student, importer: importer)
+            guard let outcome = await pass.run(refresh: refresh) else { return }
+            homework.phase = outcome.phase
+            // After subscribing, open the week the lessons went to.
+            if homework.revealPending {
+                homework.revealPending = false
+                if let week = outcome.weekToShow { services.router.select(week) }
+            }
             scheduleProgressSync()
         }
         // Progress both ways: when the class side changes, and when homework is saved.

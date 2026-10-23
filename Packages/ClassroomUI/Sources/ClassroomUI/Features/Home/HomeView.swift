@@ -282,10 +282,8 @@ private struct HomeworkSubscriptionCard: View {
                 }
                 .padding(.top, 2)
             }
-            if subscription.isOn, let status = subscription.status {
-                Label(status, systemImage: "checkmark.circle")
-                    .font(.lora(13, relativeTo: .footnote))
-                    .accessibilityIdentifier("homeworkSubscriptionStatus")
+            if subscription.isOn {
+                HomeworkSubscriptionStatus(phase: subscription.phase)
             }
             if subscription.isOn, !isEnrolled {
                 Label("Join the class with its code (Class Account) to get the class-only PDFs.", systemImage: "key")
@@ -294,5 +292,36 @@ private struct HomeworkSubscriptionCard: View {
             }
         }
         .woodCard()
+    }
+}
+
+/// How the last "Subscribe to class" pass went: working, done (with what it did) or failed.
+public struct HomeworkSubscriptionStatus: View {
+    let phase: HomeworkSubscription.Phase
+
+    public init(phase: HomeworkSubscription.Phase) {
+        self.phase = phase
+    }
+
+    public var body: some View {
+        Group {
+            switch phase {
+            case .idle:
+                EmptyView()
+            case .working:
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Adding class lessons to your weeks…")
+                }
+            case .done(let message):
+                Label(message, systemImage: "checkmark.circle")
+            case .failed(let message):
+                Label(message, systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.orange)
+            }
+        }
+        .font(.lora(13, relativeTo: .footnote))
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("homeworkSubscriptionStatus")
     }
 }

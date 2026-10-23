@@ -57,6 +57,8 @@ struct ClassImportReport: Equatable {
     /// PDFs that couldn't be downloaded yet (offline, or restricted until the class code is
     /// entered). They are tried again on the next pass.
     var filesPending = 0
+    /// Weeks that received new lessons.
+    var weeksWithNewLessons: Set<UUID> = []
 
     var message: String {
         var parts: [String] = []
@@ -105,6 +107,7 @@ struct ClassHomeworkImporter {
             if ledger.known.contains(lesson.id) { continue }
             guard let assignment = copy(lesson, into: homeworkWeek(for: lesson, now: now), catalog: catalog) else { continue }
             report.added += 1
+            if let week = assignment.week { report.weeksWithNewLessons.insert(week.id) }
             await attachMissingFiles(of: lesson, to: assignment, catalog: catalog, report: &report)
         }
         ledger.save()
@@ -223,20 +226,36 @@ struct ClassHomeworkImporter {
 
     /// The week with the lesson's number, else the week containing its due date, else a new
     /// week around the due date (or this week when there is none).
-    private func homeworkWeek(for lesson: Lesson, now: Date) -> AcademicWeek {
+    ///
+    /// A week that has to be created goes where the user's own numbered weeks put that number
+    /// (week 4 is three weeks after their week 1), so a class lesson never lands in a week whose
+    /// dates contradict the user's calendar. Without numbered weeks the due date decides.
+    func homeworkWeek(for lesson: Lesson, now: Date) -> AcademicWeek {
         let weeks = (try? context.fetch(FetchDescriptor<AcademicWeek>())) ?? []
         if let number = lesson.week, let match = weeks.first(where: { $0.number == number }) { return match }
-        if let due = lesson.dueAt,
-           let match = weeks.first(where: { planner.contains(due, start: $0.startDate, end: $0.endDate) }) {
+        let anchored = lesson.week.flatMap { anchoredDate(forWeek: $0, among: weeks) }
+        if let day = anchored ?? lesson.dueAt,
+           let match = weeks.first(where: { planner.contains(day, start: $0.startDate, end: $0.endDate) }) {
             return match
         }
         let number = lesson.week ?? WeekPlanner.nextNumber(after: weeks.map(\.number))
         let module = lesson.moduleTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let range = planner.range(containing: lesson.dueAt ?? now)
+        let range = planner.range(containing: anchored ?? lesson.dueAt ?? now)
         // Both devices may add the same week before either sees the other's: same id, merged.
         return store.createWeek(title: module.isEmpty ? WeekPlanner.defaultTitle(number: number) : module,
                                 number: number, start: range.start, end: range.end, planner: planner,
                                 id: UUID.derived(from: "class-week:\(number):\(Int(range.start.timeIntervalSince1970))"))
+    }
+}
+
+extension ClassHomeworkImporter {
+    /// A day inside week `number` on the user's calendar: counted in whole weeks from their
+    /// nearest numbered week. Nil when they have no numbered week to count from.
+    func anchoredDate(forWeek number: Int, among weeks: [AcademicWeek]) -> Date? {
+        guard let reference = weeks.filter({ $0.number != nil })
+            .min(by: { abs($0.number! - number) < abs($1.number! - number) }),
+              let referenceNumber = reference.number else { return nil }
+        return planner.shift(reference.startDate, byDays: (number - referenceNumber) * 7)
     }
 }
 

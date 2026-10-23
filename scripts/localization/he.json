@@ -290,5 +290,10 @@
   "Your workload": "עומס העבודה שלך",
   "v%lld · %@ · %@": "גרסה %1$lld · %2$@ · %3$@",
   "–": "–",
-  "• A stable account id from Sign in with Apple. No name, email or Apple ID password is requested or stored.\n• Which optional lessons you follow.\n• Your progress, exercise counts and private notes.\n• Whether you joined the class with its code.": "• מזהה חשבון קבוע מ־Sign in with Apple. לא מתבקשים ולא נשמרים שם, דוא״ל או סיסמת Apple ID.\n• שיעורי הרשות שאת/ה עוקב/ת אחריהם.\n• ההתקדמות, מספר התרגילים וההערות הפרטיות שלך.\n• האם הצטרפת לכיתה עם הקוד."
+  "• A stable account id from Sign in with Apple. No name, email or Apple ID password is requested or stored.\n• Which optional lessons you follow.\n• Your progress, exercise counts and private notes.\n• Whether you joined the class with its code.": "• מזהה חשבון קבוע מ־Sign in with Apple. לא מתבקשים ולא נשמרים שם, דוא״ל או סיסמת Apple ID.\n• שיעורי הרשות שאת/ה עוקב/ת אחריהם.\n• ההתקדמות, מספר התרגילים וההערות הפרטיות שלך.\n• האם הצטרפת לכיתה עם הקוד.",
+  "Adding class lessons to your weeks…": "מוסיף את שיעורי הכיתה לשבועות שלך…",
+  "This week: %lld class assignment(s).": "השבוע: %lld משימות מהכיתה.",
+  "No class assignments this week.": "אין משימות מהכיתה השבוע.",
+  "Couldn't reach the class (%@). Lessons saved on this device were added; it will try again.": "לא ניתן להתחבר לכיתה (%@). השיעורים השמורים במכשיר נוספו; ננסה שוב.",
+  "you're offline": "אין חיבור לאינטרנט"
 }

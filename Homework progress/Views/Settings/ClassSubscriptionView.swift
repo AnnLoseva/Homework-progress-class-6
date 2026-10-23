@@ -28,8 +28,8 @@ struct ClassSubscriptionView: View {
                         Label("Subscribe to class", systemImage: "calendar.badge.plus")
                     }
                     .accessibilityIdentifier("classSubscriptionToggle")
-                    if subscription.isOn, let status = subscription.status {
-                        Text(status).font(.lora(12)).foregroundStyle(.secondary)
+                    if subscription.isOn {
+                        HomeworkSubscriptionStatus(phase: subscription.phase)
                     }
                 } footer: {
                     Text("Lessons of the courses below go to the matching week with their PDFs as soon as the class publishes them, and their progress stays in step with Class. Your other devices follow automatically.")

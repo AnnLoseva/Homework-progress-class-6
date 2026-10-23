@@ -15,15 +15,43 @@ public final class HomeworkSubscription {
     /// Courses switched off. A course published later is subscribed automatically.
     public static let skippedCoursesKey = "classroom.homeworkSkippedCourses"
 
-    public var isOn: Bool {
-        didSet { if isOn != oldValue { settings.set(isOn, forKey: Self.defaultsKey) } }
+    /// Where the last subscription pass got to. Only `.done` means the class was reached and
+    /// the weeks are up to date.
+    public enum Phase: Equatable {
+        case idle
+        case working
+        case done(String)
+        case failed(String)
     }
+
+    public var isOn: Bool {
+        didSet {
+            guard isOn != oldValue else { return }
+            settings.set(isOn, forKey: Self.defaultsKey)
+            if isOn { requestRefresh() } else { phase = .idle }
+        }
+    }
+
+    public var phase: Phase = .idle
+
+    /// Set when subscribing (or re-subscribing): the next pass fetches the class from the
+    /// server first instead of trusting what's cached on this device.
+    @ObservationIgnored public var needsRefresh = false
+    /// Set when subscribing: the pass that completes shows the week the lessons went to.
+    @ObservationIgnored public var revealPending = false
 
     /// Class courses whose lessons are not copied.
     public private(set) var skippedCourses: Set<UUID>
 
-    /// What the last pass did, e.g. "Added 3 class lessons to your weeks."
-    public var status: String?
+    /// What the last pass did, e.g. "Added 3 class lessons to your weeks.", or why it failed.
+    public var status: String? {
+        switch phase {
+        case .idle, .working: nil
+        case .done(let message), .failed(let message): message
+        }
+    }
+
+    public var hasFailed: Bool { if case .failed = phase { true } else { false } }
 
     @ObservationIgnored public let settings: SyncedSettings
     @ObservationIgnored private var observer: NSObjectProtocol?
@@ -35,6 +63,8 @@ public final class HomeworkSubscription {
         self.settings = settings
         isOn = settings.bool(forKey: Self.defaultsKey)
         skippedCourses = settings.ids(forKey: Self.skippedCoursesKey)
+        // Every launch starts with fresh class data.
+        needsRefresh = isOn
         settings.cloud?.synchronize()
         observer = NotificationCenter.default.addObserver(forName: SyncedSettings.externalChange, object: nil,
                                                           queue: .main) { [weak self] _ in
@@ -53,6 +83,15 @@ public final class HomeworkSubscription {
     public func setSubscribed(_ subscribed: Bool, toCourse id: UUID) {
         if subscribed { skippedCourses.remove(id) } else { skippedCourses.insert(id) }
         settings.set(skippedCourses, forKey: Self.skippedCoursesKey)
+        if subscribed, isOn { requestRefresh() }
+    }
+
+    /// Subscribing again (or to another course) refreshes from the server; the copying itself
+    /// is idempotent, so nothing is duplicated.
+    public func requestRefresh() {
+        needsRefresh = true
+        revealPending = true
+        phase = .working
     }
 
     /// Picks up a change made on another device.
