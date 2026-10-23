@@ -82,6 +82,8 @@ final class AppServices {
     /// which lives in SwiftData + iCloud; neither copies the other's records.
     let classroom: ClassroomEnvironment
     let router = AppRouter()
+    /// "Follow the whole class": class lessons → homework assignments, progress both ways.
+    let classSync = ClassSyncCoordinator()
     /// A transient, non-blocking message ("Sent to Goodnotes…").
     var toast: String?
 

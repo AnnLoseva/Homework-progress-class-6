@@ -45,6 +45,8 @@ struct SettingsView: View {
                 }
             }
 
+            FollowWholeClassSection(userID: store.userID)
+
             Section {
                 LabeledContent("Status", value: syncText)
                 if let last = store.lastSyncedAt {
@@ -173,5 +175,26 @@ struct PrivacySummaryView: View {
         }
         .background(Palette.page)
         .navigationTitle("Privacy")
+    }
+}
+
+/// The "Follow the whole class" switch. Saved per user on this device; the host app does the
+/// importing and keeps progress in step.
+private struct FollowWholeClassSection: View {
+    @AppStorage private var isOn: Bool
+
+    init(userID: UUID) {
+        _isOn = AppStorage(wrappedValue: false, ClassroomPreferences.followWholeClassKey(for: userID))
+    }
+
+    var body: some View {
+        Section {
+            Toggle("Follow the whole class", isOn: $isOn)
+                .accessibilityIdentifier("followWholeClassToggle")
+        } header: {
+            Text("Homework")
+        } footer: {
+            Text("Adds every lesson, required and optional, to your Homework weeks with its PDFs, and keeps the progress in Homework and Class in step. New lessons are added as they’re published. Turning it off keeps everything already added.")
+        }
     }
 }
