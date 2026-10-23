@@ -1,0 +1,14 @@
+{
+  "name": "woodland-db-tests",
+  "private": true,
+  "type": "module",
+  "description": "Runs supabase/tests/*.sql against PGlite (real Postgres in WebAssembly) or a real database.",
+  "scripts": {
+    "test": "node run.mjs",
+    "test:edge": "node --experimental-strip-types --no-warnings --test ../edge-tests/apple.test.ts"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.11",
+    "pg": "8.23.1"
+  }
+}

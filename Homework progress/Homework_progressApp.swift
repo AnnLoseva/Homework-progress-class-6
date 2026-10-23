@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import ClassroomUI
 
 @main
 struct Homework_progressApp: App {
@@ -21,6 +22,7 @@ struct Homework_progressApp: App {
                     .modelContainer(container)
                     .environment(services)
                     .environment(services.router)
+                    .classroomLifecycle(services.classroom)
             case .failed(let message):
                 StorageErrorView(message: message)
                     .goblinChrome()
@@ -42,12 +44,7 @@ final class AppBootstrap {
 
     init() {
         AppChrome.apply()
-        let arguments = ProcessInfo.processInfo.arguments
-        var isEphemeral = arguments.contains("-uiTesting")
-        #if DEBUG
-        let wantsDemo = arguments.contains("-demoData")
-        isEphemeral = isEphemeral || wantsDemo
-        #endif
+        let isEphemeral = ProcessInfo.processInfo.arguments.contains("-uiTesting")
         do {
             let (container, storeKind) = try PersistenceFactory.makeAppContainer(ephemeral: isEphemeral)
             let defaults = isEphemeral ? (UserDefaults(suiteName: "ephemeral-\(UUID().uuidString)") ?? .standard) : .standard
@@ -57,13 +54,12 @@ final class AppBootstrap {
             CourseSeeder.upgradeSeededIcons(context: context)
             let files = AttachmentFileStore.appDefault()
             files.clearHandoffCopies()
-            #if DEBUG
-            if wantsDemo { DemoData.populate(context, files: files) }
-            #endif
             let maintenance = SyncMaintenance(context: context, files: files)
             maintenance.run()
             let sync = SyncMonitor(storeKind: storeKind) { maintenance.run() }
-            state = .ready(container, AppServices(files: files, sync: sync))
+            // UI tests never reach the class backend.
+            let classroom = isEphemeral ? ClassroomEnvironment(info: [:]) : ClassroomEnvironment()
+            state = .ready(container, AppServices(files: files, sync: sync, classroom: classroom))
         } catch {
             state = .failed(error.localizedDescription)
         }
@@ -75,13 +71,17 @@ final class AppBootstrap {
 final class AppServices {
     let files: AttachmentFileStore
     let sync: SyncMonitor
+    /// The Class tab: lessons shared through Supabase. Separate from the homework above,
+    /// which lives in SwiftData + iCloud; neither copies the other's records.
+    let classroom: ClassroomEnvironment
     let router = AppRouter()
     /// A transient, non-blocking message ("Sent to Notability…").
     var toast: String?
 
-    init(files: AttachmentFileStore, sync: SyncMonitor) {
+    init(files: AttachmentFileStore, sync: SyncMonitor, classroom: ClassroomEnvironment) {
         self.files = files
         self.sync = sync
+        self.classroom = classroom
     }
 
     func store(_ context: ModelContext) -> HomeworkStore {

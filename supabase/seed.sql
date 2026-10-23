@@ -1,0 +1,7 @@
+-- ============================================================================
+-- Development seed — intentionally empty.
+--
+-- `supabase db reset` loads this file. There is no sample content: lessons come from the
+-- app (Settings → Class → Publish Homework to Class, or Class → Manage lessons). The SQL
+-- test suites bring their own made-up rows in supabase/tests/fixtures.sql.
+-- ============================================================================

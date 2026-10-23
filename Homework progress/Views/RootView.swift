@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import ClassroomUI
 
 struct RootView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -107,11 +108,17 @@ struct CompactRootView: View {
 
     var body: some View {
         @Bindable var router = router
-        NavigationStack(path: $router.path) {
-            DashboardView(week: selectedWeek)
-                .navigationDestination(for: AppRouter.Route.self) { route in
-                    RouteDestination(route: route, selectedWeek: selectedWeek)
-                }
+        TabView {
+            NavigationStack(path: $router.path) {
+                DashboardView(week: selectedWeek)
+                    .navigationDestination(for: AppRouter.Route.self) { route in
+                        RouteDestination(route: route, selectedWeek: selectedWeek)
+                    }
+            }
+            .tabItem { Label("Homework", systemImage: "book.closed") }
+
+            ClassroomCompactView()
+                .tabItem { Label("Class", systemImage: "graduationcap") }
         }
     }
 }
@@ -140,6 +147,7 @@ struct RouteDestination: View {
 
 struct SplitRootView: View {
     @Environment(AppRouter.self) private var router
+    @Environment(AppServices.self) private var services
     @Query(sort: \AcademicWeek.startDate, order: .reverse) private var weeks: [AcademicWeek]
     @Query(sort: \Course.sortOrder) private var courses: [Course]
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
@@ -172,6 +180,13 @@ struct SplitRootView: View {
                         }
                     }
                 }
+                Section("Class") {
+                    ForEach(ClassroomSection.visible(in: services.classroom)) { section in
+                        NavigationLink(value: AppRouter.SidebarItem.classroom(section)) {
+                            Label(section.title, systemImage: section.systemImage)
+                        }
+                    }
+                }
                 Section {
                     NavigationLink(value: AppRouter.SidebarItem.archive) {
                         Label("Archive", systemImage: "archivebox")
@@ -184,26 +199,12 @@ struct SplitRootView: View {
             .parchmentList()
             .navigationTitle("Homework")
         } detail: {
-            HStack(spacing: 0) {
-                NavigationStack(path: $router.path) {
-                    splitContent
-                        .navigationDestination(for: AppRouter.Route.self) { route in
-                            RouteDestination(route: route, selectedWeek: selectedWeek)
-                        }
-                }
-                // Side panel for the selected assignment, so browsing and inspecting don't
-                // require navigating back and forth.
-                if let assignment = router.inspectedAssignment, assignment.modelContext != nil {
-                    Rectangle().fill(AppTheme.border).frame(width: 1).ignoresSafeArea()
-                    NavigationStack {
-                        AssignmentDetailView(assignment: assignment, isInspector: true)
-                    }
-                    .id(assignment.id)
-                    .frame(width: 400)
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
-                }
+            if case .classroom(let section) = router.sidebar {
+                // The Class area has its own navigation stack and data.
+                ClassroomDetailView(section: section)
+            } else {
+                homeworkDetail
             }
-            .animation(.snappy, value: router.inspectedAssignment?.id)
         }
         .onAppear {
             if router.sidebar == nil, let selectedWeek { router.sidebar = .week(selectedWeek) }
@@ -211,7 +212,32 @@ struct SplitRootView: View {
         .onChange(of: router.sidebar) { _, item in
             router.resetPath()
             if case .week(let week) = item { router.selectedWeekID = week.id }
+            if case .classroom = item { router.inspectedAssignment = nil }
         }
+    }
+
+    private var homeworkDetail: some View {
+        @Bindable var router = router
+        return HStack(spacing: 0) {
+            NavigationStack(path: $router.path) {
+                splitContent
+                    .navigationDestination(for: AppRouter.Route.self) { route in
+                        RouteDestination(route: route, selectedWeek: selectedWeek)
+                    }
+            }
+            // Side panel for the selected assignment, so browsing and inspecting don't
+            // require navigating back and forth.
+            if let assignment = router.inspectedAssignment, assignment.modelContext != nil {
+                Rectangle().fill(AppTheme.border).frame(width: 1).ignoresSafeArea()
+                NavigationStack {
+                    AssignmentDetailView(assignment: assignment, isInspector: true)
+                }
+                .id(assignment.id)
+                .frame(width: 400)
+                .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+        }
+        .animation(.snappy, value: router.inspectedAssignment?.id)
     }
 
     @ViewBuilder
@@ -223,7 +249,7 @@ struct SplitRootView: View {
             WeekArchiveView()
         case .settings:
             SettingsView()
-        case .week, .none:
+        case .week, .classroom, .none:
             DashboardView(week: selectedWeek)
         }
     }

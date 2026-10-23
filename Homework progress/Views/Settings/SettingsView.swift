@@ -59,6 +59,8 @@ struct SettingsView: View {
 
             SyncStatusSection()
 
+            ClassPublishSection()
+
             Section("Weeks") {
                 Picker("Weeks start on", selection: $weekStartsOn) {
                     Text("Sunday").tag(1)

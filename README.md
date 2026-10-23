@@ -1,10 +1,22 @@
 # Homework Progress
 
-A native iPhone and iPad homework tracker for five HIT computer-science courses, organised by
-academic week. It runs offline and stores everything locally. There is no backend, account,
-analytics or subscription.
+A native iPhone and iPad app for five HIT computer-science courses, with two parts:
 
-## What it does
+- **Homework** — your personal tracker, organised by academic week. It works offline and syncs
+  between your own iPhone and iPad through your private iCloud. No account, analytics or
+  subscription.
+- **Class** — lessons and PDFs the class administrator publishes. Each student signs in with
+  Apple, follows the lessons they need and tracks their own progress privately. The
+  administrator can turn their homework into class lessons in one step (*Publish Homework to
+  Class*). Backend: Supabase with Row Level Security on every table.
+
+The two parts keep separate data: homework stays in SwiftData + iCloud, class lessons and
+lesson progress live in Supabase. Neither copies the other's records. The app ships with no
+sample content.
+
+Architecture, data model and security model: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+
+## Homework: what it does
 
 - **Weeks** are the unit of work. Each week owns its own assignments and progress. You can
   create a week, or copy another week's structure with fresh progress. You can edit names and
@@ -61,6 +73,26 @@ The app shares Mood Pomodoro's cozy style:
 The palette, fonts, card and button styles live in `Views/Components/Theme.swift`. Like Mood
 Pomodoro, the app always uses the light parchment appearance.
 
+## Class: what it does
+
+- **Students:** a dashboard (what to study, what's required, what's done, what's left), a
+  catalog with **Required (חובה)** and **Optional (רשות)** lessons, *My Lessons* for
+  subscriptions, exercise counters, private notes, PDFs that work offline, and the share sheet
+  to send them to Notability. Hebrew and right-to-left layout are supported.
+- **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
+  replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
+  to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise
+  total and PDFs. Your completed counts, status and notes are never sent. Publishing again
+  updates the same lessons (they reuse the assignment ids), and a changed PDF becomes a new
+  version of the same attachment, so students keep their progress.
+- **Security:** every rule is enforced in the database (RLS, triggers, `SECURITY DEFINER`
+  functions) and covered by SQL tests. Students can't see each other's data; the
+  administrator can't see students' progress or notes. Restricted PDFs need the class code.
+- **Privacy:** no email or name requested, no trackers. Students can export or delete their
+  class data at any time. Template: [PRIVACY.md](PRIVACY.md).
+
+Where it appears: a **Class** tab on iPhone, and a **Class** section in the iPad sidebar.
+
 ## Project layout
 
 ```
@@ -71,9 +103,18 @@ Homework progress/
   Services/    HomeworkStore (all multi-step mutations), AttachmentFileStore (PDF files),
                NotabilityIntegration, BackupService, ReminderScheduler, CourseSeeder
   Views/       SwiftUI screens: Dashboard, Course, Assignment, Week, Settings, Components
-Config/Info.plist   PDF document type, fonts, background push (merged with the generated plist)
-Config/HomeworkProgress.entitlements   iCloud (CloudKit + key-value) and push
-docs/               Notability findings, backup format
+  Services/ClassPublisher.swift   homework → class lessons (administrator only)
+Packages/ClassroomUI/   the Class tab: sign-in, catalog, lessons, My Lessons, admin screens
+Packages/StudyKit/      below the Class UI: StudyDomain (rules), StudyData (offline cache,
+                        outbox, sync), StudySupabase (supabase-swift)
+supabase/               migrations (schema, RLS, storage, functions), the delete-account Edge
+                        Function, SQL security tests + their made-up fixtures, empty seed.sql
+tools/db-tests/         runs the SQL suites on PGlite (Postgres in WebAssembly) or a local DB
+scripts/                secret scan, string catalog update, git hooks
+Config/Info.plist       PDF document type, fonts, background push, Supabase keys from xcconfig
+Config/Base.xcconfig    shared settings; your values go in Config/Local.xcconfig (git-ignored)
+Config/HomeworkProgress.entitlements   iCloud (CloudKit + key-value), push, Sign in with Apple
+docs/                   architecture, admin guide, distribution, assets, Notability, backup format
 ```
 
 ### Invariants
@@ -92,11 +133,76 @@ docs/               Notability findings, backup format
   - when the total drops below the completed count, the user chooses whether to lower the
     completed count or keep it and flag the inconsistency.
 
-## Build & test
+## Setup
 
-Requirements: Xcode 26 or later. Deployment target: iOS/iPadOS 17.
+Requirements: Xcode 26 or later, iOS/iPadOS 17. For the Class tab and the SQL tests also
+Node.js 20+ and a Supabase account (free tier is enough). Sign in with Apple and iCloud on
+devices need a paid Apple Developer membership.
 
-Run the unit tests (52 Swift Testing tests):
+1. **Clone and open** `Homework progress.xcodeproj`. The homework tracker runs right away.
+   Without a Supabase configuration the Class tab explains how to connect it.
+2. **Your identifiers.** A classmate building their own copy changes the bundle identifier and
+   team in the target settings, and the iCloud container (`iCloud.AnnaLoseva.Homework-progress`
+   in `Config/HomeworkProgress.entitlements` and `Models/Schema.swift`) to their own.
+3. **Supabase project.** Create a project just for this app (or run `npx supabase start`
+   locally). Note the Project URL and the **Publishable** key. The secret / service-role key
+   never goes in the app, this repository or chat.
+4. **Database.** Apply the migrations:
+
+   ```bash
+   npx supabase link --project-ref <your-project-ref>
+   ```
+
+   ```bash
+   npx supabase db push
+   ```
+
+   Then deploy the account-deletion function:
+
+   ```bash
+   npx supabase functions deploy delete-account --no-verify-jwt
+   ```
+
+   (Optional, so deleting an account also revokes Apple's authorization: put the four
+   `APPLE_*` values from `.env.example` in `supabase/functions/.env` and run
+   `npx supabase secrets set --env-file supabase/functions/.env`.)
+5. **Sign in with Apple in Supabase.** Dashboard → Authentication → Sign In / Providers →
+   **Apple**: enable it and put the app's bundle identifier (`AnnaLoseva.Homework-progress`, or
+   yours) in **Client IDs**. Turn the Email provider off and keep anonymous sign-ins off.
+6. **Configure the app:** copy `Config/Local.example.xcconfig` to `Config/Local.xcconfig`
+   (git-ignored) and fill in `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. If you paste a
+   secret key by mistake, the app refuses to use it.
+7. **First administrator.** Nobody can become an administrator from the app. Sign in on the
+   Class tab once, copy your **User UID** from Dashboard → Authentication → Users, and run in
+   the SQL Editor:
+
+   ```sql
+   select private.grant_admin('<your-user-uid>', 'Course instructor');
+   ```
+
+   Relaunch the app: *Manage lessons* appears in the Class tab, and *Publish Homework to
+   Class* in Settings. Remove a role with `select private.revoke_admin('<uuid>');`.
+8. **Publish.** Set a class code (Class → Manage lessons → Class code) and share it. Then
+   either *Settings → Class → Publish Homework to Class*, or create lessons by hand in
+   *Manage lessons*. Details: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
+
+Release builds, TestFlight and what MIT means: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md).
+
+## Tests
+
+| What | Command |
+|---|---|
+| Homework + publishing (Swift Testing) | the first `xcodebuild` command below |
+| UI flows on iPhone and iPad | the second `xcodebuild` command below |
+| Class area wiring | `cd Packages/ClassroomUI && xcodebuild test -scheme ClassroomUI -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` |
+| Class rules, offline sync, Supabase mapping (101 tests) | `cd Packages/StudyKit && swift test` |
+| Database security, RLS (179 assertions, no Docker) | `cd tools/db-tests && npm ci && npm test` |
+| Secret scan | `python3 scripts/secret-scan.py` |
+
+UI tests prove the screens work; they are **not** evidence of backend security. The SQL
+suites are.
+
+Run the app's unit tests:
 
 ```bash
 xcodebuild test -project "Homework progress.xcodeproj" -scheme "Homework progress" -only-testing:"Homework progressTests" -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
@@ -108,16 +214,15 @@ Run the UI flow test on iPhone and iPad:
 xcodebuild test -project "Homework progress.xcodeproj" -scheme "Homework progress" -only-testing:"Homework progressUITests" -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M4)'
 ```
 
-Launch arguments:
-
-- `-uiTesting` uses an in-memory store.
-- `-demoData` (DEBUG builds only) fills an in-memory store with an example week. Your real
-  data is not touched.
+Launch argument: `-uiTesting` uses an in-memory store and keeps the Class tab disconnected.
+Your real data is never touched by tests.
 
 ## Localization
 
-The UI strings are in `Localizable.xcstrings` (English source). To add Russian or Hebrew,
-add the language in the project's Localizations and translate the catalog. Course names are
+The UI strings are in `Localizable.xcstrings` (English source). The Class tab is also
+translated into Hebrew: after adding strings, build once, run
+`python3 scripts/update-string-catalog.py <derived-data-path>` and add the translations to
+`scripts/localization/he.json`. The homework screens are English-only for now. Course names are
 user data and are shown exactly as stored. Hebrew renders right-to-left automatically, and
 `BidiText.isolate` keeps it from scrambling punctuation in mixed sentences.
 
@@ -129,3 +234,14 @@ user data and are shown exactly as stored. Hebrew renders right-to-left automati
   claiming success.
 - PDFs are not parsed: you enter exercise counts by hand, as specified.
 - The PDF viewer is read-only. Handwriting belongs in Notability.
+- The Class tab's progress is separate from your homework progress: publishing doesn't link
+  them, so completing a homework assignment doesn't complete the class lesson.
+- Sign in with Apple, the delete-account Edge Function and Storage signed URLs need a real
+  Supabase project to test end to end; the SQL suites cover the database rules.
+
+## License
+
+Code: **MIT** ([LICENSE](LICENSE)). Lora font: SIL Open Font License 1.1. Illustrations: see
+[docs/ASSETS.md](docs/ASSETS.md) — confirm their terms before making the repository public.
+Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Security: [SECURITY.md](SECURITY.md) ·
+Privacy: [PRIVACY.md](PRIVACY.md)

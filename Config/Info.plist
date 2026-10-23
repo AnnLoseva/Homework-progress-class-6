@@ -21,7 +21,13 @@
 	<!-- Incoming PDFs are copied into the app; the app then keeps its own copy. -->
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
-	<!-- Lora serif, shared with Mood Pomodoro. -->
+	<!-- The class lessons backend, filled from Config/Base.xcconfig + Config/Local.xcconfig.
+	     Empty values = the Class tab explains how to connect it. Publishable key only. -->
+	<key>SUPABASE_URL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>SUPABASE_PUBLISHABLE_KEY</key>
+	<string>$(SUPABASE_PUBLISHABLE_KEY)</string>
+	<!-- Lora serif (SIL Open Font License 1.1, see Homework progress/Fonts/OFL.txt). -->
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lora-Regular.ttf</string>
@@ -34,6 +40,20 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+	</array>
+	<!-- Only standard HTTPS/TLS is used, which is exempt from export documentation. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<!-- Local Supabase (supabase start) runs on plain HTTP; allow only local networking. -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>he</string>
 	</array>
 </dict>
 </plist>

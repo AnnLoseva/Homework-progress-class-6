@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import ClassroomUI
 
 /// Navigation state shared by the iPhone stack and the iPad split view.
 @Observable
@@ -14,6 +15,7 @@ final class AppRouter {
         case course(Course)
         case archive
         case settings
+        case classroom(ClassroomSection)
     }
 
     enum Route: Hashable {

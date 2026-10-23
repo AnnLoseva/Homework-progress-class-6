@@ -1,0 +1,11 @@
+// Shared build settings for Homework Progress.
+//
+// The Class tab's backend goes in Config/Local.xcconfig, which is git-ignored. Copy
+// Config/Local.example.xcconfig to get started. Only the PUBLISHABLE key belongs in the app;
+// never put a service-role / secret key here.
+
+// Empty = the Class tab explains how to connect it. Your homework works either way.
+SUPABASE_URL =
+SUPABASE_PUBLISHABLE_KEY =
+
+#include? "Local.xcconfig"
