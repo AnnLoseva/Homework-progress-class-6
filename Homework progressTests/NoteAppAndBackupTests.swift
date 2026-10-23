@@ -1,5 +1,5 @@
 //
-//  NotabilityAndBackupTests.swift
+//  NoteAppAndBackupTests.swift
 //  Homework progressTests
 //
 
@@ -8,21 +8,23 @@ import SwiftData
 import Testing
 @testable import Homework_progress
 
-@Suite("Notability handoff")
-struct NotabilityTests {
+@Suite("Notability / Goodnotes handoff")
+struct NoteAppTests {
     @Test func linkValidation() {
-        #expect(NotabilityIntegration.validatedLink(from: "https://notability.com/n/abc") != nil)
-        #expect(NotabilityIntegration.validatedLink(from: "  notability://open  ") != nil)
-        #expect(NotabilityIntegration.validatedLink(from: "javascript:alert(1)") == nil)
-        #expect(NotabilityIntegration.validatedLink(from: "file:///etc/passwd") == nil)
-        #expect(NotabilityIntegration.validatedLink(from: "Discrete Math") == nil)
-        #expect(NotabilityIntegration.validatedLink(from: "https://") == nil)
-        #expect(NotabilityIntegration.validatedLink(from: nil) == nil)
+        #expect(NoteAppIntegration.validatedLink(from: "https://notability.com/n/abc") != nil)
+        #expect(NoteAppIntegration.validatedLink(from: "  notability://open  ") != nil)
+        #expect(NoteAppIntegration.validatedLink(from: "goodnotes://open?id=1") != nil)
+        #expect(NoteAppIntegration.validatedLink(from: "javascript:alert(1)") == nil)
+        #expect(NoteAppIntegration.validatedLink(from: "file:///etc/passwd") == nil)
+        #expect(NoteAppIntegration.validatedLink(from: "moodlemobile://x") == nil)
+        #expect(NoteAppIntegration.validatedLink(from: "Discrete Math") == nil)
+        #expect(NoteAppIntegration.validatedLink(from: "https://") == nil)
+        #expect(NoteAppIntegration.validatedLink(from: nil) == nil)
     }
 
     @Test func noLinkFallsBackToManualWithoutOpeningAnything() async {
         var opened: [URL] = []
-        let outcome = await NotabilityIntegration.openNotebook(name: "Discrete Math", link: nil) { url in
+        let outcome = await NoteAppIntegration.openNotebook(name: "Discrete Math", link: nil) { url in
             opened.append(url)
             return true
         }
@@ -31,32 +33,39 @@ struct NotabilityTests {
     }
 
     @Test func blankNameIsTreatedAsMissing() async {
-        let outcome = await NotabilityIntegration.openNotebook(name: "  ", link: nil) { _ in true }
+        let outcome = await NoteAppIntegration.openNotebook(name: "  ", link: nil) { _ in true }
         #expect(outcome == .manualOnly(notebookName: nil))
     }
 
     @Test func savedLinkIsHandedToIOS() async {
         let link = URL(string: "https://notability.com/n/abc")!
-        let accepted = await NotabilityIntegration.openNotebook(name: "X", link: link) { _ in true }
+        let accepted = await NoteAppIntegration.openNotebook(name: "X", link: link) { _ in true }
         #expect(accepted == .linkHandedOff(link))
-        let refused = await NotabilityIntegration.openNotebook(name: "X", link: link) { _ in false }
+        let refused = await NoteAppIntegration.openNotebook(name: "X", link: link) { _ in false }
         #expect(refused == .linkFailed(link, notebookName: "X"))
     }
 
-    @Test func shareOutcomesNeverClaimImportSucceeded() {
-        #expect(NotabilityIntegration.interpretShare(activityType: "com.gingerlabs.Notability.ShareExtension", completed: true) == .sentToNotability)
-        #expect(NotabilityIntegration.interpretShare(activityType: "com.apple.UIKit.activity.RemoteOpenInApplication-ByCopy", completed: true) == .openedInApp)
-        #expect(NotabilityIntegration.interpretShare(activityType: "com.apple.UIKit.activity.AirDrop", completed: true) == .sentElsewhere)
-        #expect(NotabilityIntegration.interpretShare(activityType: "com.gingerlabs.Notability.ShareExtension", completed: false) == .cancelled)
-        #expect(NotabilityIntegration.message(for: .cancelled, notebookName: nil) == nil)
+    @Test func bothNoteAppsAreRecognisedInTheShareSheet() {
+        #expect(NoteAppIntegration.interpretShare(activityType: "com.gingerlabs.Notability.ShareExtension", completed: true) == .sentToNoteApp(.notability))
+        #expect(NoteAppIntegration.interpretShare(activityType: "com.goodnotesapp.x.GoodNotesShareExtension", completed: true) == .sentToNoteApp(.goodnotes))
+        #expect(NoteAppIntegration.interpretShare(activityType: "com.apple.UIKit.activity.RemoteOpenInApplication-ByCopy", completed: true) == .openedInApp)
+        #expect(NoteAppIntegration.interpretShare(activityType: "com.apple.UIKit.activity.AirDrop", completed: true) == .sentElsewhere)
+        #expect(NoteAppIntegration.interpretShare(activityType: "com.goodnotesapp.x.GoodNotesShareExtension", completed: false) == .cancelled)
+    }
 
-        for outcome in [NotabilityIntegration.HandoffOutcome.sentToNotability, .openedInApp, .sentElsewhere] {
-            let message = NotabilityIntegration.message(for: outcome, notebookName: "מתמטיקה בדידה") ?? ""
+    @Test func shareOutcomesNeverClaimImportSucceeded() {
+        #expect(NoteAppIntegration.message(for: .cancelled, notebookName: nil, preferred: .goodnotes) == nil)
+        let outcomes: [NoteAppIntegration.HandoffOutcome] = [.sentToNoteApp(.notability), .sentToNoteApp(.goodnotes), .openedInApp, .sentElsewhere]
+        for outcome in outcomes {
+            let message = NoteAppIntegration.message(for: outcome, notebookName: "מתמטיקה בדידה", preferred: .goodnotes) ?? ""
             #expect(!message.lowercased().contains("imported"))
             #expect(message.contains("unchanged"))
         }
-        let toNotability = NotabilityIntegration.message(for: .sentToNotability, notebookName: nil) ?? ""
-        #expect(toNotability.contains("Finish the import"))
+        let toGoodnotes = NoteAppIntegration.message(for: .sentToNoteApp(.goodnotes), notebookName: nil, preferred: .notability) ?? ""
+        #expect(toGoodnotes.contains("Sent to Goodnotes"), "names the app iOS reported, not the preference")
+        #expect(toGoodnotes.contains("Finish the import"))
+        let handedOff = NoteAppIntegration.message(for: .openedInApp, notebookName: nil, preferred: .goodnotes) ?? ""
+        #expect(handedOff.contains("If you chose Goodnotes"))
     }
 }
 

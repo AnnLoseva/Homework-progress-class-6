@@ -6,9 +6,11 @@
 import Foundation
 import SwiftData
 
-/// The user's Notability notebook (folder) for a course.
+/// The user's notebook (folder) in Notability or Goodnotes for a course. The type keeps its
+/// original name because it is part of the iCloud (CloudKit) schema; renaming it would orphan
+/// synced records.
 ///
-/// Notability does not document any URL scheme or API for opening a specific notebook, so this
+/// Neither app documents a URL scheme or API for opening a specific notebook, so this
 /// stores what the user can actually give us: the folder name (always useful as a reminder) and,
 /// optionally, a link they copied themselves. A saved name is *not* a deep link, and the UI says so.
 @Model
@@ -24,5 +26,5 @@ final class NotabilityNotebookAssociation {
         self.updatedAt = updatedAt
     }
 
-    var link: URL? { NotabilityIntegration.validatedLink(from: linkString) }
+    var link: URL? { NoteAppIntegration.validatedLink(from: linkString) }
 }

@@ -7,7 +7,7 @@ import SwiftUI
 import PDFKit
 
 /// PDFKit's viewer. Works with Apple Pencil and trackpad scrolling; read-only by design —
-/// handwriting happens in Notability.
+/// handwriting happens in Notability or Goodnotes.
 struct PDFKitView: UIViewRepresentable {
     let url: URL
 
@@ -81,7 +81,7 @@ enum ThumbnailCache {
     }()
 }
 
-/// Full-screen PDF reader with a direct "Send to Notability" action.
+/// Full-screen PDF reader with a direct "Add to Notability/Goodnotes" action.
 struct PDFViewerScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppServices.self) private var services
@@ -105,7 +105,7 @@ struct PDFViewerScreen: View {
                         .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    SendToNotabilityButton(attachment: attachment, compact: true)
+                    SendToNoteAppButton(attachment: attachment, compact: true)
                 }
             }
         }

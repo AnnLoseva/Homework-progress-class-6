@@ -75,7 +75,7 @@ final class AppServices {
     /// which lives in SwiftData + iCloud; neither copies the other's records.
     let classroom: ClassroomEnvironment
     let router = AppRouter()
-    /// A transient, non-blocking message ("Sent to Notability…").
+    /// A transient, non-blocking message ("Sent to Goodnotes…").
     var toast: String?
 
     init(files: AttachmentFileStore, sync: SyncMonitor, classroom: ClassroomEnvironment) {

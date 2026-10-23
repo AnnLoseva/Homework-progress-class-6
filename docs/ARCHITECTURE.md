@@ -180,8 +180,8 @@ also checks the `%PDF-` header before upload.
   wiped on sign-out and account deletion.
 * **Recently opened** lessons are stored on the device only.
 * **PDFs:** viewed with PDFKit and shared through `ShareLink` / `UIActivityViewController`.
-  Notability shows up there as "Open in Notability". Notability has no public import API,
-  so the standard share sheet is the supported path.
+  Notability and Goodnotes show up there ("Copy to Notability", "Open in Goodnotes"). Neither
+  has a public import API, so the standard share sheet is the supported path.
 * **No sample content:** without a Supabase configuration the Class tab says how to connect
   it; the homework tracker works fully on its own. `InMemoryServer` exists only for tests.
 * **Accessibility:** Dynamic Type (Lora scales relative to body text), VoiceOver labels on

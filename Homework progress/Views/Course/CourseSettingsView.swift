@@ -6,7 +6,7 @@
 import SwiftUI
 import SwiftData
 
-/// Course name, color, icon, Moodle link and Notability notebook association.
+/// Course name, color, icon, Moodle link and the Notability / Goodnotes notebook association.
 /// Changes apply to every week, because weeks only reference the course.
 struct CourseSettingsView: View {
     @Environment(\.modelContext) private var context
@@ -14,6 +14,7 @@ struct CourseSettingsView: View {
     @Environment(\.openURL) private var openURL
     @Environment(AppServices.self) private var services
     @Environment(AppRouter.self) private var router
+    @AppStorage(NoteApp.preferenceKey) private var noteApp = NoteApp.notability
     @Bindable var course: Course
 
     @State private var notebookName = ""
@@ -22,7 +23,7 @@ struct CourseSettingsView: View {
     @State private var linkTestResult: String?
 
     private var linkIsValid: Bool {
-        notebookLink.trimmingCharacters(in: .whitespaces).isEmpty || NotabilityIntegration.validatedLink(from: notebookLink) != nil
+        notebookLink.trimmingCharacters(in: .whitespaces).isEmpty || NoteAppIntegration.validatedLink(from: notebookLink) != nil
     }
 
     var body: some View {
@@ -87,18 +88,18 @@ struct CourseSettingsView: View {
             }
 
             Section {
-                TextField("Folder name in Notability", text: $notebookName)
+                TextField("Folder name in \(noteApp.name)", text: $notebookName)
                     .accessibilityIdentifier("notebookNameField")
                 TextField("Link to the notebook (optional)", text: $notebookLink)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 if !linkIsValid {
-                    Label("Use a web link (https://…) or a notability: link copied from Notability.", systemImage: "exclamationmark.triangle")
+                    Label("Use a web link (https://…) or a \(noteApp.linkScheme): link copied from \(noteApp.name).", systemImage: "exclamationmark.triangle")
                         .font(.lora(12))
                         .foregroundStyle(AppTheme.rust)
                 }
-                if let link = NotabilityIntegration.validatedLink(from: notebookLink) {
+                if let link = NoteAppIntegration.validatedLink(from: notebookLink) {
                     Button("Test Link") {
                         openURL(link) { accepted in
                             linkTestResult = accepted
@@ -111,9 +112,9 @@ struct CourseSettingsView: View {
                     Text(linkTestResult).font(.lora(12)).foregroundStyle(.secondary)
                 }
             } header: {
-                Text("Notability Notebook")
+                Text("\(noteApp.name) Notebook")
             } footer: {
-                Text("Notability doesn’t publish a way for other apps to open a specific notebook. The folder name is shown as a reminder when you open Notability yourself. If you have a link that opens this notebook (for example one you copied in Notability), paste it here and the app will open it — but it can’t check which note the link opens.")
+                Text("\(noteApp.name) doesn’t publish a way for other apps to open a specific notebook. The folder name is shown as a reminder when you open \(noteApp.name) yourself. If you have a link that opens this notebook (for example one you copied in \(noteApp.name)), paste it here and the app will open it — but it can’t check which note the link opens.")
             }
 
             Section {

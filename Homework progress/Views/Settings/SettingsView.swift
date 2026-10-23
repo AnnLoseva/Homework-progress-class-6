@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage("weekStartsOn") private var weekStartsOn = 1
     @AppStorage(MoodleIntegration.openInAppKey) private var moodleInApp = true
     @AppStorage(MoodleIntegration.schemeKey) private var moodleScheme = MoodleIntegration.defaultScheme
+    @AppStorage(NoteApp.preferenceKey) private var noteApp = NoteApp.notability
     @AppStorage(ReminderSettings.deadlineEnabledKey) private var deadlineReminders = false
     @AppStorage(ReminderSettings.deadlineLeadHoursKey) private var leadHours = 24
     @AppStorage(ReminderSettings.weeklyReviewEnabledKey) private var weeklyReview = false
@@ -145,12 +146,22 @@ struct SettingsView: View {
                 Text("A single file with all weeks, courses, assignments, progress and PDFs. Restoring adds what’s missing and never overwrites or deletes existing data.")
             }
 
-            Section("Notability") {
-                NavigationLink {
-                    NotabilityInfoView()
-                } label: {
-                    Label("How the Notability integration works", systemImage: "info.circle")
+            Section {
+                Picker("Send PDFs to", selection: $noteApp) {
+                    ForEach(NoteApp.allCases) { app in
+                        Text(app.name).tag(app)
+                    }
                 }
+                .accessibilityIdentifier("noteAppPicker")
+                NavigationLink {
+                    NoteAppInfoView(app: noteApp)
+                } label: {
+                    Label("How the \(noteApp.name) integration works", systemImage: "info.circle")
+                }
+            } header: {
+                Text("Notes App")
+            } footer: {
+                Text("Buttons and hints name this app. The share sheet still lists every app, so you can pick the other one any time. Saved on this device only.")
             }
             }
             .listRowBackground(AppTheme.parchmentCard)
@@ -284,28 +295,30 @@ struct NewCourseView: View {
     }
 }
 
-struct NotabilityInfoView: View {
+struct NoteAppInfoView: View {
+    let app: NoteApp
+
     var body: some View {
         List {
             Group {
             Section("Works today") {
-                Label("Add PDF to Notability: the share sheet sends a copy of the homework PDF. Choose Notability, then pick a new or existing note inside Notability.", systemImage: "checkmark.circle")
-                Label("Your PDF stays in this app. Notability gets its own copy.", systemImage: "checkmark.circle")
-                Label("Each course remembers its Notability folder name and, optionally, a link you saved.", systemImage: "checkmark.circle")
+                Label("Add PDF to \(app.name): the share sheet sends a copy of the homework PDF. Choose \(app.name), then pick a new or existing note inside \(app.name).", systemImage: "checkmark.circle")
+                Label("Your PDF stays in this app. \(app.name) gets its own copy.", systemImage: "checkmark.circle")
+                Label("Each course remembers its \(app.name) folder name and, optionally, a link you saved.", systemImage: "checkmark.circle")
             }
             Section("Not available") {
-                Label("Opening a specific notebook directly. Notability doesn’t publish a URL scheme or API for this.", systemImage: "xmark.circle")
-                Label("Confirming that Notability finished importing. iOS only reports which app was chosen, so the app never shows a false “imported” message.", systemImage: "xmark.circle")
+                Label("Opening a specific notebook directly. \(app.name) doesn’t publish a URL scheme or API for this.", systemImage: "xmark.circle")
+                Label("Confirming that \(app.name) finished importing. iOS only reports which app was chosen, so the app never shows a false “imported” message.", systemImage: "xmark.circle")
             }
             Section("Needs you") {
-                Label("Choosing the destination note or folder inside Notability after sharing.", systemImage: "hand.tap")
-                Label("Opening Notability yourself when no notebook link is saved.", systemImage: "hand.tap")
+                Label("Choosing the destination note or folder inside \(app.name) after sharing.", systemImage: "hand.tap")
+                Label("Opening \(app.name) yourself when no notebook link is saved.", systemImage: "hand.tap")
             }
             }
             .listRowBackground(AppTheme.parchmentCard)
         }
         .parchmentList()
-        .navigationTitle("Notability")
+        .navigationTitle(app.name)
     }
 }
 

@@ -22,7 +22,7 @@ Architecture, data model and security model: **[docs/ARCHITECTURE.md](docs/ARCHI
   create a week, or copy another week's structure with fresh progress. You can edit names and
   dates, step back and forward between weeks, and browse all weeks by current, upcoming and past.
 - **Five seeded courses** keep their original Hebrew names and HIT Moodle links. Each has a
-  colour, an icon and an optional Notability notebook. The courses are seeded once, on first
+  colour, an icon and an optional Notability or Goodnotes notebook. The courses are seeded once, on first
   launch only, and are never re-inserted after you delete them.
 - **Assignments** have a course, a week, an optional due date, an optional exercise total,
   a completed count, a status, notes and one or more PDFs.
@@ -47,8 +47,10 @@ Architecture, data model and security model: **[docs/ARCHITECTURE.md](docs/ARCHI
   stays on the device and nothing is deleted. After sync, housekeeping merges courses seeded on
   both devices and duplicate records, without losing any data. The Settings screen shows the sync
   status. Device-specific preferences (reminders, sort order, Moodle option) are not synced.
-- **Notability:** the share-sheet handoff, plus a per-course notebook name and optional link.
-  See [docs/NOTABILITY.md](docs/NOTABILITY.md) for what Notability does and doesn't allow.
+- **Notability or Goodnotes:** pick your notes app in *Settings → Notes App* (Notability by
+  default, saved per device). Then use the share-sheet handoff, plus a per-course notebook
+  name and optional link. See [docs/NOTABILITY.md](docs/NOTABILITY.md) for what both apps do
+  and don't allow.
 - **iPad** gets a sidebar for weeks and courses and a side panel for the selected assignment.
   The full-width assignment workspace puts the PDF beside the counters. Keyboard shortcuts:
   ⌘N new assignment, ⇧⌘N new week, ⌘[ / ⌘] previous/next week, ⌘= / ⌘− exercise done/undone,
@@ -78,7 +80,7 @@ Pomodoro, the app always uses the light parchment appearance.
 - **Students:** a dashboard (what to study, what's required, what's done, what's left), a
   catalog with **Required (חובה)** and **Optional (רשות)** lessons, *My Lessons* for
   subscriptions, exercise counters, private notes, PDFs that work offline, and the share sheet
-  to send them to Notability. Hebrew and right-to-left layout are supported.
+  to send them to Notability or Goodnotes. Hebrew and right-to-left layout are supported.
 - **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
   replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
   to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise
@@ -101,7 +103,7 @@ Homework progress/
                HomeworkAttachment, NotabilityNotebookAssociation) + iCloud/local store setup
   Domain/      Pure logic: progress math & count rules, week dates, filename/bidi helpers
   Services/    HomeworkStore (all multi-step mutations), AttachmentFileStore (PDF files),
-               NotabilityIntegration, BackupService, ReminderScheduler, CourseSeeder
+               NoteAppIntegration (Notability/Goodnotes), BackupService, ReminderScheduler, CourseSeeder
   Views/       SwiftUI screens: Dashboard, Course, Assignment, Week, Settings, Components
   Services/ClassPublisher.swift   homework → class lessons (administrator only)
 Packages/ClassroomUI/   the Class tab: sign-in, catalog, lessons, My Lessons, admin screens
@@ -114,7 +116,7 @@ scripts/                secret scan, string catalog update, git hooks
 Config/Info.plist       PDF document type, fonts, background push, Supabase keys from xcconfig
 Config/Base.xcconfig    shared settings; your values go in Config/Local.xcconfig (git-ignored)
 Config/HomeworkProgress.entitlements   iCloud (CloudKit + key-value), push, Sign in with Apple
-docs/                   architecture, admin guide, distribution, assets, Notability, backup format
+docs/                   architecture, admin guide, distribution, assets, Notability/Goodnotes, backup format
 ```
 
 ### Invariants
@@ -231,12 +233,12 @@ user data and are shown exactly as stored. Hebrew renders right-to-left automati
 
 ## Known limitations
 
-- Notability can't be told which notebook to open or where to import, so that last step is
-  manual. Details in docs/NOTABILITY.md.
-- The share sheet can't confirm that Notability finished importing. The app says so instead of
+- Notability and Goodnotes can't be told which notebook to open or where to import, so that
+  last step is manual. Details in docs/NOTABILITY.md.
+- The share sheet can't confirm that the notes app finished importing. The app says so instead of
   claiming success.
 - PDFs are not parsed: you enter exercise counts by hand, as specified.
-- The PDF viewer is read-only. Handwriting belongs in Notability.
+- The PDF viewer is read-only. Handwriting belongs in Notability or Goodnotes.
 - The Class tab's progress is separate from your homework progress: publishing doesn't link
   them, so completing a homework assignment doesn't complete the class lesson.
 - Sign in with Apple, the delete-account Edge Function and Storage signed URLs need a real

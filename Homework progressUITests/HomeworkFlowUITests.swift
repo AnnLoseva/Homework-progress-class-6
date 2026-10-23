@@ -63,4 +63,43 @@ final class HomeworkFlowUITests: XCTestCase {
         XCTAssertTrue(overview.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["6 remaining"].exists)
     }
+
+    /// Settings → Notes App switches the wording between Notability and Goodnotes. The choice
+    /// lives in the simulator's UserDefaults, so the test puts Notability back at the end.
+    @MainActor
+    func testChoosingGoodnotesRenamesTheIntegration() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting"]
+        app.launch()
+
+        // iPhone: More menu → Settings. iPad: the sidebar's Settings row (shown if collapsed).
+        let more = app.buttons["More"]
+        if more.waitForExistence(timeout: 5) {
+            more.tap()
+            app.buttons["Settings"].firstMatch.tap()
+        } else {
+            let sidebarRow = app.staticTexts["Settings"].firstMatch
+            if !sidebarRow.waitForExistence(timeout: 2) { app.buttons["Show Sidebar"].firstMatch.tap() }
+            XCTAssertTrue(sidebarRow.waitForExistence(timeout: 5))
+            sidebarRow.tap()
+        }
+
+        let picker = app.buttons["noteAppPicker"]
+        for _ in 0..<8 where !picker.isHittable { app.swipeUp() }
+        XCTAssertTrue(picker.isHittable)
+
+        choose("Goodnotes", in: picker, app: app)
+        XCTAssertTrue(app.buttons["How the Goodnotes integration works"].waitForExistence(timeout: 5))
+
+        choose("Notability", in: picker, app: app)
+        XCTAssertTrue(app.buttons["How the Notability integration works"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    private func choose(_ name: String, in picker: XCUIElement, app: XCUIApplication) {
+        picker.tap()
+        let option = app.buttons[name].firstMatch
+        XCTAssertTrue(option.waitForExistence(timeout: 5), "Missing picker option \(name)")
+        option.tap()
+    }
 }

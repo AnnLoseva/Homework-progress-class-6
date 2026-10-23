@@ -1,4 +1,4 @@
-# Notability integration — what is verified
+# Notability and Goodnotes integration — what is verified
 
 Checked **19 October 2026** against Ginger Labs' help centre (support.gingerlabs.com), the App
 Store listing (Notability 16.x), and notability.com.
@@ -41,14 +41,40 @@ Store listing (Notability 16.x), and notability.com.
 The closest reliable workflow is: open assignment → **Add PDF to Notability** → choose
 Notability in the share sheet → in Notability choose the note or folder → start writing.
 
+## Goodnotes
+
+Checked **23 October 2026** against Goodnotes' help centre (support.goodnotes.com).
+
+| | |
+|---|---|
+| **Verified:** other apps send PDFs through the **iOS share sheet** ("Open in Goodnotes"); Goodnotes then imports the file. | [Import documents](https://support.goodnotes.com/hc/en-us/articles/360001187355) |
+| **Verified:** links to a notebook page exist only *inside* Goodnotes 6 (typed-text links with *Copy Link*). | [Create external and internal links](https://support.goodnotes.com/hc/en-us/articles/7353743248143) |
+| **Not documented:** a `goodnotes://` URL scheme, x-callback-url or API that other apps can use to open a notebook or import a file. Users have asked for one on the Goodnotes feedback board. | — |
+
+So Goodnotes works exactly like Notability here: the share sheet handoff, a per-course folder
+name as a reminder, and an optional link the user pastes (`https`, or a `goodnotes:` link they
+copied themselves). The app never builds Goodnotes links.
+
+## Choosing the app
+
+*Settings → Notes App* picks **Notability** (default) or **Goodnotes**. It's stored per device
+(`noteApp.preferred` in UserDefaults), like the Moodle option. It changes the wording of the
+buttons, hints and the "open notebook" sheet. The share sheet always lists every installed app,
+and the result message names whichever app iOS reports, Notability or Goodnotes, whatever the
+setting. The per-course notebook (`NotabilityNotebookAssociation`) is shared by both apps; the
+model keeps its name because renaming it would break the iCloud schema.
+
 ## Testing
 
-- **Simulator (automated):** link validation; outcome mapping for share completion (cancelled,
-  Notability, generic "open in app", other); messages never claim an import; the fallback never
-  opens anything when no link is saved; handoff copies leave the original intact.
+- **Simulator (automated):** link validation (incl. `goodnotes:`); outcome mapping for share
+  completion (cancelled, Notability, Goodnotes, generic "open in app", other); messages never
+  claim an import; the fallback never opens anything when no link is saved; handoff copies
+  leave the original intact.
 - **Real device only (manual):** Notability isn't available in the Simulator. On an iPad with
   Notability installed, check that:
   1. Notability appears in the share sheet.
   2. Choosing it opens Notability's import flow.
   3. The toast says "Sent to Notability…".
   4. The PDF is still in this app afterwards.
+  5. Repeat with Goodnotes selected in Settings → Notes App: the button reads "Add PDF to
+     Goodnotes", Goodnotes is in the share sheet, and the toast says "Sent to Goodnotes…".

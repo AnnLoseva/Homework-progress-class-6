@@ -1,5 +1,5 @@
 //
-//  NotabilityActions.swift
+//  NoteAppActions.swift
 //  Homework progress
 //
 
@@ -54,10 +54,12 @@ struct ShareSheetPresenter: UIViewControllerRepresentable {
     }
 }
 
-/// "Add to Notability": exports a temporary copy of the PDF and opens the share sheet, where
-/// Notability appears as a destination. The app's own copy is never moved or modified.
-struct SendToNotabilityButton: View {
+/// "Add to Notability" / "Add to Goodnotes": exports a temporary copy of the PDF and opens the
+/// share sheet, where the note app appears as a destination. The app's own copy is never moved
+/// or modified.
+struct SendToNoteAppButton: View {
     @Environment(AppServices.self) private var services
+    @AppStorage(NoteApp.preferenceKey) private var noteApp = NoteApp.notability
     let attachment: HomeworkAttachment
     var compact = false
     var prominent = false
@@ -67,19 +69,20 @@ struct SendToNotabilityButton: View {
     var body: some View {
         Button(action: prepare) {
             if compact {
-                Label("Add to Notability", systemImage: "square.and.arrow.up")
+                Label("Add to \(noteApp.name)", systemImage: "square.and.arrow.up")
             } else {
-                Label("Add PDF to Notability", systemImage: "square.and.arrow.up.on.square")
+                Label("Add PDF to \(noteApp.name)", systemImage: "square.and.arrow.up.on.square")
                     .frame(maxWidth: .infinity)
             }
         }
         .modifier(ProminenceModifier(prominent: prominent, compact: compact))
         .background(ShareSheetPresenter(item: $shareItem) { type, completed in
-            let outcome = NotabilityIntegration.interpretShare(activityType: type, completed: completed)
+            let outcome = NoteAppIntegration.interpretShare(activityType: type, completed: completed)
             withAnimation {
-                services.show(NotabilityIntegration.message(
+                services.show(NoteAppIntegration.message(
                     for: outcome,
-                    notebookName: attachment.assignment?.course?.notebook?.notebookName
+                    notebookName: attachment.assignment?.course?.notebook?.notebookName,
+                    preferred: noteApp
                 ))
             }
         })
@@ -90,7 +93,7 @@ struct SendToNotabilityButton: View {
         } message: {
             Text(errorMessage ?? "")
         }
-        .accessibilityHint("Opens the share sheet. Choose Notability, then pick a note or folder in Notability.")
+        .accessibilityHint("Opens the share sheet. Choose \(noteApp.name), then pick a note or folder in \(noteApp.name).")
     }
 
     private func prepare() {
@@ -127,7 +130,7 @@ struct OpenNotebookButton: View {
     @Environment(AppServices.self) private var services
     let course: Course
     var fullWidth = true
-    @State private var outcome: NotabilityIntegration.NotebookOpenOutcome?
+    @State private var outcome: NoteAppIntegration.NotebookOpenOutcome?
 
     var body: some View {
         Button {
@@ -149,7 +152,7 @@ struct OpenNotebookButton: View {
 
     private func open() async {
         let notebook = course.notebook
-        let result = await NotabilityIntegration.openNotebook(name: notebook?.notebookName, link: notebook?.link) { url in
+        let result = await NoteAppIntegration.openNotebook(name: notebook?.notebookName, link: notebook?.link) { url in
             await withCheckedContinuation { continuation in
                 openURL(url) { accepted in continuation.resume(returning: accepted) }
             }
@@ -162,10 +165,10 @@ struct OpenNotebookButton: View {
     }
 
     nonisolated struct FallbackPresentation: Identifiable {
-        let outcome: NotabilityIntegration.NotebookOpenOutcome
+        let outcome: NoteAppIntegration.NotebookOpenOutcome
         var id: String { String(describing: outcome) }
 
-        init?(_ outcome: NotabilityIntegration.NotebookOpenOutcome) {
+        init?(_ outcome: NoteAppIntegration.NotebookOpenOutcome) {
             if case .linkHandedOff = outcome { return nil }
             self.outcome = outcome
         }
@@ -176,8 +179,9 @@ struct NotebookFallbackSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @Environment(AppRouter.self) private var router
+    @AppStorage(NoteApp.preferenceKey) private var noteApp = NoteApp.notability
     let course: Course
-    let outcome: NotabilityIntegration.NotebookOpenOutcome
+    let outcome: NoteAppIntegration.NotebookOpenOutcome
     @State private var copied = false
 
     private var notebookName: String? {
@@ -198,7 +202,7 @@ struct NotebookFallbackSheet: View {
                     }
                 }
                 Section {
-                    Text("Notability doesn’t offer a supported way for other apps to open a specific notebook, so this step is manual.")
+                    Text("\(noteApp.name) doesn’t offer a supported way for other apps to open a specific notebook, so this step is manual.")
                         .font(.lora(15))
                     if let notebookName {
                         LabeledContent("Go to folder") {
@@ -211,7 +215,7 @@ struct NotebookFallbackSheet: View {
                             Label(copied ? "Copied" : "Copy Folder Name", systemImage: copied ? "checkmark" : "doc.on.doc")
                         }
                     } else {
-                        Text("Save this course’s Notability folder name in the course settings and it will be shown here.")
+                        Text("Save this course’s \(noteApp.name) folder name in the course settings and it will be shown here.")
                             .font(.lora(15))
                             .foregroundStyle(.secondary)
                     }
@@ -219,27 +223,27 @@ struct NotebookFallbackSheet: View {
                     Text(course.name)
                 }
                 Section("Steps") {
-                    Label("Open Notability from your Home Screen or Dock.", systemImage: "1.circle")
+                    Label("Open \(noteApp.name) from your Home Screen or Dock.", systemImage: "1.circle")
                     Label("Open the course folder\(notebookName.map { " “\($0)”" } ?? "").", systemImage: "2.circle")
                     if UIDevice.current.userInterfaceIdiom == .pad {
-                        Label("Tip: drag Notability from the Dock to the side of this app to keep both open.", systemImage: "rectangle.split.2x1")
+                        Label("Tip: drag \(noteApp.name) from the Dock to the side of this app to keep both open.", systemImage: "rectangle.split.2x1")
                     }
-                    Label("To bring in a homework sheet, use “Add PDF to Notability” on the assignment.", systemImage: "square.and.arrow.up.on.square")
+                    Label("To bring in a homework sheet, use “Add PDF to \(noteApp.name)” on the assignment.", systemImage: "square.and.arrow.up.on.square")
                 }
                 Section {
-                    Button("Edit Notability Settings for This Course") {
+                    Button("Edit Notebook Settings for This Course") {
                         dismiss()
                         router.push(.courseSettings(course))
                     }
                     if case .linkFailed = outcome {
-                        Button("Get Notability on the App Store") { openURL(NotabilityIntegration.appStoreURL) }
+                        Button("Get \(noteApp.name) on the App Store") { openURL(noteApp.appStoreURL) }
                     }
                 }
                 }
                 .listRowBackground(AppTheme.parchmentCard)
             }
             .parchmentList()
-            .navigationTitle("Open in Notability")
+            .navigationTitle("Open in \(noteApp.name)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }

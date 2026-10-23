@@ -49,7 +49,7 @@ struct AssignmentDetailView: View {
         } message: {
             Text(assignment.attachmentList.isEmpty
                  ? String(localized: "Its progress and notes will be deleted. Other weeks are not affected.")
-                 : String(localized: "Its progress, notes and the app’s copies of its PDFs will be deleted. Copies already in Notability or Files are not affected."))
+                 : String(localized: "Its progress, notes and the app’s copies of its PDFs will be deleted. Copies already in Notability, Goodnotes or Files are not affected."))
         }
     }
 
@@ -61,7 +61,7 @@ struct AssignmentDetailView: View {
                 ExerciseProgressCard(assignment: assignment)
                 AttachmentsSection(assignment: assignment)
                 if let course = assignment.course {
-                    NotabilitySection(assignment: assignment, course: course)
+                    NoteAppSection(assignment: assignment, course: course)
                 }
                 NotesSection(assignment: assignment)
             }
@@ -422,17 +422,18 @@ private struct MetadataFooter: View {
     }
 }
 
-// MARK: - Notability
+// MARK: - Note app (Notability or Goodnotes)
 
-private struct NotabilitySection: View {
+private struct NoteAppSection: View {
+    @AppStorage(NoteApp.preferenceKey) private var noteApp = NoteApp.notability
     let assignment: HomeworkAssignment
     let course: Course
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Notability").font(.lora(17, weight: .semibold))
+            Text(noteApp.name).font(.lora(17, weight: .semibold))
             if let attachment = assignment.sortedAttachments.first {
-                SendToNotabilityButton(attachment: attachment, prominent: true)
+                SendToNoteAppButton(attachment: attachment, prominent: true)
                     .controlSize(.large)
             }
             OpenNotebookButton(course: course)
@@ -447,11 +448,11 @@ private struct NotabilitySection: View {
     private var helpText: String {
         let folder = course.notebook?.notebookName.isEmpty == false ? course.notebook!.notebookName : nil
         if assignment.attachmentList.isEmpty {
-            return String(localized: "Add a PDF to send it to Notability.")
+            return String(localized: "Add a PDF to send it to \(noteApp.name).")
         }
         if let folder {
-            return String(localized: "In the share sheet choose Notability, then add the PDF to a note in “\(BidiText.isolate(folder))”. Your copy here stays unchanged.")
+            return String(localized: "In the share sheet choose \(noteApp.name), then add the PDF to a note in “\(BidiText.isolate(folder))”. Your copy here stays unchanged.")
         }
-        return String(localized: "In the share sheet choose Notability, then pick where to put it inside Notability. Your copy here stays unchanged.")
+        return String(localized: "In the share sheet choose \(noteApp.name), then pick where to put it inside \(noteApp.name). Your copy here stays unchanged.")
     }
 }

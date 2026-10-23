@@ -57,7 +57,7 @@ here has been submitted anywhere.
 
 ## Known limitations (for testers)
 
-- Notability can't be told which notebook to open; importing a PDF there is a manual last step.
+- Notability and Goodnotes can't be told which notebook to open; importing a PDF there is a manual last step.
 - PDFs aren't parsed — enter exercise counts by hand.
 - Homework progress and Class lesson progress are separate; finishing one doesn't finish the other.
 - The homework screens are English-only; the Class tab is English and Hebrew.
@@ -104,7 +104,7 @@ you're not adding any other encryption.
 > • **Real progress.** Progress is weighted by exercises, not averaged — and assignments
 >   without a count still show up.
 > • **PDFs beside your work.** Import from Files, Safari or Moodle, preview them, and send
->   them to Notability.
+>   them to Notability or Goodnotes.
 > • **iPhone and iPad.** Syncs through your own private iCloud. Works offline. iPad gets a
 >   sidebar, a side panel and keyboard shortcuts.
 > • **Class lessons.** Sign in with Apple to follow the lessons your class shares, with

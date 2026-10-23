@@ -4,7 +4,7 @@ import StudyData
 import StudyDomain
 
 /// Lesson PDFs: open (downloads once, then works offline) and share to other apps such as
-/// Notability through the standard share sheet.
+/// Notability or Goodnotes through the standard share sheet.
 struct MaterialsCard: View {
     @Environment(StudentStore.self) private var store
     let lesson: Lesson
@@ -123,7 +123,7 @@ private struct AttachmentRow: View {
     }
 }
 
-/// Full-screen PDF reader with a share button (Open in Notability, Files, AirDrop…).
+/// Full-screen PDF reader with a share button (Notability, Goodnotes, Files, AirDrop…).
 struct PDFViewerSheet: View {
     @Environment(\.dismiss) private var dismiss
     let title: String

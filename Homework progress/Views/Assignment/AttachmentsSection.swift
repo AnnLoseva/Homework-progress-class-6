@@ -81,7 +81,7 @@ struct AttachmentsSection: View {
                 services.store(context).remove(attachment)
             }
         } message: { attachment in
-            Text("This deletes the app’s copy of “\(attachment.originalFilename)”. The original in Files and any copy already in Notability are not affected. Exercise progress and notes are kept.")
+            Text("This deletes the app’s copy of “\(attachment.originalFilename)”. The original in Files and any copy already in Notability or Goodnotes are not affected. Exercise progress and notes are kept.")
         }
         .confirmationDialog(
             "Replace this PDF?",
