@@ -42,7 +42,7 @@ struct ClassPublishSection: View {
         } header: {
             Text("Class")
         } footer: {
-            Text("Subscribe to class adds every class lesson, required and optional, to your weeks with its PDFs; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
+            Text("Subscribe to class adds every class lesson, required and optional, to your weeks with its PDFs and keeps their progress in step with Class; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
         }
         .sheet(isPresented: $isPublishing) {
             if let admin = classroom.admin {

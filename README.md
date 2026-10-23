@@ -11,8 +11,8 @@ A native iPhone and iPad app for five HIT computer-science courses, with two par
   Class*). Backend: Supabase with Row Level Security on every table.
 
 The two parts keep separate data: homework stays in SwiftData + iCloud, class lessons and
-lesson progress live in Supabase. Neither copies the other's records. The app ships with no
-sample content.
+lesson progress live in Supabase. The one bridge is *Subscribe to class* (below), which copies
+lessons into your weeks and keeps their progress in step. The app ships with no sample content.
 
 Architecture, data model and security model: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
@@ -84,10 +84,12 @@ Pomodoro, the app always uses the light parchment appearance.
 - **Subscribe to class** (Class Home, or *Settings → Class*): copies every published class
   lesson, required and optional, into your homework weeks: the week with the same number
   (or the one containing the due date, created if needed), the matching course, the exercise
-  total and the PDFs. New and changed lessons follow automatically. The copies are ordinary
-  homework: your progress and notes there are never overwritten, a copy you delete isn't
-  brought back, and turning the switch off keeps what was added. Restricted PDFs arrive once
-  you've joined the class with its code.
+  total and the PDFs. New and changed lessons follow automatically, and optional lessons are
+  followed in Class too. **Progress is shared:** ticking exercises or finishing a copy in
+  Homework updates the class lesson and the other way round (whichever side changed wins; if
+  both did, the newer change). Your notes stay in Homework, a copy you delete isn't brought
+  back, and turning the switch off keeps what was added. Restricted PDFs arrive once you've
+  joined the class with its code.
 - **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
   replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
   to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise
@@ -246,9 +248,8 @@ user data and are shown exactly as stored. Hebrew renders right-to-left automati
   claiming success.
 - PDFs are not parsed: you enter exercise counts by hand, as specified.
 - The PDF viewer is read-only. Handwriting belongs in Notability or Goodnotes.
-- The Class tab's progress is separate from your homework progress: publishing and
-  *Subscribe to class* copy lessons but don't link them, so completing a homework assignment
-  doesn't complete the class lesson.
+- Without *Subscribe to class*, the Class tab's progress is separate from your homework
+  progress: publishing alone doesn't link them.
 - Sign in with Apple, the delete-account Edge Function and Storage signed URLs need a real
   Supabase project to test end to end; the SQL suites cover the database rules.
 

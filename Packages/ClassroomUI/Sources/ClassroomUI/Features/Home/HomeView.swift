@@ -255,7 +255,7 @@ private struct HomeworkSubscriptionCard: View {
                     .font(.woodHeadline)
             }
             .accessibilityIdentifier("homeworkSubscriptionToggle")
-            Text("Adds every class lesson, required and optional, to your homework weeks with its PDFs. Your progress there stays yours, and turning this off keeps what was added.")
+            Text("Adds every class lesson, required and optional, to your homework weeks with its PDFs, and keeps the progress in Homework and Class in step. Turning this off keeps what was added.")
                 .font(.lora(13, relativeTo: .footnote))
                 .foregroundStyle(.secondary)
             if subscription.isOn, let status = subscription.status {

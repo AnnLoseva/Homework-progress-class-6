@@ -6,8 +6,6 @@
 import SwiftUI
 import SwiftData
 import ClassroomUI
-import StudyData
-import StudyDomain
 
 struct RootView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -42,7 +40,6 @@ struct RootView: View {
             if url.isFileURL { router.activeSheet = .importSharedPDF(url) }
         }
         .overlay(alignment: .bottom) { ToastView() }
-        .modifier(ClassHomeworkSyncTrigger())
         .classHomeworkSync()
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { rescheduleReminders() }
@@ -314,39 +311,6 @@ struct ToastView: View {
                     withAnimation { services.toast = nil }
                 }
                 .accessibilityAddTraits(.isStaticText)
-        }
-    }
-}
-
-/// Starts "Follow the whole class" passes when the class catalog or progress changes, when
-/// homework is saved, and when the switch is turned on.
-private struct ClassHomeworkSyncTrigger: ViewModifier {
-    @Environment(\.modelContext) private var context
-    @Environment(AppServices.self) private var services
-    @AppStorage("weekStartsOn") private var weekStartsOn = 1
-
-    func body(content: Content) -> some View {
-        let student = services.classroom.student
-        content
-            .onChange(of: student?.catalog, initial: true) { schedule() }
-            .onChange(of: student?.progress) { schedule() }
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in schedule() }
-            .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in schedule() }
-    }
-
-    private func schedule() {
-        let services = services
-        let context = context
-        let planner = WeekPlanner(firstWeekday: weekStartsOn)
-        services.classSync.schedule {
-            guard let student = services.classroom.student,
-                  UserDefaults.standard.bool(forKey: ClassroomPreferences.followWholeClassKey(for: student.userID))
-            else { return nil }
-            let attachments = services.classroom.attachments
-            return ClassHomeworkSync(
-                store: services.store(context), student: student,
-                download: attachments.map { repository in { try await repository.file(for: $0) } },
-                defaults: .standard, planner: planner)
         }
     }
 }

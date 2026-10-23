@@ -11,7 +11,8 @@ import StudyDomain
 
 extension View {
     /// Runs "Subscribe to class" whenever it's switched on and the class catalog or the
-    /// user's class membership changes. Attach once, near the root.
+    /// user's class membership changes, and keeps progress in step (ClassProgressSync).
+    /// Attach once, near the root.
     func classHomeworkSync() -> some View {
         modifier(ClassHomeworkSync())
     }
@@ -48,6 +49,20 @@ private struct ClassHomeworkSync: ViewModifier {
                 })
             let report = await importer.run(catalog: student.catalog)
             homework.status = report.message
+            scheduleProgressSync()
+        }
+        // Progress both ways: when the class side changes, and when homework is saved.
+        .onChange(of: services.classroom.student?.progress) { scheduleProgressSync() }
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in scheduleProgressSync() }
+    }
+
+    private func scheduleProgressSync() {
+        let services = services
+        let context = context
+        services.classProgressSync.schedule {
+            guard let homework = services.classroom.homework, homework.isOn,
+                  let student = services.classroom.student, student.hasLoadedCache else { return nil }
+            return ClassProgressSync(store: services.store(context), student: student, defaults: homework.defaults)
         }
     }
 }
