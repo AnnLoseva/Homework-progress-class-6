@@ -187,6 +187,9 @@ devices need a paid Apple Developer membership.
    *Manage lessons*. Details: [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md).
 
 Release builds, TestFlight and what MIT means: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md).
+Uploading a TestFlight beta step by step, with the release checklist, draft App Store
+metadata and security review: [docs/release/](docs/release/TESTFLIGHT_UPLOAD_GUIDE.md)
+(`scripts/testflight.sh check | archive | export | upload`).
 
 ## Tests
 

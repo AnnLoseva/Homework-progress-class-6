@@ -192,6 +192,37 @@ struct SyncTests {
         #expect(await server.storedProgress(userID: userID, lessonID: Lessons.vectors)?.notes == "written on the train")
     }
 
+    @Test func switchingAccountsOnOneDeviceNeverShowsOrSendsThePreviousStudentsData() async {
+        let classmate = UUID()
+        let server = await makeServer(clock: clock, students: [userID, classmate])
+        let cache = temporaryDirectory()
+        let first = Device(server: server, userID: userID, clock: clock, cacheDirectory: cache)
+        await first.store.start()
+        first.network.isOnline = false
+        await first.store.setNotes("my private note", lessonID: Lessons.vectors)
+        await first.store.setCompletedExercises(3, lessonID: Lessons.logic)
+        first.store.stop()
+
+        // The classmate signs in on the same device, with the same cache directory.
+        let second = Device(server: server, userID: classmate, clock: clock, cacheDirectory: cache)
+        await second.store.loadCache()
+        #expect(second.store.pendingChangeCount == 0)
+        #expect(second.store.progress(for: Lessons.vectors).notes.isEmpty)
+        #expect(second.store.progress(for: Lessons.logic).completedExercises == 0)
+
+        await second.store.start()
+        await second.store.sync()
+        #expect(await server.storedProgress(userID: classmate, lessonID: Lessons.vectors) == nil)
+        #expect(await server.storedProgress(userID: classmate, lessonID: Lessons.logic) == nil)
+
+        // The first student's queued work is still theirs when they come back.
+        let back = Device(server: server, userID: userID, clock: clock, cacheDirectory: cache)
+        await back.store.loadCache()
+        #expect(back.store.pendingChangeCount == 2)
+        await back.store.sync()
+        #expect(await server.storedProgress(userID: userID, lessonID: Lessons.vectors)?.notes == "my private note")
+    }
+
     @Test func manyOfflineEditsCollapseIntoOneRequestPerLesson() async {
         let server = await makeServer(clock: clock, students: [userID])
         let device = Device(server: server, userID: userID, clock: clock)

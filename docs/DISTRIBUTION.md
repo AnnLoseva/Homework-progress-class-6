@@ -15,6 +15,8 @@ account) uploads a build and shares a public TestFlight link. Classmates install
 TestFlight app and join; no one needs Xcode. The build points at the instructor's Supabase
 project through the publishable key, which is safe because RLS protects the data.
 
+How to actually upload the beta: [release/TESTFLIGHT_UPLOAD_GUIDE.md](release/TESTFLIGHT_UPLOAD_GUIDE.md).
+
 A classmate who builds from source with their own Apple team and bundle id gets **their own
 app**. To use the class's backend, the instructor must add that bundle id to the Apple
 provider's *Client IDs* in Supabase. Otherwise they can use the homework tracker alone, or

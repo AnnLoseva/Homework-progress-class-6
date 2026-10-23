@@ -107,6 +107,7 @@
 				8860D32130867788004AE0BC /* Sources */,
 				8860D32230867788004AE0BC /* Frameworks */,
 				8860D32330867788004AE0BC /* Resources */,
+				C1A55000000000000000B00A /* Check release configuration */,
 			);
 			buildRules = (
 			);
@@ -230,6 +231,30 @@
 			);
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C1A55000000000000000B00A /* Check release configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/scripts/check-release-config.sh",
+			);
+			name = "Check release configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\"${SRCROOT}/scripts/check-release-config.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8860D32130867788004AE0BC /* Sources */ = {

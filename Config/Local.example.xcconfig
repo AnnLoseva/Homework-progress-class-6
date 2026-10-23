@@ -6,6 +6,10 @@
 SUPABASE_URL = https:/$()/your-project-ref.supabase.co
 SUPABASE_PUBLISHABLE_KEY = sb_publishable_replace-me
 
+// Archives (TestFlight / App Store) refuse an empty, local or placeholder backend; see
+// scripts/check-release-config.sh. For a homework-only archive without the Class tab:
+// ALLOW_ARCHIVE_WITHOUT_CLASS_BACKEND = YES
+
 // Local development with `supabase start`:
 // SUPABASE_URL = http:/$()/127.0.0.1:54321
 // SUPABASE_PUBLISHABLE_KEY = <the "Publishable key" printed by `supabase status`>

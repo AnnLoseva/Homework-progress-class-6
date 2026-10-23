@@ -43,6 +43,15 @@
 				<string>CA92.1</string>
 			</array>
 		</dict>
+		<dict>
+			<!-- AttachmentFileStore reads sizes and modification dates of the app's own PDF copies. -->
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>C617.1</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

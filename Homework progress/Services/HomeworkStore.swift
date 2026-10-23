@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 /// All mutations that touch more than one property, or the file system, go through here so the
@@ -12,6 +13,8 @@ import SwiftData
 struct HomeworkStore {
     let context: ModelContext
     let files: AttachmentFileStore
+
+    private static let log = Logger(subsystem: "AnnaLoseva.Homework-progress", category: "HomeworkStore")
 
     // MARK: Weeks
 
@@ -208,6 +211,7 @@ struct HomeworkStore {
     }
 
     func save() {
-        do { try context.save() } catch { print("Save failed: \(error)") }
+        // The error can quote record values, so it stays redacted in device logs.
+        do { try context.save() } catch { Self.log.error("Save failed: \(error, privacy: .private)") }
     }
 }
