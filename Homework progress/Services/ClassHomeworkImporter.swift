@@ -2,45 +2,51 @@
 //  ClassHomeworkImporter.swift
 //  Homework progress
 //
-//  "Subscribe to class": copies every published class lesson, required and optional, into the
-//  user's homework weeks, with its PDFs. The mirror image of ClassPublisher.
+//  "Subscribe to class": copies the published lessons of every subscribed class course,
+//  required and optional, into the user's homework weeks, with their PDFs. The mirror image of
+//  ClassPublisher.
 //
 //  • An assignment reuses its lesson's id (and each PDF its attachment's id), so running again,
-//    or on the other device, never duplicates anything; iCloud sync merges the same ids.
+//    or on the other device, never duplicates anything; SyncMaintenance merges records that
+//    share an id. Courses and weeks it creates get ids derived from the class too, for the same
+//    reason.
 //  • Only copies made here are updated when the lesson changes (title, due date, exercise
 //    total), and never their progress, status or notes. The administrator's own homework,
 //    which the lessons were published from, has the same ids and is left alone.
 //  • An assignment the user deletes is not brought back. Turning the subscription off keeps
-//    everything already copied.
+//    everything already copied, and so does switching a course off.
 //
 
+import CryptoKit
+import ClassroomUI
 import Foundation
 import SwiftData
 import StudyDomain
 
-/// Which lessons this device already copied (and may update) or has seen (and must not copy
-/// again, e.g. because the user deleted the assignment).
+/// Which lessons were already copied (and may be updated) or seen (and must not be copied
+/// again, e.g. because the user deleted the assignment). Shared with the user's other devices
+/// through iCloud, so a copy deleted on the iPhone doesn't come back from the iPad.
 struct ClassImportLedger {
     static let createdKey = "classImport.created"
     static let knownKey = "classImport.known"
 
-    let defaults: UserDefaults
+    let settings: SyncedSettings
     var created: Set<UUID>
     var known: Set<UUID>
 
+    init(settings: SyncedSettings) {
+        self.settings = settings
+        created = settings.growingIDs(forKey: Self.createdKey)
+        known = settings.growingIDs(forKey: Self.knownKey)
+    }
+
     init(defaults: UserDefaults) {
-        self.defaults = defaults
-        created = Self.load(Self.createdKey, from: defaults)
-        known = Self.load(Self.knownKey, from: defaults)
+        self.init(settings: SyncedSettings(local: defaults, cloud: nil))
     }
 
     func save() {
-        defaults.set(created.map(\.uuidString).sorted(), forKey: Self.createdKey)
-        defaults.set(known.map(\.uuidString).sorted(), forKey: Self.knownKey)
-    }
-
-    private static func load(_ key: String, from defaults: UserDefaults) -> Set<UUID> {
-        Set((defaults.stringArray(forKey: key) ?? []).compactMap(UUID.init(uuidString:)))
+        settings.add(created, forKey: Self.createdKey)
+        settings.add(known, forKey: Self.knownKey)
     }
 }
 
@@ -73,6 +79,8 @@ struct ClassHomeworkImporter {
     let store: HomeworkStore
     let planner: WeekPlanner
     var ledger: ClassImportLedger
+    /// Class courses the user switched off.
+    var skippedCourses: Set<UUID> = []
     /// The local file of a lesson PDF (downloaded once, then cached by the Class area).
     let fetchFile: (LessonAttachment) async throws -> URL
 
@@ -81,7 +89,7 @@ struct ClassHomeworkImporter {
     mutating func run(catalog: Catalog, now: Date = .now) async -> ClassImportReport {
         var report = ClassImportReport()
         let lessons = catalog.lessons
-            .filter { $0.isActive(at: now) }
+            .filter { $0.isActive(at: now) && !skippedCourses.contains($0.courseID) }
             .sorted { ($0.week ?? .max, $0.sortOrder, $0.title) < ($1.week ?? .max, $1.sortOrder, $1.title) }
 
         for lesson in lessons {
@@ -163,7 +171,7 @@ struct ClassHomeworkImporter {
         }
         let palette = CoursePalette.allCases.first { ClassPublisher.colorKey(for: $0.rawValue) == classCourse.colorKey } ?? .indigo
         return store.createCourse(name: classCourse.title, englishName: classCourse.subtitle ?? "", url: nil,
-                                  palette: palette, icon: classCourse.iconName)
+                                  palette: palette, icon: classCourse.iconName, id: classCourse.id)
     }
 
     static func slug(of course: Course) -> String {
@@ -183,7 +191,20 @@ struct ClassHomeworkImporter {
         let number = lesson.week ?? WeekPlanner.nextNumber(after: weeks.map(\.number))
         let module = lesson.moduleTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let range = planner.range(containing: lesson.dueAt ?? now)
+        // Both devices may add the same week before either sees the other's: same id, merged.
         return store.createWeek(title: module.isEmpty ? WeekPlanner.defaultTitle(number: number) : module,
-                                number: number, start: range.start, end: range.end, planner: planner)
+                                number: number, start: range.start, end: range.end, planner: planner,
+                                id: UUID.derived(from: "class-week:\(number):\(Int(range.start.timeIntervalSince1970))"))
+    }
+}
+
+extension UUID {
+    /// The same UUID for the same name on every device (SHA-256 based, version 5 layout).
+    static func derived(from name: String) -> UUID {
+        var bytes = Array(SHA256.hash(data: Data(name.utf8)).prefix(16))
+        bytes[6] = (bytes[6] & 0x0F) | 0x50
+        bytes[8] = (bytes[8] & 0x3F) | 0x80
+        return UUID(uuid: (bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
+                           bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]))
     }
 }

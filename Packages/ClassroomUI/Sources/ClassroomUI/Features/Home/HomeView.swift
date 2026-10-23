@@ -14,6 +14,8 @@ struct HomeView: View {
 
                 if let homework = environment.homework {
                     HomeworkSubscriptionCard(subscription: homework,
+                                             courses: store.catalog.courses.filter { !$0.isArchived }
+                                                 .sorted { ($0.sortOrder, $0.title) < ($1.sortOrder, $1.title) },
                                              isEnrolled: store.identity?.isEnrolled == true || store.identity?.isAdmin == true)
                 }
 
@@ -243,9 +245,11 @@ private struct RecentLessonsCard: View {
     }
 }
 
-/// The "Subscribe to class" switch: copies every class lesson into the homework weeks.
+/// The "Subscribe to class" switch and the courses it covers: their lessons are copied into
+/// the homework weeks.
 private struct HomeworkSubscriptionCard: View {
     @Bindable var subscription: HomeworkSubscription
+    let courses: [Course]
     let isEnrolled: Bool
 
     var body: some View {
@@ -255,9 +259,29 @@ private struct HomeworkSubscriptionCard: View {
                     .font(.woodHeadline)
             }
             .accessibilityIdentifier("homeworkSubscriptionToggle")
-            Text("Adds every class lesson, required and optional, to your homework weeks with its PDFs, and keeps the progress in Homework and Class in step. Turning this off keeps what was added.")
+            Text("Adds the lessons of the courses you pick, required and optional, to the matching homework week with their PDFs, as soon as they're published, and keeps the progress in Homework and Class in step. Your other devices follow automatically. Turning this off keeps what was added.")
                 .font(.lora(13, relativeTo: .footnote))
                 .foregroundStyle(.secondary)
+            if subscription.isOn, !courses.isEmpty {
+                VStack(spacing: 6) {
+                    ForEach(courses) { course in
+                        Toggle(isOn: Binding(get: { subscription.isSubscribed(toCourse: course.id) },
+                                             set: { subscription.setSubscribed($0, toCourse: course.id) })) {
+                            HStack(spacing: 10) {
+                                CourseIcon(course: course, size: 30)
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text(course.title).font(.woodBody).lineLimit(2)
+                                    if let subtitle = course.subtitle, !subtitle.isEmpty {
+                                        Text(subtitle).font(.lora(12, relativeTo: .caption)).foregroundStyle(.secondary).lineLimit(1)
+                                    }
+                                }
+                            }
+                        }
+                        .accessibilityIdentifier("homeworkSubscriptionCourse.\(course.slug)")
+                    }
+                }
+                .padding(.top, 2)
+            }
             if subscription.isOn, let status = subscription.status {
                 Label(status, systemImage: "checkmark.circle")
                     .font(.lora(13, relativeTo: .footnote))

@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import Testing
 @testable import Homework_progress
+import ClassroomUI
 import StudyDomain
 
 @MainActor
@@ -33,9 +34,13 @@ struct ClassHomeworkImporterTests {
                publishedAt: date(2026, 10, 1))
     }
 
-    func importer(failingFiles: Bool = false) throws -> ClassHomeworkImporter {
+    func importer(failingFiles: Bool = false, env: TestEnvironment? = nil, cloud: FakeCloudStore? = nil,
+                  skipping skipped: Set<UUID> = []) throws -> ClassHomeworkImporter {
+        let env = env ?? self.env
         let pdf = try env.makePDF(named: "Sheet.pdf")
-        return ClassHomeworkImporter(store: env.store, planner: WeekPlanner(), ledger: ClassImportLedger(defaults: env.defaults),
+        return ClassHomeworkImporter(store: env.store, planner: WeekPlanner(),
+                                     ledger: ClassImportLedger(settings: SyncedSettings(local: env.defaults, cloud: cloud)),
+                                     skippedCourses: skipped,
                                      fetchFile: { _ in
                                          if failingFiles { throw URLError(.notConnectedToInternet) }
                                          return pdf
@@ -164,5 +169,78 @@ struct ClassHomeworkImporterTests {
         #expect(course.name == "Robotics")
         #expect(course.palette == .blue)
         #expect(course.iconName == "CourseLaptop")
+    }
+
+    // MARK: Chosen courses
+
+    @Test func onlySubscribedCoursesAreCopiedAndSwitchingOneBackOnAddsItsLessons() async throws {
+        let robotics = StudyDomain.Course(slug: "robotics", title: "Robotics")
+        let sets = lesson("Sets", .required)
+        let motors = lesson("Motors", .required, course: robotics)
+        let catalog = Catalog(courses: [discrete, robotics], lessons: [sets, motors])
+
+        var skipping = try importer(skipping: [robotics.id])
+        let first = await skipping.run(catalog: catalog, now: now)
+        #expect(first.added == 1)
+        #expect(try assignments().map(\.id) == [sets.id])
+
+        var all = try importer()
+        let second = await all.run(catalog: catalog, now: now)
+        #expect(second.added == 1, "a course switched off isn't remembered as seen")
+        #expect(Set(try assignments().map(\.id)) == [sets.id, motors.id])
+    }
+
+    // MARK: Two devices, one iCloud account
+
+    @Test func aCopyDeletedOnOneDeviceIsNotBroughtBackByTheOther() async throws {
+        let cloud = FakeCloudStore()
+        let sets = lesson("Sets", .required)
+        let catalog = Catalog(courses: [discrete], lessons: [sets])
+        var iPhone = try importer(cloud: cloud)
+        _ = await iPhone.run(catalog: catalog, now: now)
+        env.store.delete(try #require(try assignments().first))
+
+        // The iPad has its own defaults and an empty store (the deletion has synced through iCloud).
+        let iPad = try TestEnvironment()
+        _ = try iPad.seed()
+        var iPadImporter = try importer(env: iPad, cloud: cloud)
+        let report = await iPadImporter.run(catalog: catalog, now: now)
+        #expect(report.added == 0)
+        #expect(try iPad.context.fetch(FetchDescriptor<HomeworkAssignment>()).isEmpty)
+    }
+
+    @Test func theOtherDeviceKeepsUpdatingCopiesMadeOnTheFirst() async throws {
+        let cloud = FakeCloudStore()
+        var sets = lesson("Sets", .required)
+        var iPhone = try importer(cloud: cloud)
+        _ = await iPhone.run(catalog: Catalog(courses: [discrete], lessons: [sets]), now: now)
+
+        // The iPad received the copy through iCloud (same id), but its own ledger never saw it.
+        let iPad = try TestEnvironment()
+        let courses = try iPad.seed()
+        let week = iPad.store.createWeek(title: "Week 1", number: 1, start: date(2026, 10, 18), end: date(2026, 10, 24))
+        let synced = iPad.store.createAssignment(title: "Sets", course: courses[4], week: week, totalExercises: 5, id: sets.id)
+
+        sets.title = "Sets and relations"
+        var iPadImporter = try importer(env: iPad, cloud: cloud)
+        let report = await iPadImporter.run(catalog: Catalog(courses: [discrete], lessons: [sets]), now: now)
+        #expect(report.updated == 1)
+        #expect(synced.title == "Sets and relations")
+    }
+
+    @Test func weeksAndCoursesBothDevicesCreateShareAnIDSoSyncMergesThem() async throws {
+        let robotics = StudyDomain.Course(slug: "robotics", title: "Robotics")
+        let catalog = Catalog(courses: [robotics], lessons: [lesson("Motors", .required, week: 7, due: date(2026, 12, 2), course: robotics)])
+        var iPhone = try importer()
+        _ = await iPhone.run(catalog: catalog, now: now)
+        let iPad = try TestEnvironment()
+        _ = try iPad.seed()
+        var iPadImporter = try importer(env: iPad)
+        _ = await iPadImporter.run(catalog: catalog, now: now)
+
+        let phoneCopy = try #require(try assignments().first)
+        let padCopy = try #require(try iPad.context.fetch(FetchDescriptor<HomeworkAssignment>()).first)
+        #expect(phoneCopy.week?.id == padCopy.week?.id)
+        #expect(phoneCopy.course?.id == robotics.id && padCopy.course?.id == robotics.id)
     }
 }

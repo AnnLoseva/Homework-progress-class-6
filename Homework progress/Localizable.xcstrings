@@ -384,6 +384,16 @@
         }
       }
     },
+    "Adds the lessons of the courses you pick, required and optional, to the matching homework week with their PDFs, as soon as they're published, and keeps the progress in Homework and Class in step. Your other devices follow automatically. Turning this off keeps what was added." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "מוסיף את השיעורים של הקורסים שבחרת, חובה ורשות, לשבוע המתאים בשיעורי הבית יחד עם קובצי ה-PDF, ברגע שהם מתפרסמים, ושומר על אותה התקדמות בשיעורי הבית ובכיתה. המכשירים האחרים שלך מתעדכנים אוטומטית. כיבוי לא מוחק את מה שכבר נוסף."
+          }
+        }
+      }
+    },
     "Administrator" : {
       "extractionState" : "stale",
       "localizations" : {

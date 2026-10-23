@@ -19,9 +19,10 @@ struct HomeworkStore {
     // MARK: Weeks
 
     @discardableResult
-    func createWeek(title: String, number: Int?, start: Date, end: Date, planner: WeekPlanner = WeekPlanner()) -> AcademicWeek {
+    func createWeek(title: String, number: Int?, start: Date, end: Date, planner: WeekPlanner = WeekPlanner(),
+                    id: UUID = UUID()) -> AcademicWeek {
         let range = planner.normalized(start: start, end: end)
-        let week = AcademicWeek(title: title, number: number, startDate: range.start, endDate: range.end)
+        let week = AcademicWeek(id: id, title: title, number: number, startDate: range.start, endDate: range.end)
         context.insert(week)
         save()
         return week
@@ -174,9 +175,10 @@ struct HomeworkStore {
     // MARK: Courses
 
     @discardableResult
-    func createCourse(name: String, englishName: String, url: String?, palette: CoursePalette, icon: String) -> Course {
+    func createCourse(name: String, englishName: String, url: String?, palette: CoursePalette, icon: String,
+                      id: UUID = UUID()) -> Course {
         let maxOrder = (try? context.fetch(FetchDescriptor<Course>()))?.map(\.sortOrder).max() ?? -1
-        let course = Course(name: name, englishName: englishName, courseURLString: url,
+        let course = Course(id: id, name: name, englishName: englishName, courseURLString: url,
                             colorKey: palette.rawValue, iconName: icon, sortOrder: maxOrder + 1)
         context.insert(course)
         save()

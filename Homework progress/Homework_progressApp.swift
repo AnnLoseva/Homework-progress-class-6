@@ -64,8 +64,10 @@ final class AppBootstrap {
                 classroom = .uiTestingSignedIn()
             }
             #endif
-            // "Subscribe to class" copies class lessons into the homework weeks.
-            classroom.homework = HomeworkSubscription(defaults: defaults)
+            // "Subscribe to class" copies class lessons into the homework weeks. Its settings
+            // follow the user's iCloud account, like the homework itself.
+            classroom.homework = HomeworkSubscription(settings: SyncedSettings(
+                local: defaults, cloud: storeKind == .iCloud ? NSUbiquitousKeyValueStore.default : nil))
             state = .ready(container, AppServices(files: files, sync: sync, classroom: classroom))
         } catch {
             state = .failed(error.localizedDescription)

@@ -10,7 +10,7 @@ Re-run the automated part with `scripts/testflight.sh check`.
 | # | Item | Status | Evidence / action |
 |---|---|---|---|
 | 1 | Class code set on the hosted project | **BLOCKED** | All 12 PDFs are *restricted* and no code exists, so testers can't open any PDF. Class → Manage lessons → Class code |
-| 2 | CloudKit schema deployed to Production | **BLOCKED** | TestFlight builds use CloudKit Production (confirmed in the exported entitlements). CloudKit Console → Deploy Schema Changes |
+| 2 | CloudKit schema deployed to Production | DONE | Deployed 2026-10-23 from Development after checking every model attribute had a field: 5 record types (`CD_AcademicWeek`, `CD_Course`, `CD_HomeworkAssignment`, `CD_HomeworkAttachment`, `CD_NotabilityNotebookAssociation`) and their indexes. Redeploy whenever a SwiftData model changes |
 | 3 | App Store Connect app record | **BLOCKED** | Not checked (no App Store Connect access from here). Create it — guide step 1.2 |
 | 4 | Privacy policy published + URL | **BLOCKED** | `PRIVACY.md` is a template |
 | 5 | Decide that the project in `Config/Local.xcconfig` is the class's production backend | **BLOCKED** | See SECURITY_REVIEW finding 1 |
@@ -60,5 +60,5 @@ Re-run the automated part with `scripts/testflight.sh check`.
 | Hosted Supabase: migrations, RLS, advisors | PASS | 5/5 migrations applied, 0 tables without RLS, only the documented advisor warnings |
 | On a real device / iOS 17 / iOS 27 | NOT VERIFIED | Simulators only (iOS 26.5). Install the TestFlight build on your own iPhone and iPad first |
 | Sign in with Apple, PDF download, account deletion end to end | NOT VERIFIED | Needs a real device + Apple ID; covered by fakes and SQL tests only |
-| iCloud sync on TestFlight (Production) | NOT VERIFIED | Needs item 2 and two devices |
+| iCloud sync on TestFlight (Production) | NOT VERIFIED | Schema is deployed (item 2); needs two devices on the same Apple ID. *Subscribe to class* settings sync through iCloud key-value storage |
 | Dynamic Type / VoiceOver pass | NOT VERIFIED | Fonts scale (`relativeTo:`) and icon-only buttons have labels; no full audit was run |

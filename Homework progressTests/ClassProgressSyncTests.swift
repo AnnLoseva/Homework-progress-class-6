@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import Testing
 @testable import Homework_progress
+import ClassroomUI
 import StudyData
 import StudyDomain
 
@@ -45,7 +46,7 @@ struct ClassProgressSyncTests {
                                              ledger: ClassImportLedger(defaults: env.defaults),
                                              fetchFile: { _ in throw URLError(.notConnectedToInternet) })
         _ = await importer.run(catalog: student.catalog)
-        return (server, student, ClassProgressSync(store: env.store, student: student, defaults: env.defaults))
+        return (server, student, ClassProgressSync(store: env.store, student: student, settings: SyncedSettings(local: env.defaults, cloud: nil)))
     }
 
     func assignment(_ id: UUID) throws -> HomeworkAssignment {

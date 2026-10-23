@@ -28,6 +28,10 @@ final class SyncMonitor {
     private(set) var status: Status = .checking
     private(set) var lastSync: Date?
     private(set) var lastError: String?
+    /// False until this launch's first import from iCloud has finished (or failed, or there is
+    /// nothing to wait for). Work that creates records waits for it, so it sees what the other
+    /// device already did first.
+    private(set) var hasCaughtUp = false
 
     let storeKind: PersistenceFactory.StoreKind
     private var observers: [NSObjectProtocol] = []
@@ -38,9 +42,20 @@ final class SyncMonitor {
         self.storeKind = storeKind
         self.onRemoteChange = onRemoteChange
         switch storeKind {
-        case .iCloud: startObserving()
-        case .localOnly: status = .localOnly
-        case .inMemory: status = .disabled
+        case .iCloud:
+            startObserving()
+            // Never wait forever, e.g. when iCloud is unreachable without reporting an error.
+            Task { [weak self] in
+                await self?.refreshAccountStatus()
+                try? await Task.sleep(for: .seconds(30))
+                self?.hasCaughtUp = true
+            }
+        case .localOnly:
+            status = .localOnly
+            hasCaughtUp = true
+        case .inMemory:
+            status = .disabled
+            hasCaughtUp = true
         }
     }
 
@@ -52,6 +67,7 @@ final class SyncMonitor {
         } catch {
             status = .signedOut
         }
+        if status == .signedOut { hasCaughtUp = true }
     }
 
     private func startObserving() {
@@ -62,6 +78,7 @@ final class SyncMonitor {
             guard let event = note.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
                     as? NSPersistentCloudKitContainer.Event, let endDate = event.endDate else { return }
             MainActor.assumeIsolated {
+                if event.type == .import { self?.hasCaughtUp = true }
                 if event.succeeded {
                     self?.lastSync = endDate
                     self?.lastError = nil

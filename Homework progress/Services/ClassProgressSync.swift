@@ -12,10 +12,12 @@
 //    "Completed" always counts every exercise, so slightly different totals can't make the
 //    two sides flip each other back and forth.
 //  • Class progress stays private to the student (RLS), exactly as before. Notes aren't synced.
-//  • Optional lessons are also followed in Class (once each), so they count in the Class
-//    workload like the required ones. A lesson unfollowed later in Class stays unfollowed.
+//  • Optional lessons of subscribed courses are also followed in Class (once each, on any of
+//    the user's devices), so they count in the Class workload like the required ones. A lesson
+//    unfollowed later in Class stays unfollowed.
 //
 
+import ClassroomUI
 import Foundation
 import SwiftData
 import StudyData
@@ -31,17 +33,19 @@ struct ClassProgressSync {
 
     let store: HomeworkStore
     let student: StudentStore
-    let defaults: UserDefaults
+    let settings: SyncedSettings
+    var skippedCourses: Set<UUID> = []
 
     @discardableResult
     func run() async -> Report {
         var report = Report()
         let lessons = student.catalog.lessons.filter { $0.isActive(at: student.currentDate) }
         guard !lessons.isEmpty else { return report }
-        var state = State.load(from: defaults, userID: student.userID)
+        var state = State.load(from: settings, userID: student.userID)
         let original = state
 
-        for lesson in lessons where lesson.category == .optional && !state.followed.contains(lesson.id) {
+        for lesson in lessons where lesson.category == .optional && !skippedCourses.contains(lesson.courseID)
+            && !state.followed.contains(lesson.id) {
             if student.subscriptions[lesson.id]?.isActive != true {
                 await student.setSubscribed(true, lessonID: lesson.id)
                 report.optionalLessonsFollowed += 1
@@ -56,7 +60,7 @@ struct ClassProgressSync {
 
         // Saving with nothing to save would only trigger another pass.
         if store.context.hasChanges { store.save() }
-        if state != original { state.save(to: defaults, userID: student.userID) }
+        if state != original { state.save(to: settings, userID: student.userID) }
         return report
     }
 
@@ -140,21 +144,25 @@ struct SyncedProgress: Codable, Equatable {
 }
 
 extension ClassProgressSync {
-    /// What was last synced, per user, on this device.
+    /// What was last synced, per user, on this device; the optional lessons already followed
+    /// are shared with the user's other devices.
     struct State: Codable, Equatable {
         var synced: [UUID: SyncedProgress] = [:]
         var followed: Set<UUID> = []
 
         static func key(for userID: UUID) -> String { "classProgressSync.\(userID.uuidString.lowercased())" }
+        static func followedKey(for userID: UUID) -> String { "classFollowed.\(userID.uuidString.lowercased())" }
 
-        static func load(from defaults: UserDefaults, userID: UUID) -> State {
-            guard let data = defaults.data(forKey: key(for: userID)),
-                  let state = try? JSONDecoder().decode(State.self, from: data) else { return State() }
+        static func load(from settings: SyncedSettings, userID: UUID) -> State {
+            var state = settings.local.data(forKey: key(for: userID))
+                .flatMap { try? JSONDecoder().decode(State.self, from: $0) } ?? State()
+            state.followed.formUnion(settings.growingIDs(forKey: followedKey(for: userID)))
             return state
         }
 
-        func save(to defaults: UserDefaults, userID: UUID) {
-            if let data = try? JSONEncoder().encode(self) { defaults.set(data, forKey: Self.key(for: userID)) }
+        func save(to settings: SyncedSettings, userID: UUID) {
+            if let data = try? JSONEncoder().encode(self) { settings.local.set(data, forKey: Self.key(for: userID)) }
+            settings.add(followed, forKey: Self.followedKey(for: userID))
         }
     }
 }

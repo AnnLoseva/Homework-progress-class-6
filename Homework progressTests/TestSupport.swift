@@ -7,6 +7,7 @@ import Foundation
 import SwiftData
 import UIKit
 @testable import Homework_progress
+import ClassroomUI
 
 @MainActor
 final class TestEnvironment {
@@ -68,4 +69,12 @@ func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 12) -> Date {
     components.day = day
     components.hour = hour
     return Calendar.current.date(from: components)!
+}
+
+/// iCloud key-value storage shared by two simulated devices.
+final class FakeCloudStore: CloudKeyValueStore {
+    private var values: [String: Any] = [:]
+    func object(forKey key: String) -> Any? { values[key] }
+    func set(_ value: Any?, forKey key: String) { values[key] = value }
+    func synchronize() -> Bool { true }
 }

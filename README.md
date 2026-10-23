@@ -81,15 +81,19 @@ Pomodoro, the app always uses the light parchment appearance.
   catalog with **Required (חובה)** and **Optional (רשות)** lessons, *My Lessons* for
   subscriptions, exercise counters, private notes, PDFs that work offline, and the share sheet
   to send them to Notability or Goodnotes. Hebrew and right-to-left layout are supported.
-- **Subscribe to class** (Class Home, or *Settings → Class*): copies every published class
-  lesson, required and optional, into your homework weeks: the week with the same number
-  (or the one containing the due date, created if needed), the matching course, the exercise
-  total and the PDFs. New and changed lessons follow automatically, and optional lessons are
-  followed in Class too. **Progress is shared:** ticking exercises or finishing a copy in
-  Homework updates the class lesson and the other way round (whichever side changed wins; if
-  both did, the newer change). Your notes stay in Homework, a copy you delete isn't brought
-  back, and turning the switch off keeps what was added. Restricted PDFs arrive once you've
-  joined the class with its code.
+- **Subscribe to class** (Class Home, or *Settings → Class*): copies the published lessons of
+  the class courses you pick (all of them unless you switch one off; a course published later
+  is included automatically), required and optional, into your homework weeks: the week with
+  the same number (or the one containing the due date, created if needed), the matching
+  course, the exercise total and the PDFs. New and changed lessons follow automatically, and
+  optional lessons are followed in Class too. **Progress is shared:** ticking exercises or
+  finishing a copy in Homework updates the class lesson and the other way round (whichever
+  side changed wins; if both did, the newer change). Your notes stay in Homework, a copy you
+  delete isn't brought back, and turning the switch off keeps what was added. Restricted PDFs
+  arrive once you've joined the class with its code. The switch, the course choices and what
+  was already copied follow your Apple ID to your other devices (iCloud key-value storage),
+  and a device waits for its first iCloud import before adding anything, so iPhone and iPad
+  don't add the same lesson twice.
 - **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
   replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
   to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise

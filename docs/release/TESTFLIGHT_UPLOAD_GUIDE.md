@@ -14,7 +14,7 @@ bundle ID `AnnaLoseva.Homework-progress` · team `K36SNFAJDS` · version 1.0.
 
 ## 1. One-time setup (you, in the browser)
 
-1. **CloudKit production schema — do this before testers install.** TestFlight builds use
+1. **CloudKit production schema — done on 2026-10-23.** TestFlight builds use
    CloudKit's *Production* environment, which starts empty. Without the schema, iPhone ↔ iPad
    sync silently stays local.
    1. Run the app from Xcode on your device once with a week, an assignment and a PDF, so
