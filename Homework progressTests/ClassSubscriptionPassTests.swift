@@ -253,4 +253,46 @@ struct ClassSubscriptionPassTests {
         #expect(copy.completedExercises == 0)
         #expect(subject.student.progress[logic.id] == nil)
     }
+
+    // The test iPad with another account: its own "Week 1" (18–25 Oct), no course at all, and
+    // the class as it is on the server — 12 optional lessons, all week 1, due 25–28 Oct.
+    @Test func anotherAccountWithAnEmptyWeekAndNoCoursesGetsAllTwelveLessons() async throws {
+        let iPad = try TestEnvironment()                       // nothing seeded: no courses
+        let week = iPad.store.createWeek(title: "Week 1", number: 1, start: date(2026, 10, 18), end: date(2026, 10, 25))
+        let computational = StudyDomain.Course(slug: "computational-thinking-programming", title: "חשיבה חישובית ותכנותית",
+                                               subtitle: "Computational Thinking & Programming", sortOrder: 1)
+        let silicon = StudyDomain.Course(slug: "from-silicon-to-high-level-language", title: "מסיליקון לשפה עילית",
+                                         subtitle: "From Silicon to High-Level Language", sortOrder: 3)
+        func optional(_ title: String, _ course: StudyDomain.Course, due day: Int, _ exercises: Int) -> Lesson {
+            Self.lesson(title, course, week: 1, due: date(2026, 10, day, hour: 9), category: .optional, exercises: exercises)
+        }
+        let server = InMemoryServer(catalog: Catalog(courses: [algebra, computational, analysis, silicon, discrete], lessons: [
+            optional("Targil 1", algebra, due: 25, 6), optional("HW1", algebra, due: 25, 9),
+            optional("Class Work 2", algebra, due: 25, 5), optional("Exercise 1", computational, due: 25, 10),
+            optional("Test quantifiers", discrete, due: 25, 52), optional("Exer DNF and CNF", discrete, due: 25, 1),
+            optional("Exer quantif", discrete, due: 25, 20), optional("Tirgul Logic 1", discrete, due: 25, 9),
+            optional("Exercise 1 (silicon)", silicon, due: 26, 13), optional("Add_List_1", analysis, due: 28, 8),
+            optional("List_1", analysis, due: 28, 9), optional("Review sheet", analysis, due: 28, 1),
+        ]))
+        let other = UUID()
+        await server.addUser(other)                            // signed in, hasn't joined with the class code
+        let student = StudentStore(userID: other, backend: InMemoryConnection(server: server, userID: other),
+                                   snapshots: SnapshotStore(directory: cache.appendingPathComponent("iPad")), automaticRetry: false)
+        await student.loadCache()
+        var subject = ClassSubscriptionPass(student: student, importer: ClassHomeworkImporter(
+            store: iPad.store, planner: planner, ledger: ClassImportLedger(defaults: iPad.defaults),
+            fetchFile: { _ in throw URLError(.userAuthenticationRequired) }))
+
+        let outcome = try #require(await subject.run(refresh: true, now: date(2026, 10, 23, hour: 16)))
+
+        #expect(week.assignmentList.count == 12, "every lesson is in the week on screen")
+        #expect(try iPad.context.fetchCount(FetchDescriptor<AcademicWeek>()) == 1, "no second week")
+        #expect(Set(week.assignmentList.compactMap { $0.course?.englishName }).count == 5, "all five courses")
+        #expect(Set(try iPad.context.fetch(FetchDescriptor<Homework_progress.Course>()).map(\.id))
+                == Set(CourseSeeder.defaults.map(\.id)), "the five default courses, as on every other device")
+        #expect(outcome.thisWeek == 12)
+        #expect(outcome.weekToShow?.id == week.id)
+        guard case .done = outcome.phase else { Issue.record("expected success: \(outcome.phase)"); return }
+        #expect(outcome.report.filesPending == 0, "these lessons have no PDFs to wait for")
+    }
 }

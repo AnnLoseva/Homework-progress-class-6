@@ -34,8 +34,11 @@ final class SyncMonitor {
     private(set) var hasCaughtUp = false {
         didSet { if hasCaughtUp, !oldValue { onCaughtUp?() } }
     }
-    /// Runs once, when `hasCaughtUp` becomes true.
-    @ObservationIgnored var onCaughtUp: (() -> Void)?
+    /// Runs once, when `hasCaughtUp` becomes true (right away if it already is, e.g. for a
+    /// store that fell back to this device only).
+    @ObservationIgnored var onCaughtUp: (() -> Void)? {
+        didSet { if hasCaughtUp { onCaughtUp?() } }
+    }
 
     let storeKind: PersistenceFactory.StoreKind
     private var observers: [NSObjectProtocol] = []
