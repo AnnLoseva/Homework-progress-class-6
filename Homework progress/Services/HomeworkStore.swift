@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import ClassroomUI
 import OSLog
 import SwiftData
 
@@ -13,8 +14,24 @@ import SwiftData
 struct HomeworkStore {
     let context: ModelContext
     let files: AttachmentFileStore
+    /// Where deletions are recorded so "Subscribe to class" doesn't bring a deleted class
+    /// lesson back, here or on the user's other devices. Nil in tests and previews.
+    var classLedger: SyncedSettings?
 
     private static let log = Logger(subsystem: "AnnaLoseva.Homework-progress", category: "HomeworkStore")
+    /// The last save error (domain and code only, never record values), for the diagnostics.
+    static var lastSaveFailure: String?
+
+    func withClassLedger(_ settings: SyncedSettings?) -> HomeworkStore {
+        var store = self
+        store.classLedger = settings
+        return store
+    }
+
+    private func recordRemoval(of assignments: [HomeworkAssignment]) {
+        guard let classLedger, !assignments.isEmpty else { return }
+        classLedger.add(Set(assignments.map(\.id)), forKey: ClassImportLedger.removedKey)
+    }
 
     // MARK: Weeks
 
@@ -65,6 +82,7 @@ struct HomeworkStore {
 
     /// Deletes a week, its own assignments and their PDF files. Courses are never deleted.
     func delete(_ week: AcademicWeek) {
+        recordRemoval(of: week.assignmentList)
         for assignment in week.assignmentList { deleteFiles(of: assignment) }
         context.delete(week)
         save()
@@ -91,12 +109,14 @@ struct HomeworkStore {
     }
 
     func delete(_ assignment: HomeworkAssignment) {
+        recordRemoval(of: [assignment])
         deleteFiles(of: assignment)
         context.delete(assignment)
         save()
     }
 
     func delete(_ course: Course) {
+        recordRemoval(of: course.assignmentList)
         for assignment in course.assignmentList { deleteFiles(of: assignment) }
         context.delete(course)
         save()
@@ -217,6 +237,12 @@ struct HomeworkStore {
 
     func save() {
         // The error can quote record values, so it stays redacted in device logs.
-        do { try context.save() } catch { Self.log.error("Save failed: \(error, privacy: .private)") }
+        do {
+            try context.save()
+        } catch {
+            Self.log.error("Save failed: \(error, privacy: .private)")
+            let ns = error as NSError
+            Self.lastSaveFailure = "\(ns.domain) \(ns.code)"
+        }
     }
 }

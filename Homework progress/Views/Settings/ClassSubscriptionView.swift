@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 import ClassroomUI
 import StudyDomain
 
@@ -51,6 +52,22 @@ struct ClassSubscriptionView: View {
                         Text("Courses")
                     } footer: {
                         Text("A course the class adds later is included automatically. Switching one off keeps what was already added.")
+                    }
+                }
+
+                if subscription.isOn, !subscription.diagnostics.isEmpty {
+                    Section {
+                        DisclosureGroup("Diagnostics") {
+                            ForEach(Array(subscription.diagnostics.enumerated()), id: \.offset) { _, line in
+                                Text(verbatim: line).font(.system(.caption, design: .monospaced)).textSelection(.enabled)
+                            }
+                            Button("Copy Diagnostics") {
+                                UIPasteboard.general.string = subscription.diagnostics.joined(separator: "\n")
+                            }
+                        }
+                        .accessibilityIdentifier("classSubscriptionDiagnostics")
+                    } footer: {
+                        Text("What the last pass did, in numbers. No names, titles or account details.")
                     }
                 }
             }

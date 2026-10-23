@@ -23,21 +23,30 @@ import Foundation
 import SwiftData
 import StudyDomain
 
-/// Which lessons were already copied (and may be updated) or seen (and must not be copied
-/// again, e.g. because the user deleted the assignment). Shared with the user's other devices
-/// through iCloud, so a copy deleted on the iPhone doesn't come back from the iPad.
+/// Which lessons were copied here (and may be updated), seen, or removed by the user. Shared
+/// with the user's other devices through iCloud key-value storage.
+///
+/// Only `removed` stops a lesson from being added. `known` ("seen on some device") used to,
+/// but key-value storage reaches devices whose homework doesn't: another CloudKit environment
+/// (a TestFlight build next to a development build), or iCloud sync that hasn't delivered or
+/// failed. Those devices skipped every lesson and kept an empty week. `known` is still
+/// recorded, never cleared.
 struct ClassImportLedger {
     static let createdKey = "classImport.created"
     static let knownKey = "classImport.known"
+    /// Lesson ids whose assignment the user deleted (HomeworkStore records it on any device).
+    static let removedKey = "classImport.removed"
 
     let settings: SyncedSettings
     var created: Set<UUID>
     var known: Set<UUID>
+    var removed: Set<UUID>
 
     init(settings: SyncedSettings) {
         self.settings = settings
         created = settings.growingIDs(forKey: Self.createdKey)
         known = settings.growingIDs(forKey: Self.knownKey)
+        removed = settings.growingIDs(forKey: Self.removedKey)
     }
 
     init(defaults: UserDefaults) {
@@ -59,6 +68,22 @@ struct ClassImportReport: Equatable {
     var filesPending = 0
     /// Weeks that received new lessons.
     var weeksWithNewLessons: Set<UUID> = []
+
+    // What the pass left out, and why (for the diagnostics).
+    var notActive = 0
+    var courseSwitchedOff = 0
+    var courseMissing = 0
+    var removedByUser = 0
+    /// Already in the homework: the user's own (published from it) or a copy made earlier.
+    var ownHomework = 0
+    var existingCopies = 0
+    /// Lesson id → the week it was added to.
+    var placements: [Placement] = []
+
+    struct Placement: Equatable {
+        var lesson: UUID
+        var week: UUID
+    }
 
     var message: String {
         var parts: [String] = []
@@ -89,25 +114,36 @@ struct ClassHomeworkImporter {
     private var context: ModelContext { store.context }
 
     mutating func run(catalog: Catalog, now: Date = .now) async -> ClassImportReport {
+        // Deletions since this importer was made (here or on another device) count too.
+        ledger.removed.formUnion(ledger.settings.growingIDs(forKey: ClassImportLedger.removedKey))
         var report = ClassImportReport()
-        let lessons = catalog.lessons
-            .filter { $0.isActive(at: now) && !skippedCourses.contains($0.courseID) }
-            .sorted { ($0.week ?? .max, $0.sortOrder, $0.title) < ($1.week ?? .max, $1.sortOrder, $1.title) }
+        var lessons: [Lesson] = []
+        for lesson in catalog.lessons {
+            if !lesson.isActive(at: now) { report.notActive += 1 }
+            else if skippedCourses.contains(lesson.courseID) { report.courseSwitchedOff += 1 }
+            else if catalog.course(lesson.courseID) == nil { report.courseMissing += 1 }
+            else { lessons.append(lesson) }
+        }
+        lessons.sort { ($0.week ?? .max, $0.sortOrder, $0.title) < ($1.week ?? .max, $1.sortOrder, $1.title) }
 
         for lesson in lessons {
             if let assignment = existingAssignment(id: lesson.id) {
                 ledger.known.insert(lesson.id)
                 // Not a copy made here: the user's own homework that was published to the class.
-                guard ledger.created.contains(lesson.id) else { continue }
+                guard ledger.created.contains(lesson.id) else { report.ownHomework += 1; continue }
+                report.existingCopies += 1
                 if update(assignment, from: lesson) { report.updated += 1 }
                 await attachMissingFiles(of: lesson, to: assignment, catalog: catalog, report: &report)
                 continue
             }
-            // Copied before and deleted by the user since: respect that.
-            if ledger.known.contains(lesson.id) { continue }
+            // The user deleted its assignment (on this or another device): respect that.
+            if ledger.removed.contains(lesson.id) { report.removedByUser += 1; continue }
             guard let assignment = copy(lesson, into: homeworkWeek(for: lesson, now: now), catalog: catalog) else { continue }
             report.added += 1
-            if let week = assignment.week { report.weeksWithNewLessons.insert(week.id) }
+            if let week = assignment.week {
+                report.weeksWithNewLessons.insert(week.id)
+                report.placements.append(.init(lesson: lesson.id, week: week.id))
+            }
             await attachMissingFiles(of: lesson, to: assignment, catalog: catalog, report: &report)
         }
         ledger.save()
@@ -119,11 +155,12 @@ struct ClassHomeworkImporter {
     /// deleted earlier, for adding them back by hand.
     func lessons(forWeekNumber number: Int?, start: Date, end: Date, catalog: Catalog,
                  includingRemoved: Bool = false, now: Date = .now) -> [Lesson] {
-        catalog.lessons
+        let removed = ledger.removed.union(ledger.settings.growingIDs(forKey: ClassImportLedger.removedKey))
+        return catalog.lessons
             .filter { lesson in
                 guard lesson.isActive(at: now), !skippedCourses.contains(lesson.courseID),
                       catalog.course(lesson.courseID) != nil, existingAssignment(id: lesson.id) == nil,
-                      includingRemoved || !ledger.known.contains(lesson.id) else { return false }
+                      includingRemoved || !removed.contains(lesson.id) else { return false }
                 if let dates = classWeekDates(of: lesson) { return planner.contains(dates.start, start: start, end: end) }
                 if let week = lesson.week, let number { return week == number }
                 return lesson.dueAt.map { planner.contains($0, start: start, end: end) } ?? false

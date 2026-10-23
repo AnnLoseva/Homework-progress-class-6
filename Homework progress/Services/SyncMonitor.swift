@@ -45,8 +45,14 @@ final class SyncMonitor {
     private var pendingMaintenance: Task<Void, Never>?
     private let onRemoteChange: () -> Void
 
-    init(storeKind: PersistenceFactory.StoreKind, onRemoteChange: @escaping () -> Void) {
+    /// Whether the iCloud account can sync; nil when it couldn't be checked.
+    private let accountAvailable: () async -> Bool?
+
+    init(storeKind: PersistenceFactory.StoreKind, catchUpTimeout: Duration = .seconds(30),
+         accountAvailable: @escaping () async -> Bool? = SyncMonitor.cloudKitAccountAvailable,
+         onRemoteChange: @escaping () -> Void) {
         self.storeKind = storeKind
+        self.accountAvailable = accountAvailable
         self.onRemoteChange = onRemoteChange
         switch storeKind {
         case .iCloud:
@@ -54,7 +60,7 @@ final class SyncMonitor {
             // Never wait forever, e.g. when iCloud is unreachable without reporting an error.
             Task { [weak self] in
                 await self?.refreshAccountStatus()
-                try? await Task.sleep(for: .seconds(30))
+                try? await Task.sleep(for: catchUpTimeout)
                 self?.hasCaughtUp = true
             }
         case .localOnly:
@@ -66,14 +72,13 @@ final class SyncMonitor {
         }
     }
 
+    static func cloudKitAccountAvailable() async -> Bool? {
+        try? await CKContainer(identifier: PersistenceFactory.cloudContainerID).accountStatus() == .available
+    }
+
     func refreshAccountStatus() async {
         guard storeKind == .iCloud else { return }
-        do {
-            let account = try await CKContainer(identifier: PersistenceFactory.cloudContainerID).accountStatus()
-            status = account == .available ? .active : .signedOut
-        } catch {
-            status = .signedOut
-        }
+        status = await accountAvailable() == true ? .active : .signedOut
         if status == .signedOut { hasCaughtUp = true }
     }
 

@@ -34,6 +34,10 @@ public final class HomeworkSubscription {
 
     public var phase: Phase = .idle
 
+    /// What the last pass did or why it didn't start: counts and random ids only, never
+    /// titles, names or tokens. Shown in Settings → Class → Subscribe to class.
+    public var diagnostics: [String] = []
+
     /// Set when subscribing (or re-subscribing): the next pass fetches the class from the
     /// server first instead of trusting what's cached on this device.
     @ObservationIgnored public var needsRefresh = false

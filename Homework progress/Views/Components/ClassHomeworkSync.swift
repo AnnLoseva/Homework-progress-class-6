@@ -28,8 +28,7 @@ private struct ClassHomeworkSync: ViewModifier {
         let classroom = services.classroom
         // Wait for this launch's first iCloud import, so lessons the other device already
         // copied (or deleted) are seen before anything is added here.
-        guard services.sync.hasCaughtUp, let homework = classroom.homework, homework.isOn,
-              let student = classroom.student, student.hasLoadedCache else { return nil }
+        guard blockers.isEmpty, let homework = classroom.homework, let student = classroom.student else { return nil }
         let catalog = student.catalog
         return ["enrolled:\(student.identity?.isEnrolled == true)"]
             + homework.skippedCourses.map { "skip:\($0)" }.sorted()
@@ -37,8 +36,22 @@ private struct ClassHomeworkSync: ViewModifier {
             + catalog.attachments.map { "\($0.id):\($0.version)" }
     }
 
+    /// Why a pass can't start right now (shown in the diagnostics while subscribed).
+    private var blockers: [String] {
+        let classroom = services.classroom
+        return ClassSyncReadiness.blockers(iCloudCaughtUp: services.sync.hasCaughtUp,
+                                           subscribed: classroom.homework?.isOn == true,
+                                           signedIn: classroom.student != nil,
+                                           cacheLoaded: classroom.student?.hasLoadedCache == true)
+    }
+
     func body(content: Content) -> some View {
-        content.task(id: trigger) {
+        content
+        .task(id: blockers) {
+            guard let homework = services.classroom.homework, homework.isOn, !blockers.isEmpty else { return }
+            homework.diagnostics = ["not started: " + blockers.joined(separator: ", ")]
+        }
+        .task(id: trigger) {
             guard trigger != nil, let homework = services.classroom.homework,
                   let student = services.classroom.student,
                   let importer = services.classImporter(context: context, weekStartsOn: weekStartsOn) else { return }
@@ -48,6 +61,7 @@ private struct ClassHomeworkSync: ViewModifier {
             var pass = ClassSubscriptionPass(student: student, importer: importer)
             guard let outcome = await pass.run(refresh: refresh) else { return }
             homework.phase = outcome.phase
+            homework.diagnostics = outcome.diagnostics.lines
             // After subscribing, open the week the lessons went to.
             if homework.revealPending {
                 homework.revealPending = false

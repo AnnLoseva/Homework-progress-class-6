@@ -97,7 +97,7 @@ final class AppServices {
     }
 
     func store(_ context: ModelContext) -> HomeworkStore {
-        HomeworkStore(context: context, files: files)
+        HomeworkStore(context: context, files: files, classLedger: classroom.homework?.settings)
     }
 
     /// True when this device has (or could recreate) the PDF file — e.g. one that just synced

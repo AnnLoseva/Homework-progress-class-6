@@ -112,7 +112,7 @@ struct ClassHomeworkImporterTests {
         let sets = lesson("Sets", .required)
         var subject = try importer()
         _ = await subject.run(catalog: Catalog(courses: [discrete], lessons: [sets]), now: now)
-        env.store.delete(try #require(try assignments().first))
+        env.store.withClassLedger(SyncedSettings(local: env.defaults, cloud: nil)).delete(try #require(try assignments().first))
 
         var again = try importer()          // a later launch reads the saved ledger
         let report = await again.run(catalog: Catalog(courses: [discrete], lessons: [sets]), now: now)
@@ -198,7 +198,7 @@ struct ClassHomeworkImporterTests {
         let catalog = Catalog(courses: [discrete], lessons: [sets])
         var iPhone = try importer(cloud: cloud)
         _ = await iPhone.run(catalog: catalog, now: now)
-        env.store.delete(try #require(try assignments().first))
+        env.store.withClassLedger(SyncedSettings(local: env.defaults, cloud: cloud)).delete(try #require(try assignments().first))
 
         // The iPad has its own defaults and an empty store (the deletion has synced through iCloud).
         let iPad = try TestEnvironment()
@@ -264,7 +264,8 @@ struct ClassHomeworkImporterTests {
         let catalog = Catalog(courses: [discrete], lessons: [sets])
         var subject = try importer()
         _ = await subject.run(catalog: catalog, now: now)
-        env.store.delete(try #require(try assignments().first))
+        env.store.withClassLedger(SyncedSettings(local: env.defaults, cloud: nil)).delete(try #require(try assignments().first))
+        subject = try importer()            // the app builds a new importer for every pass
         let week = env.store.createWeek(title: "Catch-up", number: nil, start: date(2026, 11, 22), end: date(2026, 11, 28))
 
         #expect(subject.lessons(forWeekNumber: 9, start: week.startDate, end: week.endDate, catalog: catalog, now: now).isEmpty,
