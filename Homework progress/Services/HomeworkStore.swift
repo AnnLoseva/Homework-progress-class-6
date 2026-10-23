@@ -73,9 +73,10 @@ struct HomeworkStore {
 
     @discardableResult
     func createAssignment(title: String, course: Course, week: AcademicWeek, dueDate: Date? = nil,
-                          totalExercises: Int? = nil, notes: String = "") -> HomeworkAssignment {
+                          totalExercises: Int? = nil, notes: String = "", id: UUID = UUID()) -> HomeworkAssignment {
         let cleanedTotal = totalExercises.flatMap { $0 > 0 ? $0 : nil }
         let assignment = HomeworkAssignment(
+            id: id,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             dueDate: dueDate,
             totalExercises: cleanedTotal,
@@ -113,9 +114,11 @@ struct HomeworkStore {
     }
 
     @discardableResult
-    func attach(_ imported: AttachmentFileStore.ImportedPDF, to assignment: HomeworkAssignment) -> HomeworkAttachment {
+    func attach(_ imported: AttachmentFileStore.ImportedPDF, to assignment: HomeworkAssignment,
+                id: UUID = UUID()) -> HomeworkAttachment {
         let existing = assignment.attachmentList.map(\.originalFilename)
         let attachment = HomeworkAttachment(
+            id: id,
             originalFilename: FilenameDeduplicator.unique(imported.originalFilename, existing: existing),
             storedFilename: imported.storedFilename,
             byteCount: imported.byteCount,

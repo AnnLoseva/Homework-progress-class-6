@@ -236,22 +236,15 @@
 		C1A55000000000000000B00A /* Check release configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"$(SRCROOT)/scripts/check-release-config.sh",
 			);
 			name = "Check release configuration";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "\"${SRCROOT}/scripts/check-release-config.sh\"\n";
+			shellScript = (
+				"\"${SRCROOT}/scripts/check-release-config.sh\"",
+				"",
+			);
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

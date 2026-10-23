@@ -81,6 +81,13 @@ Pomodoro, the app always uses the light parchment appearance.
   catalog with **Required (חובה)** and **Optional (רשות)** lessons, *My Lessons* for
   subscriptions, exercise counters, private notes, PDFs that work offline, and the share sheet
   to send them to Notability or Goodnotes. Hebrew and right-to-left layout are supported.
+- **Subscribe to class** (Class Home, or *Settings → Class*): copies every published class
+  lesson, required and optional, into your homework weeks: the week with the same number
+  (or the one containing the due date, created if needed), the matching course, the exercise
+  total and the PDFs. New and changed lessons follow automatically. The copies are ordinary
+  homework: your progress and notes there are never overwritten, a copy you delete isn't
+  brought back, and turning the switch off keeps what was added. Restricted PDFs arrive once
+  you've joined the class with its code.
 - **Administrator:** create, edit, publish, unpublish and archive lessons; upload, preview and
   replace PDFs; manage courses; set the class join code. *Settings → Class → Publish Homework
   to Class* publishes chosen assignments as lessons: course, title, week, due date, exercise
@@ -239,8 +246,9 @@ user data and are shown exactly as stored. Hebrew renders right-to-left automati
   claiming success.
 - PDFs are not parsed: you enter exercise counts by hand, as specified.
 - The PDF viewer is read-only. Handwriting belongs in Notability or Goodnotes.
-- The Class tab's progress is separate from your homework progress: publishing doesn't link
-  them, so completing a homework assignment doesn't complete the class lesson.
+- The Class tab's progress is separate from your homework progress: publishing and
+  *Subscribe to class* copy lessons but don't link them, so completing a homework assignment
+  doesn't complete the class lesson.
 - Sign in with Apple, the delete-account Edge Function and Storage signed URLs need a real
   Supabase project to test end to end; the SQL suites cover the database rules.
 

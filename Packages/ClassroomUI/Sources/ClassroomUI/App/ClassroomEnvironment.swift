@@ -27,6 +27,8 @@ public final class ClassroomEnvironment {
     public private(set) var student: StudentStore?
     public private(set) var admin: AdminStore?
     public private(set) var attachments: AttachmentRepository?
+    /// Set by a host app that can copy class lessons into its homework ("Subscribe to class").
+    public var homework: HomeworkSubscription?
 
     @ObservationIgnored private let makeStudentBackend: (UUID) -> any StudentBackend
     @ObservationIgnored private let makeAdminBackend: (UUID) -> any AdminBackend

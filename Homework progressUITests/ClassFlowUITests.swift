@@ -59,6 +59,47 @@ final class ClassFlowUITests: XCTestCase {
         try runLessonFlow(app)
     }
 
+    /// "Subscribe to class" copies both made-up lessons, required and optional, into a homework week.
+    @MainActor
+    func testSubscribingToTheClassAddsItsLessonsToTheWeek() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingClassSignedIn"]
+        app.launch()
+        openClassHome(app)
+
+        let toggle = app.switches["homeworkSubscriptionToggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+        XCTAssertTrue(app.staticTexts["homeworkSubscriptionStatus"].waitForExistence(timeout: 10)
+                      || app.descendants(matching: .any)["homeworkSubscriptionStatus"].waitForExistence(timeout: 5))
+
+        // Back to the homework: iPhone tab bar, or the new week in the iPad sidebar.
+        let homeworkTab = app.tabBars.buttons["Homework"]
+        if homeworkTab.exists {
+            homeworkTab.tap()
+        } else {
+            let week = app.staticTexts["Module"].firstMatch
+            XCTAssertTrue(week.waitForExistence(timeout: 5))
+            week.tap()
+        }
+        for title in ["UI required lesson", "UI optional lesson"] {
+            XCTAssertTrue(app.descendants(matching: .any)["assignmentRow-\(title)"].waitForExistence(timeout: 10), "Missing \(title)")
+        }
+    }
+
+    @MainActor
+    private func openClassHome(_ app: XCUIApplication) {
+        let classTab = app.tabBars.buttons["Class"]
+        if classTab.waitForExistence(timeout: 5) {
+            classTab.tap()
+        } else {
+            let sidebarRow = app.staticTexts["Class Home"].firstMatch
+            if !sidebarRow.waitForExistence(timeout: 2) { app.buttons["Show Sidebar"].firstMatch.tap() }
+            XCTAssertTrue(sidebarRow.waitForExistence(timeout: 5))
+            sidebarRow.tap()
+        }
+    }
+
     @MainActor
     private func assertStillInClass(_ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(app.buttons["exercisePlus"].waitForExistence(timeout: 3), "Left the lesson screen", file: file, line: line)

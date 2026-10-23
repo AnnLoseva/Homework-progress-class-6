@@ -4,12 +4,18 @@ import StudyDomain
 
 /// What should I study? What is mandatory? What have I completed? What remains?
 struct HomeView: View {
+    @Environment(ClassroomEnvironment.self) private var environment
     @Environment(StudentStore.self) private var store
     var body: some View {
         let summary = store.dashboard
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 SyncStatusBanner(status: store.syncStatus, pendingChanges: store.pendingChangeCount, lastSynced: store.lastSyncedAt)
+
+                if let homework = environment.homework {
+                    HomeworkSubscriptionCard(subscription: homework,
+                                             isEnrolled: store.identity?.isEnrolled == true || store.identity?.isAdmin == true)
+                }
 
                 if summary.isEmpty {
                     EmptyStateView(image: "MushroomCalm", title: "Nothing to study yet",
@@ -231,6 +237,36 @@ private struct RecentLessonsCard: View {
                         .buttonStyle(.plain)
                     }
                 }
+            }
+        }
+        .woodCard()
+    }
+}
+
+/// The "Subscribe to class" switch: copies every class lesson into the homework weeks.
+private struct HomeworkSubscriptionCard: View {
+    @Bindable var subscription: HomeworkSubscription
+    let isEnrolled: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle(isOn: $subscription.isOn) {
+                Label("Subscribe to class", systemImage: "calendar.badge.plus")
+                    .font(.woodHeadline)
+            }
+            .accessibilityIdentifier("homeworkSubscriptionToggle")
+            Text("Adds every class lesson, required and optional, to your homework weeks with its PDFs. Your progress there stays yours, and turning this off keeps what was added.")
+                .font(.lora(13, relativeTo: .footnote))
+                .foregroundStyle(.secondary)
+            if subscription.isOn, let status = subscription.status {
+                Label(status, systemImage: "checkmark.circle")
+                    .font(.lora(13, relativeTo: .footnote))
+                    .accessibilityIdentifier("homeworkSubscriptionStatus")
+            }
+            if subscription.isOn, !isEnrolled {
+                Label("Join the class with its code (Class Account) to get the class-only PDFs.", systemImage: "key")
+                    .font(.lora(13, relativeTo: .footnote))
+                    .foregroundStyle(.secondary)
             }
         }
         .woodCard()

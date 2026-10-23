@@ -20,6 +20,15 @@ struct ClassPublishSection: View {
     var body: some View {
         let classroom = services.classroom
         Section {
+            if let homework = classroom.homework, classroom.session.currentUserID != nil {
+                Toggle(isOn: Binding(get: { homework.isOn }, set: { homework.isOn = $0 })) {
+                    Label("Subscribe to class", systemImage: "calendar.badge.plus")
+                }
+                .accessibilityIdentifier("settingsHomeworkSubscriptionToggle")
+                if homework.isOn, let status = homework.status {
+                    Text(status).font(.lora(12)).foregroundStyle(.secondary)
+                }
+            }
             if classroom.admin != nil {
                 Button {
                     isPublishing = true
@@ -33,7 +42,7 @@ struct ClassPublishSection: View {
         } header: {
             Text("Class")
         } footer: {
-            Text("Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
+            Text("Subscribe to class adds every class lesson, required and optional, to your weeks with its PDFs; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app.")
         }
         .sheet(isPresented: $isPublishing) {
             if let admin = classroom.admin {

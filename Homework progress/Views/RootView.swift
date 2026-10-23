@@ -40,6 +40,7 @@ struct RootView: View {
             if url.isFileURL { router.activeSheet = .importSharedPDF(url) }
         }
         .overlay(alignment: .bottom) { ToastView() }
+        .classHomeworkSync()
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { rescheduleReminders() }
         }

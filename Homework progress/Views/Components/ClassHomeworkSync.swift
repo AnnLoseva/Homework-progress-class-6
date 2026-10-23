@@ -1,0 +1,53 @@
+//
+//  ClassHomeworkSync.swift
+//  Homework progress
+//
+
+import SwiftUI
+import SwiftData
+import ClassroomUI
+import StudyData
+import StudyDomain
+
+extension View {
+    /// Runs "Subscribe to class" whenever it's switched on and the class catalog or the
+    /// user's class membership changes. Attach once, near the root.
+    func classHomeworkSync() -> some View {
+        modifier(ClassHomeworkSync())
+    }
+}
+
+private struct ClassHomeworkSync: ViewModifier {
+    @Environment(AppServices.self) private var services
+    @Environment(\.modelContext) private var context
+    @AppStorage("weekStartsOn") private var weekStartsOn = 1
+
+    /// Changes whenever something the import depends on changes; `nil` = nothing to do.
+    private var trigger: [String]? {
+        let classroom = services.classroom
+        guard let homework = classroom.homework, homework.isOn,
+              let student = classroom.student, student.hasLoadedCache else { return nil }
+        let catalog = student.catalog
+        return ["enrolled:\(student.identity?.isEnrolled == true)"]
+            + catalog.lessons.map { "\($0.id):\($0.status.rawValue):\($0.updatedAt.timeIntervalSince1970)" }
+            + catalog.attachments.map { "\($0.id):\($0.version)" }
+    }
+
+    func body(content: Content) -> some View {
+        content.task(id: trigger) {
+            guard trigger != nil, let homework = services.classroom.homework,
+                  let student = services.classroom.student else { return }
+            let attachments = services.classroom.attachments
+            var importer = ClassHomeworkImporter(
+                store: services.store(context),
+                planner: WeekPlanner(firstWeekday: weekStartsOn),
+                ledger: ClassImportLedger(defaults: homework.defaults),
+                fetchFile: { file in
+                    guard let attachments else { throw AttachmentError.notAuthorized }
+                    return try await attachments.file(for: file)
+                })
+            let report = await importer.run(catalog: student.catalog)
+            homework.status = report.message
+        }
+    }
+}

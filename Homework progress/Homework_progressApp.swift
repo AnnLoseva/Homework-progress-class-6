@@ -64,6 +64,8 @@ final class AppBootstrap {
                 classroom = .uiTestingSignedIn()
             }
             #endif
+            // "Subscribe to class" copies class lessons into the homework weeks.
+            classroom.homework = HomeworkSubscription(defaults: defaults)
             state = .ready(container, AppServices(files: files, sync: sync, classroom: classroom))
         } catch {
             state = .failed(error.localizedDescription)

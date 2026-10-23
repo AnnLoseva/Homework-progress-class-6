@@ -14,6 +14,16 @@
     "%@ Notebook" : {
 
     },
+    "%lld PDF(s) will follow once you're online and have joined the class with its code." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld קובצי PDF יתווספו כשתהיו מחוברים לאינטרנט ותצטרפו לכיתה עם הקוד."
+          }
+        }
+      }
+    },
     "Add a PDF to send it to %@." : {
 
     },
@@ -25,6 +35,26 @@
     },
     "Add to %@" : {
 
+    },
+    "Added %lld class lesson(s) to your weeks." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "נוספו %lld שיעורי כיתה לשבועות שלך."
+          }
+        }
+      }
+    },
+    "Adds every class lesson, required and optional, to your homework weeks with its PDFs. Your progress there stays yours, and turning this off keeps what was added." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "מוסיף כל שיעור של הכיתה, חובה ורשות, לשבועות שיעורי הבית שלך יחד עם קובצי ה-PDF. ההתקדמות שלך שם נשארת שלך, וכיבוי לא מוחק את מה שכבר נוסף."
+          }
+        }
+      }
     },
     "Buttons and hints name this app. The share sheet still lists every app, so you can pick the other one any time. Saved on this device only." : {
 
@@ -59,6 +89,16 @@
     "Its progress, notes and the app’s copies of its PDFs will be deleted. Copies already in Notability, Goodnotes or Files are not affected." : {
 
     },
+    "Join the class with its code (Class Account) to get the class-only PDFs." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הצטרפו לכיתה עם הקוד (חשבון הכיתה) כדי לקבל את קובצי ה-PDF של הכיתה."
+          }
+        }
+      }
+    },
     "Notes App" : {
 
     },
@@ -77,6 +117,9 @@
     "Opens the share sheet. Choose %@, then pick a note or folder in %@." : {
 
     },
+    "Optional lesson from the class." : {
+
+    },
     "Save this course’s %@ folder name in the course settings and it will be shown here." : {
 
     },
@@ -84,6 +127,19 @@
 
     },
     "Sent to %@. Finish the import there: choose a new note or an existing note%@. Your copy here is unchanged." : {
+
+    },
+    "Subscribe to class" : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הרשמה לכיתה"
+          }
+        }
+      }
+    },
+    "Subscribe to class adds every class lesson, required and optional, to your weeks with its PDFs; what was added stays if you turn it off. Publishing shares the course, title, week, due date, exercise total and PDFs. Your progress, status and notes stay private in this app." : {
 
     },
     "The PDF was handed to another app. If you chose %@, finish the import there%@. Your copy here is unchanged." : {
@@ -98,11 +154,31 @@
     "To bring in a homework sheet, use “Add PDF to %@” on the assignment." : {
 
     },
+    "Updated %lld class lesson(s) in your weeks." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "עודכנו %lld שיעורי כיתה בשבועות שלך."
+          }
+        }
+      }
+    },
     "Use a web link (https://…) or a %@: link copied from %@." : {
 
     },
     "Your PDF stays in this app. %@ gets its own copy." : {
 
+    },
+    "Your weeks have every class lesson." : {
+      "localizations" : {
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "כל שיעורי הכיתה נמצאים בשבועות שלך."
+          }
+        }
+      }
     },
     "–" : {
       "extractionState" : "stale",
